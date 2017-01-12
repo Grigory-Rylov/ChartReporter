@@ -9,8 +9,8 @@ import dagger.Component;
  */
 @Singleton
 @Component(modules = {RestModule.class,
-        //AppModule.class,
-        //UilModule.class,
+        AppModule.class,
+        ProfileModule.class,
         //DbModule.class
 })
 

@@ -10,7 +10,7 @@ import rx.Observable;
  */
 
 public interface AuthService {
-    Observable<AuthContainer> login(String login, String password);
+    Observable<AuthContainer> login(String login, CharSequence password);
 
     Observable<RefreshTokenContainer> refreshToken();
 }

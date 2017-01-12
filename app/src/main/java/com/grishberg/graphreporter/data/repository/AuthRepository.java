@@ -11,4 +11,8 @@ public interface AuthRepository {
     AuthContainer getAuthInfo();
 
     void setAuthInfo(AuthContainer authContainer);
+
+    void setCurrentLogin(String login);
+
+    String getLogin();
 }
