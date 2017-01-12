@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GraphReporter</string>
+    <string name="title_reportitem_detail">ReportItem Detail</string>
+    <string name="title_activity_chart">ChartActivity</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="title_activity_auth">AuthActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
