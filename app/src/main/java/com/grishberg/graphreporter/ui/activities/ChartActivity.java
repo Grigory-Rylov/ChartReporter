@@ -14,7 +14,7 @@ import com.grishberg.graphreporter.R;
 
 public class ChartActivity extends AppCompatActivity {
 
-    public static void startActivity(final Context context) {
+    public static void start(final Context context) {
         Intent intent = new Intent(context, ChartActivity.class);
         context.startActivity(intent);
     }

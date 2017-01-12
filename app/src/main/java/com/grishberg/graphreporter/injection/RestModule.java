@@ -3,7 +3,10 @@ package com.grishberg.graphreporter.injection;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.services.Api;
+import com.grishberg.graphreporter.data.repository.AuthRepository;
+import com.grishberg.graphreporter.data.repository.AuthRepositoryImpl;
 
 import javax.inject.Singleton;
 
@@ -23,11 +26,11 @@ public class RestModule {
     private static final String TAG = RestModule.class.getSimpleName();
     public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    private String mBaseUrl;
+    private final String baseUrl;
 
     // Constructor needs one parameter to instantiate.
-    public RestModule(String baseUrl) {
-        this.mBaseUrl = baseUrl;
+    public RestModule(final String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     /**
@@ -68,7 +71,7 @@ public class RestModule {
     Retrofit provideRetrofit(Gson gson, OkHttpClient okHttpClient) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .baseUrl(mBaseUrl)
+                .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .build();
         return retrofit;
@@ -78,5 +81,11 @@ public class RestModule {
     @Singleton
     Api provideRetrofitService(Retrofit retrofit) {
         return retrofit.create(Api.class);
+    }
+
+    @Provides
+    @Singleton
+    AuthRepository provideAuthService(final Api api, final AuthTokenRepository tokenRepository) {
+        return new AuthRepositoryImpl(api, tokenRepository);
     }
 }

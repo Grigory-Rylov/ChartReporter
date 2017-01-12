@@ -1,5 +1,7 @@
 package com.grishberg.graphreporter.injection;
 
+import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -10,9 +12,10 @@ import dagger.Component;
 @Singleton
 @Component(modules = {RestModule.class,
         AppModule.class,
-        ProfileModule.class,
+        ProfileModule.class
         //DbModule.class
 })
 
 public interface AppComponent {
+    void inject(AuthPresenter authPresenter);
 }

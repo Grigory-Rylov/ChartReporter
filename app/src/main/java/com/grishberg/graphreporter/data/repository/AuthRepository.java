@@ -1,18 +1,16 @@
 package com.grishberg.graphreporter.data.repository;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
+import com.grishberg.graphreporter.data.model.RefreshTokenContainer;
+
+import rx.Observable;
 
 /**
  * Created by grishberg on 11.01.17.
- * Сервис сохранения информации о пользователе
  */
 
 public interface AuthRepository {
-    AuthContainer getAuthInfo();
+    Observable<AuthContainer> login(String login, CharSequence password);
 
-    void setAuthInfo(AuthContainer authContainer);
-
-    void setCurrentLogin(String login);
-
-    String getLogin();
+    Observable<RefreshTokenContainer> refreshToken();
 }

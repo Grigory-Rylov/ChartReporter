@@ -3,7 +3,7 @@ package com.grishberg.graphreporter;
 import android.app.Application;
 
 import com.grishberg.graphreporter.data.RestConst;
-import com.grishberg.graphreporter.data.repository.AuthRepositoryImpl;
+import com.grishberg.graphreporter.data.repository.AuthTokenRepositoryImpl;
 import com.grishberg.graphreporter.injection.AppComponent;
 import com.grishberg.graphreporter.injection.AppModule;
 import com.grishberg.graphreporter.injection.DaggerAppComponent;
@@ -30,7 +30,7 @@ public final class App extends Application {
                     .builder()
                     .appModule(new AppModule(sInstance))
                     .restModule(new RestModule(RestConst.END_POINT))
-                    .profileModule(new ProfileModule(new AuthRepositoryImpl()))
+                    .profileModule(new ProfileModule(new AuthTokenRepositoryImpl()))
                     .build()
             );
         }

@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.injection;
 
-import com.grishberg.graphreporter.data.repository.AuthRepository;
+import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 
 import javax.inject.Singleton;
 
@@ -13,15 +13,15 @@ import dagger.Provides;
 @Module
 public class ProfileModule {
     private static final String TAG = ProfileModule.class.getSimpleName();
-    private final AuthRepository authRepository;
+    private final AuthTokenRepository authRepository;
 
-    public ProfileModule(AuthRepository authRepository) {
+    public ProfileModule(AuthTokenRepository authRepository) {
         this.authRepository = authRepository;
     }
 
     @Provides
     @Singleton
-    AuthRepository provideAuthRepository() {
+    AuthTokenRepository provideAuthRepository() {
         return authRepository;
     }
 }

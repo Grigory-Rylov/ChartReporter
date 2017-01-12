@@ -5,7 +5,7 @@
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="title_activity_auth">AuthActivity</string>
     <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="dummy_content">Analytics</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -14,7 +14,7 @@ android {
         // Enable the experimental Jack build tools.
         jackOptions {
             enabled true
-            additionalParameters("jack.incremental" : "true")
+            additionalParameters("jack.incremental": "true")
         }
     }
     buildTypes {
