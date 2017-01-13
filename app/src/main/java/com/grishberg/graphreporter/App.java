@@ -29,7 +29,7 @@ public final class App extends Application {
             initComponents(DaggerAppComponent
                     .builder()
                     .appModule(new AppModule(sInstance))
-                    .restModule(new RestModule(RestConst.END_POINT))
+                    .restModule(new RestModule(RestConst.API))
                     .profileModule(new ProfileModule(new AuthTokenRepositoryImpl()))
                     .build()
             );

@@ -12,7 +12,7 @@ import rx.Observable;
  */
 
 public interface Api {
-    @POST("/auth")
+    @POST("auth")
     Observable<RestResponse<AuthContainer>> login(@Query("login") String login,
                                                   @Query("password") CharSequence pass);
 }

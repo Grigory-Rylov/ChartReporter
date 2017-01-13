@@ -1,8 +1,11 @@
 package com.grishberg.graphreporter.data.model.common;
 
+import lombok.Getter;
+
 /**
  * Created by grishberg on 12.01.17.
  */
+@Getter
 public class RestResponse<T> {
     private static final String TAG = RestResponse.class.getSimpleName();
 
@@ -20,17 +23,5 @@ public class RestResponse<T> {
     public RestResponse(final T data, final boolean isCached) {
         this.data = data;
         this.isCached = isCached;
-    }
-
-    public boolean isCached() {
-        return isCached;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public RestError getError() {
-        return error;
     }
 }

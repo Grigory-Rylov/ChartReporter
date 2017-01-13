@@ -1,6 +1,7 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
+import com.grishberg.graphreporter.data.model.common.RestError;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
@@ -88,8 +89,9 @@ public class AuthPresenterTest {
     @Test
     public void testAuthWrongCredentials() {
         //given
+        RestError error = mock(RestError.class);
         when(authService.login(anyString(), anyString()))
-                .thenReturn(Observable.error(new WrongCredentialsException()));
+                .thenReturn(Observable.error(new WrongCredentialsException(error)));
         //when
         presenter.auth(LOGIN, PASSWORD);
         //then
