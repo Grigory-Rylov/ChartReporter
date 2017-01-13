@@ -17,6 +17,10 @@ android {
             //additionalParameters("jack.incremental": "true")
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -47,8 +51,7 @@ dependencies {
     provided "com.arello-mobile:moxy-compiler:$moxy_version"
     compile "com.arello-mobile:moxy-android:$moxy_version"
     compile "com.arello-mobile:moxy-app-compat:$moxy_version"
-    provided "org.projectlombok:lombok:1.12.6"
-    //annotationProcessor "org.projectlombok:lombok:1.12.6"
+
     compile 'com.google.code.gson:gson:2.6.2'
 
     compile 'io.reactivex:rxandroid:1.2.1'
