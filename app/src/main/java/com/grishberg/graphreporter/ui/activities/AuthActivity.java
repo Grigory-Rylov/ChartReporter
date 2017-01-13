@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -45,12 +46,12 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
 
     @Override
     public void showLoginEmptyError() {
-
+        Toast.makeText(this, R.string.auth_empty_login, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showPasswordEmptyError() {
-
+        Toast.makeText(this, R.string.auth_empty_password, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -72,11 +73,12 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
 
     @Override
     public void showWrongCredentials() {
-
+        Toast.makeText(this, R.string.auth_wrong_credentials, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showFail(String message) {
+        Toast.makeText(this, R.string.auth_network_error, Toast.LENGTH_SHORT).show();
 
     }
 
