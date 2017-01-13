@@ -27,8 +27,9 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
     private ProgressBar progressBar;
 
     public static void start(final Context context) {
-
-        context.startActivity(new Intent(context, AuthActivity.class));
+        Intent intent = new Intent(context, AuthActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(intent);
     }
 
     @Override
@@ -79,7 +80,6 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
     @Override
     public void showFail(String message) {
         Toast.makeText(this, R.string.auth_network_error, Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
