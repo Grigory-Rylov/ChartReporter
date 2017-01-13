@@ -29,6 +29,7 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
     public static void start(final Context context) {
         Intent intent = new Intent(context, AuthActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
     }
 
@@ -43,6 +44,7 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
         loginEdit = (EditText) findViewById(R.id.auth_screen_login);
         passwordEdit = (EditText) findViewById(R.id.auth_screen_password);
         progressBar = (ProgressBar) findViewById(R.id.auth_screen_progress);
+        setEnabled(true);
     }
 
     @Override
@@ -57,13 +59,13 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
 
     @Override
     public void showProgress() {
-        setEnabled(true);
+        setEnabled(false);
         progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        setEnabled(false);
+        setEnabled(true);
         progressBar.setVisibility(View.GONE);
     }
 

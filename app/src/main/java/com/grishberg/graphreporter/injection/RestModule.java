@@ -53,7 +53,6 @@ public class RestModule {
     @Singleton
     Gson provideGson() {
         final Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
                 .setPrettyPrinting()
                 .setDateFormat(DATE_PATTERN)
                 .create();
