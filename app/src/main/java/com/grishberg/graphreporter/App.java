@@ -2,7 +2,7 @@ package com.grishberg.graphreporter;
 
 import android.app.Application;
 
-import com.grishberg.graphreporter.data.RestConst;
+import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepositoryImpl;
 import com.grishberg.graphreporter.injection.AppComponent;
 import com.grishberg.graphreporter.injection.AppModule;

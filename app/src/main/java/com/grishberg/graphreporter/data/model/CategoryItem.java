@@ -2,12 +2,9 @@ package com.grishberg.graphreporter.data.model;
 
 import com.grishberg.datafacade.helpers.ExapndableItem;
 
-import lombok.Getter;
-
 /**
  * Created by grishberg on 01.01.17.
  */
-@Getter
 public class CategoryItem implements ExapndableItem {
     private static final String TAG = CategoryItem.class.getSimpleName();
     private int id;
@@ -22,5 +19,13 @@ public class CategoryItem implements ExapndableItem {
     @Override
     public void setExpanded(boolean expaned) {
         this.isExpanded = expaned;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

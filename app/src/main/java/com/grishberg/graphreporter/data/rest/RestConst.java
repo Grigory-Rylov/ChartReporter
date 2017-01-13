@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.data;
+package com.grishberg.graphreporter.data.rest;
 
 /**
  * Created by grishberg on 12.01.17.
@@ -10,9 +10,8 @@ public class RestConst {
 
     // Ошибки
     public static final class Errors {
-        public static final int USER_NOT_FOUND = 2;
         public static final int WRONG_CREDENTIALS = 1000;
-        public static final int TOKEN_INVALID = 1001;
+        public static final int TOKEN_INVALID = 1002;
     }
     private RestConst(){
     }
