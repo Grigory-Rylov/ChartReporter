@@ -1,6 +1,5 @@
 package com.grishberg.graphreporter.injection;
 
-import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.grishberg.graphreporter.common.data.rest.RxErrorHandlingCallAdapterFactory;
@@ -8,7 +7,7 @@ import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
-import com.grishberg.graphreporter.data.services.Api;
+import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
 import com.grishberg.graphreporter.data.repository.AuthRepositoryImpl;
 

@@ -2,7 +2,7 @@ package com.grishberg.graphreporter.data.repository;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.RefreshTokenContainer;
-import com.grishberg.graphreporter.data.services.Api;
+import com.grishberg.graphreporter.data.rest.Api;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
