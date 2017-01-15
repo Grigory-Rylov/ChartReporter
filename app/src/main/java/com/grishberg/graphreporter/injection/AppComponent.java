@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.injection;
 
 import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
+import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
 
 import javax.inject.Singleton;
 
@@ -21,4 +22,6 @@ public interface AppComponent {
     void inject(AuthPresenter authPresenter);
 
     void inject(CandlesChartPresenter candlesChartPresenter);
+
+    void inject(SplashScreenPresenter splashScreenPresenter);
 }

@@ -50,12 +50,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private SeekBar mSeekBarX, mSeekBarY;
     private TextView tvX, tvY;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
-
     public CandleFragment() {
         // Required empty public constructor
     }
@@ -94,6 +88,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_candle, container, false);
         initChart(view);
+        final int productId = 2;
+        presenter.requestDailyValues(productId);
         return view;
     }
 
@@ -102,10 +98,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         tvY = (TextView) view.findViewById(R.id.tvYMax);
 
         mSeekBarX = (SeekBar) view.findViewById(R.id.seekBar1);
-        mSeekBarX.setOnSeekBarChangeListener(this);
 
         mSeekBarY = (SeekBar) view.findViewById(R.id.seekBar2);
-        mSeekBarY.setOnSeekBarChangeListener(this);
 
         mChart = (CandleStickChart) view.findViewById(R.id.chart1);
         mChart.setBackgroundColor(Color.WHITE);
@@ -140,13 +134,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         mSeekBarY.setProgress(100);
 
         mChart.getLegend().setEnabled(false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -208,13 +195,13 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
-    public void onStartTrackingTouch(SeekBar seekBar) {
+    public void onStartTrackingTouch(final SeekBar seekBar) {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    public void onStopTrackingTouch(SeekBar seekBar) {
+    public void onStopTrackingTouch(final SeekBar seekBar) {
         // TODO Auto-generated method stub
 
     }
@@ -233,7 +220,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         set1.setNeutralColor(Color.BLUE);
         //set1.setHighlightLineWidth(1f);
 
-        CandleData data = new CandleData(set1);
+        final CandleData data = new CandleData(set1);
 
         mChart.setData(data);
         mChart.invalidate();
@@ -252,6 +239,11 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void showFail(final String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showEmptyDataError() {
+        showFail(getString(R.string.candle_screen_empty_data));
     }
 
     /**

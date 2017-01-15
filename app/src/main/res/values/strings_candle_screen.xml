@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="candle_screen_empty_data">Сервер вернул пустые данные</string>
+</resources>

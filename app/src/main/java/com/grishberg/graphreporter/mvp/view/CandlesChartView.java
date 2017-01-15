@@ -11,4 +11,6 @@ import java.util.List;
 
 public interface CandlesChartView extends BaseView {
     void showChart(List<CandleEntry> values);
+
+    void showEmptyDataError();
 }

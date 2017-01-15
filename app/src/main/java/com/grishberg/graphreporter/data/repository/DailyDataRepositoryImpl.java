@@ -31,7 +31,7 @@ public class DailyDataRepositoryImpl implements DailyDataRepository {
         if (authInfo == null) {
             return Observable.error(new WrongCredentialsException(null));
         }
-        return api.getDailyData(authInfo.getRefreshToken(), productId)
+        return api.getDailyData(authInfo.getAccessToken(), productId, 0, 1000)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> Observable.just(response.getData()));

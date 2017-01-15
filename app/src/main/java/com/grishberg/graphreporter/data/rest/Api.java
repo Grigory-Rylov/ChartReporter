@@ -30,5 +30,7 @@ public interface Api {
 
     @GET("dailyValues")
     Observable<RestResponse<List<DailyValue>>> getDailyData(@Query("accessToken") String accessToken,
-                                                            @Query("productId") long productId);
+                                                            @Query("productId") long productId,
+                                                            @Query("offset") long offset,
+                                                            @Query("limit") long limit);
 }

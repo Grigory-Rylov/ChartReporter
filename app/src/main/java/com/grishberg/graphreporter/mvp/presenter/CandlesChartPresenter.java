@@ -5,6 +5,7 @@ import com.github.mikephil.charting.data.CandleEntry;
 import com.grishberg.graphreporter.App;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
+import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.LogService;
@@ -37,8 +38,11 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
         getViewState().showProgress();
         repository.getDailyValues(productId)
                 .flatMap(dailyValues -> {
+                    if (dailyValues.isEmpty()) {
+                        return Observable.error(new EmptyDataException());
+                    }
                     final List<CandleEntry> entries = new ArrayList<>();
-                    for(int i = 0, len = dailyValues.size(); i < len; i ++ ){
+                    for (int i = 0, len = dailyValues.size(); i < len; i++) {
                         final DailyValue element = dailyValues.get(i);
                         entries.add(new CandleEntry((float) element.getDt().getTime(),
                                 element.getPrice3(),
@@ -53,6 +57,10 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
                     getViewState().showChart(response);
                 }, exception -> {
                     getViewState().hideProgress();
+                    if (exception instanceof EmptyDataException) {
+                        getViewState().showEmptyDataError();
+                        return;
+                    }
                     getViewState().showFail(exception.getMessage());
                     log.e(TAG, "requestDailyValues: ", exception);
                 });
