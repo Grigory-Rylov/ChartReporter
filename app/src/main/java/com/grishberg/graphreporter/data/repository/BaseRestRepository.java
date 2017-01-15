@@ -28,7 +28,7 @@ public class BaseRestRepository {
         return new Func1<Throwable, Observable<? extends T>>() {
             @Override
             public Observable<? extends T> call(final Throwable throwable) {
-                // Here check if the error thrown really is a 401
+                // проверка на ошибку TokenExpiredException
                 if (throwable instanceof TokenExpiredException) {
                     return authRepository.refreshToken()
                             .flatMap(new Func1<Boolean, Observable<? extends T>>() {

@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.injection;
+package com.grishberg.graphreporter.di;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

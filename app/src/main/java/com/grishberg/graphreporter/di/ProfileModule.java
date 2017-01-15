@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.injection;
+package com.grishberg.graphreporter.di;
 
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 

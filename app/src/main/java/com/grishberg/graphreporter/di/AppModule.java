@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.injection;
+package com.grishberg.graphreporter.di;
 
 import android.content.Context;
 import android.content.res.Resources;

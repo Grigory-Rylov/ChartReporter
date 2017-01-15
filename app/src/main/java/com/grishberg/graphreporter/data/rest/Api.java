@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.data.rest;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.data.model.RefreshTokenContainer;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
 
@@ -33,4 +34,8 @@ public interface Api {
                                                             @Query("productId") long productId,
                                                             @Query("offset") long offset,
                                                             @Query("limit") long limit);
+
+    @GET("products")
+    Observable<RestResponse<List<ProductItem>>> getProducts(@Query("accessToken") String accessToken,
+                                                            @Query("categoryId") long categoryId);
 }

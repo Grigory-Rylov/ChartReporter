@@ -70,5 +70,6 @@ dependencies {
     testCompile "com.google.dagger:dagger:$dagger_version"
     compile "com.google.dagger:dagger:$dagger_version"
     apt "com.google.dagger:dagger-compiler:$dagger_version"
+    testApt "com.google.dagger:dagger-compiler:$dagger_version"
     testCompile 'junit:junit:4.12'
 }

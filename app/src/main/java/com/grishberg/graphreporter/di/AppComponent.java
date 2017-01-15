@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.injection;
+package com.grishberg.graphreporter.di;
 
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
@@ -16,7 +16,6 @@ import dagger.Component;
 @Component(modules = {RestModule.class,
         AppModule.class,
         ProfileModule.class
-        //DbModule.class
 })
 
 public interface AppComponent {

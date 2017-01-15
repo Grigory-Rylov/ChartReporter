@@ -3,11 +3,11 @@ package com.grishberg.graphreporter;
 import android.app.Application;
 
 import com.grishberg.graphreporter.data.repository.AuthTokenRepositoryImpl;
-import com.grishberg.graphreporter.injection.AppComponent;
-import com.grishberg.graphreporter.injection.AppModule;
-import com.grishberg.graphreporter.injection.DaggerAppComponent;
-import com.grishberg.graphreporter.injection.ProfileModule;
-import com.grishberg.graphreporter.injection.RestModule;
+import com.grishberg.graphreporter.di.AppComponent;
+import com.grishberg.graphreporter.di.AppModule;
+import com.grishberg.graphreporter.di.DaggerAppComponent;
+import com.grishberg.graphreporter.di.ProfileModule;
+import com.grishberg.graphreporter.di.RestModule;
 
 /**
  * Created by grishberg on 12.01.17.
