@@ -16,6 +16,7 @@ public class ChartActivity extends AppCompatActivity {
 
     public static void start(final Context context) {
         final Intent intent = new Intent(context, ChartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

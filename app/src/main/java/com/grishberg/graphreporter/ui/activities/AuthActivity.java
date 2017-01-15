@@ -28,13 +28,12 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
 
     public static void start(final Context context) {
         Intent intent = new Intent(context, AuthActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -80,12 +79,12 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
     }
 
     @Override
-    public void showFail(String message) {
+    public void showFail(final String message) {
         Toast.makeText(this, R.string.auth_network_error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         presenter.auth(loginEdit.getText().toString(), passwordEdit.getText());
     }
 

@@ -26,6 +26,7 @@ import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView {
     private static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
@@ -83,11 +84,10 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         xAxis.setGranularity(1f * 24);
         xAxis.setValueFormatter(new IAxisValueFormatter() {
 
-            private final SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy");
+            private final SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
 
             @Override
             public String getFormattedValue(final float value, final AxisBase axis) {
-
                 final int index = (int) value;
                 return mFormat.format(new Date(dates.get(index)));
             }
