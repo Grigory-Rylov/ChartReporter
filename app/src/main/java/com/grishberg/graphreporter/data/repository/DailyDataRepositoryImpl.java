@@ -14,7 +14,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by grishberg on 15.01.17.
  */
-public class DailyDataRepositoryImpl implements DailyDataRepository {
+public class DailyDataRepositoryImpl extends BaseRestRepository implements DailyDataRepository {
 
     private final AuthTokenRepository authTokenRepository;
 
@@ -32,6 +32,9 @@ public class DailyDataRepositoryImpl implements DailyDataRepository {
             return Observable.error(new WrongCredentialsException(null));
         }
         return api.getDailyData(authInfo.getAccessToken(), productId, 0, 1000)
+                .onErrorResumeNext(
+                        refreshTokenAndRetry(Observable.defer(() ->
+                                api.getDailyData(authInfo.getAccessToken(), productId, 0, 1000))))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(response -> Observable.just(response.getData()));

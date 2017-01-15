@@ -42,7 +42,7 @@ public class AuthRepositoryImpl implements AuthRepository {
         }
         return api.refreshToken(authInfo.getRefreshToken())
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
                 .flatMap(response -> {
                     // сохранить в хранилище токен авторизации
                     authRepository.updateAccessToken(response.getData().getAccessToken());

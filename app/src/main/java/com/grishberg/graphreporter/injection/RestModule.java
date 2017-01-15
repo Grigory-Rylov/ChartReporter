@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.injection;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 import com.grishberg.graphreporter.common.data.rest.RxErrorHandlingCallAdapterFactory;
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
@@ -12,6 +13,8 @@ import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
 import com.grishberg.graphreporter.data.repository.AuthRepositoryImpl;
+
+import java.util.Date;
 
 import javax.inject.Singleton;
 
@@ -52,7 +55,10 @@ public class RestModule {
     @Provides
     @Singleton
     Gson provideGson() {
-        return new GsonBuilder()
+        final GsonBuilder gsonBuilder = new GsonBuilder();
+        // Register an adapter to manage the date types as long values
+        gsonBuilder.registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, context) -> new Date(json.getAsJsonPrimitive().getAsLong()));
+        return gsonBuilder
                 .setPrettyPrinting()
                 .setDateFormat(DATE_PATTERN)
                 .create();

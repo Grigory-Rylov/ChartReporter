@@ -1,10 +1,7 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import com.github.mikephil.charting.data.CandleData;
-import com.github.mikephil.charting.data.CandleEntry;
-import com.grishberg.datafacade.ListResultCloseable;
+import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
@@ -14,8 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.internal.matchers.Any;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.List;
@@ -59,7 +54,7 @@ public class CandlesChartPresenterTest {
         //when
         presenter.requestDailyValues(PRODUCT_ID);
         //then
-        verify(view, times(1)).showChart(anyList());
+        verify(view, times(1)).showChart(any(ChartResponseContainer.class));
         verify(view, times(1)).showProgress();
         verify(view, times(1)).hideProgress();
     }
@@ -72,7 +67,7 @@ public class CandlesChartPresenterTest {
         //when
         presenter.requestDailyValues(PRODUCT_ID);
         //then
-        verify(view, times(0)).showChart(anyList());
+        verify(view, times(0)).showChart(any(ChartResponseContainer.class));
         verify(view, times(1)).showProgress();
         verify(view, times(1)).hideProgress();
         verify(view, times(1)).showFail(null);

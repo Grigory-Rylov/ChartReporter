@@ -13,6 +13,11 @@ public class AuthContainer {
 
     private int role;
 
+    public AuthContainer(final String accessToken, final String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
+
     public String getRefreshToken() {
         return refreshToken;
     }

@@ -15,7 +15,7 @@ public class ProfileModule {
     private static final String TAG = ProfileModule.class.getSimpleName();
     private final AuthTokenRepository authRepository;
 
-    public ProfileModule(AuthTokenRepository authRepository) {
+    public ProfileModule(final AuthTokenRepository authRepository) {
         this.authRepository = authRepository;
     }
 

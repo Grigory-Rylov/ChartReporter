@@ -3,6 +3,7 @@ package com.grishberg.graphreporter.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.grishberg.graphreporter.App;
+import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
@@ -41,16 +42,18 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
                     if (dailyValues.isEmpty()) {
                         return Observable.error(new EmptyDataException());
                     }
+                    final List<Long> dates = new ArrayList<>();
                     final List<CandleEntry> entries = new ArrayList<>();
                     for (int i = 0, len = dailyValues.size(); i < len; i++) {
                         final DailyValue element = dailyValues.get(i);
-                        entries.add(new CandleEntry((float) element.getDt().getTime(),
+                        entries.add(new CandleEntry(i,
                                 element.getPrice3(),
                                 element.getPrice4(),
                                 element.getPrice1(),
                                 element.getPrice2()));
+                        dates.add(element.getDt() * 1000L);
                     }
-                    return Observable.just(entries);
+                    return Observable.just(new ChartResponseContainer(entries, dates));
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();

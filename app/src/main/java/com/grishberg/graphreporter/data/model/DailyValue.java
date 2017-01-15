@@ -1,7 +1,5 @@
 package com.grishberg.graphreporter.data.model;
 
-import java.util.Date;
-
 /**
  * Created by grishberg on 11.01.17.
  */
@@ -9,7 +7,7 @@ import java.util.Date;
 public class DailyValue {
 
     private int id;
-    private Date dt;
+    private long dt;
     private float price1;
     private float price2;
     private float price3;
@@ -20,7 +18,7 @@ public class DailyValue {
         return id;
     }
 
-    public Date getDt() {
+    public long getDt() {
         return dt;
     }
 

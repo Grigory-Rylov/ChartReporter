@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
-import com.grishberg.graphreporter.data.repository.exceptions.TokenExpiredThrowable;
+import com.grishberg.graphreporter.data.repository.exceptions.TokenExpiredException;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 
 /**
@@ -21,7 +21,7 @@ public class ErrorCheckerImpl implements SoftErrorDelegate<RestResponse> {
             case RestConst.Errors.WRONG_CREDENTIALS:
                 return new WrongCredentialsException(body.getError());
             case RestConst.Errors.TOKEN_EXPIRED:
-                return new TokenExpiredThrowable(body.getError());
+                return new TokenExpiredException(body.getError());
             default:
                 return null;
         }

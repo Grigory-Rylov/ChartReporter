@@ -15,18 +15,18 @@ import com.grishberg.graphreporter.R;
 public class ChartActivity extends AppCompatActivity {
 
     public static void start(final Context context) {
-        Intent intent = new Intent(context, ChartActivity.class);
+        final Intent intent = new Intent(context, ChartActivity.class);
         context.startActivity(intent);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_chart);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 }

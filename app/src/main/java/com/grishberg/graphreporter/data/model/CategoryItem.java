@@ -17,7 +17,7 @@ public class CategoryItem implements ExapndableItem {
     }
 
     @Override
-    public void setExpanded(boolean expaned) {
+    public void setExpanded(final boolean expaned) {
         this.isExpanded = expaned;
     }
 

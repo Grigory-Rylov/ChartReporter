@@ -16,23 +16,23 @@ public final class App extends Application {
     private static AppComponent appComponent;
     private static App sInstance;
 
-    public synchronized static AppComponent getAppComponent() {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        sInstance = this;
+    }
+
+    public static synchronized AppComponent getAppComponent() {
         if (appComponent == null) {
             initComponents(DaggerAppComponent
                     .builder()
                     .appModule(new AppModule(sInstance))
                     .restModule(new RestModule(sInstance != null ? sInstance.getString(R.string.end_point) : "http://test.com"))
-                    .profileModule(new ProfileModule(new AuthTokenRepositoryImpl()))
+                    .profileModule(new ProfileModule(new AuthTokenRepositoryImpl(sInstance.getApplicationContext())))
                     .build()
             );
         }
         return appComponent;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        sInstance = this;
     }
 
     public static void initComponents(final AppComponent component) {

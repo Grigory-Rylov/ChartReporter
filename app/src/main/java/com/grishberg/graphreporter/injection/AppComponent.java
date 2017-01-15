@@ -1,5 +1,6 @@
 package com.grishberg.graphreporter.injection;
 
+import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
@@ -24,4 +25,6 @@ public interface AppComponent {
     void inject(CandlesChartPresenter candlesChartPresenter);
 
     void inject(SplashScreenPresenter splashScreenPresenter);
+
+    void inject(BaseRestRepository baseRestRepository);
 }

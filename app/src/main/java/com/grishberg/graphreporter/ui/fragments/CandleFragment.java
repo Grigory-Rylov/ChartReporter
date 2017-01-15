@@ -1,84 +1,51 @@
 package com.grishberg.graphreporter.ui.fragments;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
-import com.github.mikephil.charting.data.CandleEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.grishberg.graphreporter.R;
+import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CandleFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CandleFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, SeekBar.OnSeekBarChangeListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
+public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView {
+    private static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
     @InjectPresenter
     CandlesChartPresenter presenter;
 
-    private CandleStickChart mChart;
-    private SeekBar mSeekBarX, mSeekBarY;
-    private TextView tvX, tvY;
+    private CandleStickChart chart;
+    private ProgressBar progressBar;
+    private List<Long> dates;
 
     public CandleFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CandleFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CandleFragment newInstance(String param1, String param2) {
-        CandleFragment fragment = new CandleFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+    public static CandleFragment newInstance(final int productId) {
+        final CandleFragment fragment = new CandleFragment();
+        final Bundle args = new Bundle();
+        args.putInt(ARG_PRODUCT_ID, productId);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -86,99 +53,62 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_candle, container, false);
+        final View view = inflater.inflate(R.layout.fragment_candle, container, false);
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_candle_progress_bar);
         initChart(view);
-        final int productId = 2;
+        final int productId = 1;
         presenter.requestDailyValues(productId);
         return view;
     }
 
     private void initChart(final View view) {
-        tvX = (TextView) view.findViewById(R.id.tvXMax);
-        tvY = (TextView) view.findViewById(R.id.tvYMax);
 
-        mSeekBarX = (SeekBar) view.findViewById(R.id.seekBar1);
+        chart = (CandleStickChart) view.findViewById(R.id.fragment_candle_chart);
+        chart.setBackgroundColor(Color.WHITE);
 
-        mSeekBarY = (SeekBar) view.findViewById(R.id.seekBar2);
-
-        mChart = (CandleStickChart) view.findViewById(R.id.chart1);
-        mChart.setBackgroundColor(Color.WHITE);
-
-        mChart.getDescription().setEnabled(false);
+        chart.getDescription().setEnabled(false);
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
-        mChart.setMaxVisibleValueCount(60);
+        chart.setMaxVisibleValueCount(60);
 
         // scaling can now only be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
+        chart.setPinchZoom(false);
 
-        mChart.setDrawGridBackground(false);
+        chart.setDrawGridBackground(false);
 
-        XAxis xAxis = mChart.getXAxis();
+        final XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
+        xAxis.setDrawGridLines(true);
+        xAxis.setGranularity(1f * 24);
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
 
-        YAxis leftAxis = mChart.getAxisLeft();
-//        leftAxis.setEnabled(false);
-        leftAxis.setLabelCount(7, false);
+            private final SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy");
+
+            @Override
+            public String getFormattedValue(final float value, final AxisBase axis) {
+
+                final int index = (int) value;
+                return mFormat.format(new Date(dates.get(index)));
+            }
+        });
+
+        final YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setLabelCount(5, false);
         leftAxis.setDrawGridLines(false);
         leftAxis.setDrawAxisLine(false);
 
-        YAxis rightAxis = mChart.getAxisRight();
+        final YAxis rightAxis = chart.getAxisRight();
         rightAxis.setEnabled(false);
-//        rightAxis.setStartAtZero(false);
 
-        // setting data
-        mSeekBarX.setProgress(40);
-        mSeekBarY.setProgress(100);
-
-        mChart.getLegend().setEnabled(false);
+        chart.getLegend().setEnabled(false);
     }
 
     @Override
-    public void onAttach(final Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    @Override
-    public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
-
-        final int prog = (mSeekBarX.getProgress() + 1);
-
-        tvX.setText(String.format(Locale.US, "%d", prog));
-        tvY.setText(String.format(Locale.US, "%d", mSeekBarY.getProgress()));
-
-        mChart.resetTracking();
-
-        // создать выборку случайную выборку
-        ArrayList<CandleEntry> yVals1 = new ArrayList<>();
-
-        for (int i = 0; i < prog; i++) {
-            float mult = (mSeekBarY.getProgress() + 1);
-            float val = (float) (Math.random() * 40) + mult;
-
-            float high = (float) (Math.random() * 9) + 8f;
-            float low = (float) (Math.random() * 9) + 8f;
-
-            float open = (float) (Math.random() * 6) + 1f;
-            float close = (float) (Math.random() * 6) + 1f;
-
-            boolean even = i % 2 == 0;
-
-            yVals1.add(new CandleEntry(i, val + high, val - low, even ? val + open : val - open,
-                    even ? val - close : val + close));
-        }
-
-        CandleDataSet set1 = new CandleDataSet(yVals1, "Data Set");
+    public void showChart(final ChartResponseContainer values) {
+        this.dates = values.getDates();
+        final CandleDataSet set1 = new CandleDataSet(values.getEntries(), "Data Set");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-//        set1.setColor(Color.rgb(80, 80, 80));
         set1.setShadowColor(Color.DKGRAY);
         set1.setShadowWidth(0.7f);
         set1.setDecreasingColor(Color.RED);
@@ -186,54 +116,21 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         set1.setIncreasingColor(Color.rgb(122, 242, 84));
         set1.setIncreasingPaintStyle(Paint.Style.STROKE);
         set1.setNeutralColor(Color.BLUE);
-        //set1.setHighlightLineWidth(1f);
-
-        CandleData data = new CandleData(set1);
-
-        mChart.setData(data);
-        mChart.invalidate();
-    }
-
-    @Override
-    public void onStartTrackingTouch(final SeekBar seekBar) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void onStopTrackingTouch(final SeekBar seekBar) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void showChart(final List<CandleEntry> values) {
-        CandleDataSet set1 = new CandleDataSet(values, "Data Set");
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-//        set1.setColor(Color.rgb(80, 80, 80));
-        set1.setShadowColor(Color.DKGRAY);
-        set1.setShadowWidth(0.7f);
-        set1.setDecreasingColor(Color.RED);
-        set1.setDecreasingPaintStyle(Paint.Style.FILL);
-        set1.setIncreasingColor(Color.rgb(122, 242, 84));
-        set1.setIncreasingPaintStyle(Paint.Style.STROKE);
-        set1.setNeutralColor(Color.BLUE);
-        //set1.setHighlightLineWidth(1f);
 
         final CandleData data = new CandleData(set1);
 
-        mChart.setData(data);
-        mChart.invalidate();
+        chart.setData(data);
+        chart.invalidate();
     }
 
     @Override
     public void showProgress() {
-        //TODO: show progress
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgress() {
-        //TODO: hide progress
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -244,20 +141,5 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void showEmptyDataError() {
         showFail(getString(R.string.candle_screen_empty_data));
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
