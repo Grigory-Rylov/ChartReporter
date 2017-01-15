@@ -12,6 +12,8 @@ public interface AuthTokenRepository {
 
     void setAuthInfo(AuthContainer authContainer);
 
+    void updateAccessToken(String newAccessToken);
+
     void setCurrentLogin(String login);
 
     String getLogin();

@@ -2,7 +2,6 @@ package com.grishberg.graphreporter.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.grishberg.graphreporter.App;
-import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
@@ -19,7 +18,6 @@ import rx.Observable;
  */
 @InjectViewState
 public class AuthPresenter extends BasePresenter<AuthView> {
-    private static final String TAG = AuthPresenter.class.getSimpleName();
 
     @Inject
     AuthTokenRepository authRepository;
@@ -43,7 +41,7 @@ public class AuthPresenter extends BasePresenter<AuthView> {
 
         getViewState().showProgress();
 
-        final Observable<AuthContainer> observable = authService.login(login, password);
+        final Observable<Boolean> observable = authService.login(login, password);
         observable.subscribe(response -> {
                     getViewState().hideProgress();
                     getViewState().showSuccess();

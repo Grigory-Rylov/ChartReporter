@@ -4,7 +4,6 @@ package com.grishberg.graphreporter.data.model;
  * Created by grishberg on 11.01.17.
  */
 public class AuthContainer {
-    private static final String TAG = AuthContainer.class.getSimpleName();
 
     private String refreshToken;
 
@@ -20,6 +19,10 @@ public class AuthContainer {
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public void setAccessToken(final String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public long getExpires() {

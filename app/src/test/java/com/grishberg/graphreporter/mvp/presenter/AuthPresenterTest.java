@@ -70,11 +70,9 @@ public class AuthPresenterTest {
 
     @Test
     public void testAuthRequestSuccess() {
-        // given
-        AuthContainer authContainer = mock(AuthContainer.class);
         //when
         when(authService.login(anyString(), anyString()))
-                .thenReturn(Observable.just(authContainer));
+                .thenReturn(Observable.just(true));
         presenter.auth(LOGIN, PASSWORD);
         //then
         verify(authView, times(0)).showLoginEmptyError();

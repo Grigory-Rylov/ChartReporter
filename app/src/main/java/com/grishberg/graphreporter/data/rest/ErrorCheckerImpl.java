@@ -4,14 +4,13 @@ import android.support.annotation.NonNull;
 
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
-import com.grishberg.graphreporter.data.repository.exceptions.InvalidTokenException;
+import com.grishberg.graphreporter.data.repository.exceptions.TokenExpiredThrowable;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 
 /**
  * Created by grishberg on 13.01.17.
  */
 public class ErrorCheckerImpl implements SoftErrorDelegate<RestResponse> {
-    private static final String TAG = ErrorCheckerImpl.class.getSimpleName();
 
     @Override
     public Throwable checkSoftError(@NonNull final RestResponse body) {
@@ -21,8 +20,8 @@ public class ErrorCheckerImpl implements SoftErrorDelegate<RestResponse> {
         switch (body.getError().getCode()) {
             case RestConst.Errors.WRONG_CREDENTIALS:
                 return new WrongCredentialsException(body.getError());
-            case RestConst.Errors.TOKEN_INVALID:
-                return new InvalidTokenException(body.getError());
+            case RestConst.Errors.TOKEN_EXPIRED:
+                return new TokenExpiredThrowable(body.getError());
             default:
                 return null;
         }

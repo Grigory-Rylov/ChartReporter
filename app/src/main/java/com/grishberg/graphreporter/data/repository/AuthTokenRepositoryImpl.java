@@ -6,7 +6,6 @@ import com.grishberg.graphreporter.data.model.AuthContainer;
  * Created by grishberg on 12.01.17.
  */
 public class AuthTokenRepositoryImpl implements AuthTokenRepository {
-    private static final String TAG = AuthTokenRepositoryImpl.class.getSimpleName();
     private AuthContainer authContainer;
     private String login;
 
@@ -16,12 +15,17 @@ public class AuthTokenRepositoryImpl implements AuthTokenRepository {
     }
 
     @Override
-    public void setAuthInfo(AuthContainer authContainer) {
+    public void setAuthInfo(final AuthContainer authContainer) {
         this.authContainer = authContainer;
     }
 
     @Override
-    public void setCurrentLogin(String login) {
+    public void updateAccessToken(final String newAccessToken) {
+        authContainer.setAccessToken(newAccessToken);
+    }
+
+    @Override
+    public void setCurrentLogin(final String login) {
         this.login = login;
     }
 

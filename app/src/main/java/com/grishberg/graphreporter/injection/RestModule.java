@@ -6,6 +6,8 @@ import com.grishberg.graphreporter.common.data.rest.RxErrorHandlingCallAdapterFa
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.DailyDataRepository;
+import com.grishberg.graphreporter.data.repository.DailyDataRepositoryImpl;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
@@ -26,8 +28,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 @Module
 public class RestModule {
-    private static final String TAG = RestModule.class.getSimpleName();
-    public static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    private static final String DATE_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     private final String baseUrl;
 
@@ -39,11 +40,11 @@ public class RestModule {
     /**
      * interceptor для логирования
      *
-     * @return
+     * @return HttpLoggingInterceptor
      */
 
     Interceptor provideInterceptor() {
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return interceptor;
     }
@@ -51,22 +52,18 @@ public class RestModule {
     @Provides
     @Singleton
     Gson provideGson() {
-        final Gson gson = new GsonBuilder()
+        return new GsonBuilder()
                 .setPrettyPrinting()
                 .setDateFormat(DATE_PATTERN)
                 .create();
-        return gson;
     }
 
     @Provides
     @Singleton
     OkHttpClient provideOkHttpClient() {
-        Interceptor interceptor = provideInterceptor();
-
-        OkHttpClient defaultHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
+        return new OkHttpClient.Builder()
+                .addInterceptor(provideInterceptor())
                 .build();
-        return defaultHttpClient;
     }
 
     @Provides
@@ -84,14 +81,20 @@ public class RestModule {
 
     @Provides
     @Singleton
-    Api provideRetrofitService(Retrofit retrofit) {
+    Api provideRetrofitService(final Retrofit retrofit) {
         return retrofit.create(Api.class);
     }
 
     @Provides
     @Singleton
-    AuthRepository provideAuthService(final Api api, final AuthTokenRepository tokenRepository) {
+    AuthRepository provideAuthRepository(final Api api, final AuthTokenRepository tokenRepository) {
         return new AuthRepositoryImpl(api, tokenRepository);
+    }
+
+    @Provides
+    @Singleton
+    DailyDataRepository provideDataRepository(final Api api, final AuthTokenRepository tokenRepository) {
+        return new DailyDataRepositoryImpl(tokenRepository, api);
     }
 
     @Provides

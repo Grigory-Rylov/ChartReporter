@@ -67,6 +67,7 @@ dependencies {
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
     //dagger
+    testCompile "com.google.dagger:dagger:$dagger_version"
     compile "com.google.dagger:dagger:$dagger_version"
     apt "com.google.dagger:dagger-compiler:$dagger_version"
     testCompile 'junit:junit:4.12'

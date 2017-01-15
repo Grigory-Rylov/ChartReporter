@@ -11,7 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.arellomobile.mvp.MvpAppCompatFragment;
+import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -19,8 +22,12 @@ import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.grishberg.graphreporter.R;
+import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
+import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,11 +37,14 @@ import java.util.ArrayList;
  * Use the {@link CandleFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CandleFragment extends Fragment implements SeekBar.OnSeekBarChangeListener {
+public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, SeekBar.OnSeekBarChangeListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    @InjectPresenter
+    CandlesChartPresenter presenter;
 
     private CandleStickChart mChart;
     private SeekBar mSeekBarX, mSeekBarY;
@@ -69,7 +79,7 @@ public class CandleFragment extends Fragment implements SeekBar.OnSeekBarChangeL
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -78,15 +88,16 @@ public class CandleFragment extends Fragment implements SeekBar.OnSeekBarChangeL
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater,
+                             final ViewGroup container,
+                             final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_candle, container, false);
         initChart(view);
         return view;
     }
 
-    private void initChart(final View view){
+    private void initChart(final View view) {
         tvX = (TextView) view.findViewById(R.id.tvXMax);
         tvY = (TextView) view.findViewById(R.id.tvYMax);
 
@@ -139,7 +150,7 @@ public class CandleFragment extends Fragment implements SeekBar.OnSeekBarChangeL
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(final Context context) {
         super.onAttach(context);
     }
 
@@ -150,15 +161,16 @@ public class CandleFragment extends Fragment implements SeekBar.OnSeekBarChangeL
     }
 
     @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+    public void onProgressChanged(final SeekBar seekBar, final int progress, final boolean fromUser) {
 
-        int prog = (mSeekBarX.getProgress() + 1);
+        final int prog = (mSeekBarX.getProgress() + 1);
 
-        tvX.setText("" + prog);
-        tvY.setText("" + (mSeekBarY.getProgress()));
+        tvX.setText(String.format(Locale.US, "%d", prog));
+        tvY.setText(String.format(Locale.US, "%d", mSeekBarY.getProgress()));
 
         mChart.resetTracking();
 
+        // создать выборку случайную выборку
         ArrayList<CandleEntry> yVals1 = new ArrayList<>();
 
         for (int i = 0; i < prog; i++) {
@@ -205,6 +217,41 @@ public class CandleFragment extends Fragment implements SeekBar.OnSeekBarChangeL
     public void onStopTrackingTouch(SeekBar seekBar) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void showChart(final List<CandleEntry> values) {
+        CandleDataSet set1 = new CandleDataSet(values, "Data Set");
+        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
+//        set1.setColor(Color.rgb(80, 80, 80));
+        set1.setShadowColor(Color.DKGRAY);
+        set1.setShadowWidth(0.7f);
+        set1.setDecreasingColor(Color.RED);
+        set1.setDecreasingPaintStyle(Paint.Style.FILL);
+        set1.setIncreasingColor(Color.rgb(122, 242, 84));
+        set1.setIncreasingPaintStyle(Paint.Style.STROKE);
+        set1.setNeutralColor(Color.BLUE);
+        //set1.setHighlightLineWidth(1f);
+
+        CandleData data = new CandleData(set1);
+
+        mChart.setData(data);
+        mChart.invalidate();
+    }
+
+    @Override
+    public void showProgress() {
+        //TODO: show progress
+    }
+
+    @Override
+    public void hideProgress() {
+        //TODO: hide progress
+    }
+
+    @Override
+    public void showFail(final String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**

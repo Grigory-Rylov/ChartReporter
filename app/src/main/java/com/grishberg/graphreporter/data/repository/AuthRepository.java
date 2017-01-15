@@ -1,8 +1,5 @@
 package com.grishberg.graphreporter.data.repository;
 
-import com.grishberg.graphreporter.data.model.AuthContainer;
-import com.grishberg.graphreporter.data.model.RefreshTokenContainer;
-
 import rx.Observable;
 
 /**
@@ -10,7 +7,7 @@ import rx.Observable;
  */
 
 public interface AuthRepository {
-    Observable<AuthContainer> login(String login, CharSequence password);
+    Observable<Boolean> login(String login, CharSequence password);
 
-    Observable<RefreshTokenContainer> refreshToken();
+    Observable<Boolean> refreshToken();
 }
