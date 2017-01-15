@@ -5,14 +5,37 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.grishberg.datafacade.ListResultCloseable;
+import com.grishberg.datafacade.OnItemSelectedListener;
 import com.grishberg.graphreporter.R;
+import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.repository.ProductsRepository;
+import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
+import com.grishberg.graphreporter.mvp.view.ProductsView;
+import com.grishberg.graphreporter.ui.adapters.ProductsListAdapter;
+import com.grishberg.graphreporter.ui.fragments.CandleFragment;
+import com.grishberg.graphreporter.utils.MaterialDrawerHelper;
 
-public class ChartActivity extends AppCompatActivity {
+public class ChartActivity extends MvpAppCompatActivity implements ProductsView, OnItemSelectedListener<ProductItem> {
+
+    @InjectPresenter
+    ProductsPresenter presenter;
+    private ProductsListAdapter adapter;
+    private RecyclerView recyclerView;
+    private DrawerLayout drawerLayout;
 
     public static void start(final Context context) {
         final Intent intent = new Intent(context, ChartActivity.class);
@@ -29,5 +52,61 @@ public class ChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chart);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        initRecyclerView();
+
+        initDrawer();
+
+        presenter.requestProducts();
+    }
+
+    private void initDrawer() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        new MaterialDrawerHelper(this, drawerLayout);
+    }
+
+    private void initRecyclerView() {
+        adapter = new ProductsListAdapter(this);
+        recyclerView = (RecyclerView) findViewById(R.id.activity_chart_nav_view);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        adapter.recycle();
+    }
+
+    @Override
+    public void showProducts(final ListResultCloseable<ProductItem> productItems) {
+        adapter.update(productItems);
+    }
+
+    @Override
+    public void showProgress() {
+
+    }
+
+    @Override
+    public void hideProgress() {
+
+    }
+
+    @Override
+    public void showFail(final String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemSelected(final ProductItem item, final int position) {
+        final Fragment fragment = CandleFragment.newInstance(item.getId());
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_chart, fragment)
+                .commit();
+        drawerLayout.closeDrawers();
     }
 }

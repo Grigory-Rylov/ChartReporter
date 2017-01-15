@@ -1,8 +1,7 @@
 package com.grishberg.graphreporter.data.repository;
 
+import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.ProductItem;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -11,5 +10,5 @@ import rx.Observable;
  */
 
 public interface ProductsRepository {
-    Observable<List<ProductItem>> getProducts(int categoryId);
+    Observable<ListResultCloseable<ProductItem>> getProducts(long categoryId);
 }

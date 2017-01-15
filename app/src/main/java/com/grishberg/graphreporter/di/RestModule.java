@@ -9,6 +9,8 @@ import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.DailyDataRepositoryImpl;
+import com.grishberg.graphreporter.data.repository.ProductsRepository;
+import com.grishberg.graphreporter.data.repository.ProductsRepositoryImpl;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
@@ -101,6 +103,12 @@ public class RestModule {
     @Singleton
     DailyDataRepository provideDataRepository(final Api api, final AuthTokenRepository tokenRepository) {
         return new DailyDataRepositoryImpl(tokenRepository, api);
+    }
+
+    @Provides
+    @Singleton
+    ProductsRepository provideProductsRepository(final Api api, final AuthTokenRepository tokenRepository) {
+        return new ProductsRepositoryImpl(tokenRepository, api);
     }
 
     @Provides

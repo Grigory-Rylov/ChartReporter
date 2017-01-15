@@ -16,6 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import rx.Observable;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -71,7 +72,7 @@ public class AuthPresenterTest {
     @Test
     public void testAuthRequestSuccess() {
         //when
-        when(authService.login(anyString(), anyString()))
+        when(authService.login(anyString(), any(CharSequence.class)))
                 .thenReturn(Observable.just(true));
         presenter.auth(LOGIN, PASSWORD);
         //then
@@ -87,8 +88,8 @@ public class AuthPresenterTest {
     @Test
     public void testAuthWrongCredentials() {
         //given
-        RestError error = mock(RestError.class);
-        when(authService.login(anyString(), anyString()))
+        final RestError error = mock(RestError.class);
+        when(authService.login(anyString(), any(CharSequence.class)))
                 .thenReturn(Observable.error(new WrongCredentialsException(error)));
         //when
         presenter.auth(LOGIN, PASSWORD);

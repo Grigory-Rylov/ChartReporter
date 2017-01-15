@@ -3,6 +3,7 @@ package com.grishberg.graphreporter.di;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
+import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
 import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
 
 import javax.inject.Singleton;
@@ -26,4 +27,6 @@ public interface AppComponent {
     void inject(SplashScreenPresenter splashScreenPresenter);
 
     void inject(BaseRestRepository baseRestRepository);
+
+    void inject(ProductsPresenter productsPresenter);
 }

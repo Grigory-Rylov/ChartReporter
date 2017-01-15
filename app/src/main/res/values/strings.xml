@@ -11,4 +11,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="auth_wrong_credentials">Неверное имя пользователя или пароль</string>
     <string name="auth_network_error">Ошибка во время соединения с сервером</string>
+    <string name="drawer_open">+</string>
+    <string name="drawer_close">-</string>
+    <string name="email">grishberg@ya,ru</string>
 </resources>

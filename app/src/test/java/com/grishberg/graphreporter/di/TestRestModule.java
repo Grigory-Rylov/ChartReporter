@@ -3,6 +3,7 @@ package com.grishberg.graphreporter.di;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
+import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.utils.DebugLogger;
 import com.grishberg.graphreporter.utils.LogService;
@@ -57,5 +58,11 @@ public class TestRestModule {
     @Singleton
     DailyDataRepository provideDailyDataRepository() {
         return Mockito.mock(DailyDataRepository.class);
+    }
+
+    @Provides
+    @Singleton
+    ProductsRepository provideProductsDataRepository() {
+        return Mockito.mock(ProductsRepository.class);
     }
 }

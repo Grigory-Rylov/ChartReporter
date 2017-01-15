@@ -13,17 +13,18 @@ import java.io.IOException;
 public abstract class BaseRecyclerViewAdapter<T>
         extends RecyclerView.Adapter<BaseViewHolder> {
 
-    private final ListResultCloseable<T> data;
+    private ListResultCloseable<T> data;
 
-    public BaseRecyclerViewAdapter(final ListResultCloseable<T> data) {
-        this.data = data;
+    public BaseRecyclerViewAdapter() {
     }
 
-
-
+    public void update(final ListResultCloseable<T> data) {
+        this.data = data;
+        notifyDataSetChanged();
+    }
 
     @Override
-    public void onBindViewHolder(final BaseViewHolder holder, int position) {
+    public void onBindViewHolder(final BaseViewHolder holder, final int position) {
         holder.bind(data.get(position), position);
         /*
         holder.mItem = mValues.get(position);
@@ -58,11 +59,11 @@ public abstract class BaseRecyclerViewAdapter<T>
         return data != null ? data.size() : 0;
     }
 
-    public void recycle(){
-        if(data != null) {
+    public void recycle() {
+        if (data != null) {
             try {
                 data.close();
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }

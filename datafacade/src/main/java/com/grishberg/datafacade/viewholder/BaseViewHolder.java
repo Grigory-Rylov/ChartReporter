@@ -21,13 +21,13 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements 
         }
     }
 
-    public void bind(Object item, int position) {
+    public void bind(final Object item, final int position) {
         this.itemView.setTag(item);
         this.position = position;
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         if (clickListener != null) {
             clickListener.onItemSelected(view.getTag(), position);
         }

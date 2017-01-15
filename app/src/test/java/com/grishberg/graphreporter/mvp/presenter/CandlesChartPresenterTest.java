@@ -5,6 +5,7 @@ import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
+import com.grishberg.graphreporter.utils.BaseTestCase;
 import com.grishberg.graphreporter.utils.DebugLogger;
 
 import org.junit.Before;
@@ -24,7 +25,7 @@ import static org.mockito.Mockito.*;
  * Created by grishberg on 15.01.17.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class CandlesChartPresenterTest {
+public class CandlesChartPresenterTest extends BaseTestCase {
 
     public static final int PRODUCT_ID = 1;
     @Mock
@@ -40,7 +41,7 @@ public class CandlesChartPresenterTest {
 
     @Before
     public void setUp() throws Exception {
-
+        super.setUp();
         presenter = new CandlesChartPresenter();
         presenter.attachView(view);
         presenter.repository = dailyDataRepository;
