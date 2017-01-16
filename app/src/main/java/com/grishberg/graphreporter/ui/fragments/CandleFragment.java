@@ -79,6 +79,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private void initChart(final View view) {
 
         chart = (CandleStickChart) view.findViewById(R.id.fragment_candle_chart);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setScaleYEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
 
         chart.getDescription().setEnabled(false);
