@@ -3,7 +3,6 @@ package com.grishberg.graphreporter;
 import android.app.Application;
 
 import com.grishberg.graphreporter.data.repository.AuthTokenRepositoryImpl;
-import com.grishberg.graphreporter.di.AppComponent;
 import com.grishberg.graphreporter.di.AppModule;
 import com.grishberg.graphreporter.di.DaggerAppComponent;
 import com.grishberg.graphreporter.di.DiManager;

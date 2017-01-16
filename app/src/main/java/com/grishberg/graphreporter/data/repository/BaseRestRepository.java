@@ -1,6 +1,5 @@
 package com.grishberg.graphreporter.data.repository;
 
-import com.grishberg.graphreporter.App;
 import com.grishberg.graphreporter.data.repository.exceptions.TokenExpiredException;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.utils.LogService;
