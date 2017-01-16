@@ -10,6 +10,9 @@
     <dimen name="activity_horizontal_margin">0dp</dimen>
     <dimen name="activity_vertical_margin">0dp</dimen>
 
+    <dimen name="horizontal_margin">16dp</dimen>
+    <dimen name="vertical_margin">16dp</dimen>
+
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="chart_item_text_size">24sp</dimen>
@@ -17,4 +20,11 @@
     <!-- list_item_chart_product -->
     <dimen name="chart_product_item_height">50dp</dimen>
     <dimen name="chart_product_item_margins">16dp</dimen>
+
+    <!-- auth screen -->
+    <dimen name="auth_login_text_size">18sp</dimen>
+    <dimen name="auth_password_size">18sp</dimen>
+    <dimen name="auth_icon_size">120dp</dimen>
+    <dimen name="auth_title_text_size">24sp</dimen>
+    <dimen name="auth_title_text_top_margin">40dp</dimen>
 </resources>

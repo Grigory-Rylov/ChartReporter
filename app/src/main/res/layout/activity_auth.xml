@@ -17,6 +17,22 @@
         android:layout_gravity="center"
         android:orientation="vertical">
 
+        <ImageView
+            android:layout_width="@dimen/auth_icon_size"
+            android:layout_height="@dimen/auth_icon_size"
+            android:src="@mipmap/ic_launcher"
+            android:layout_gravity="center_horizontal"/>
+
+
+        <TextView
+            android:text="@string/auth_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/auth_title_text_top_margin"
+            android:textSize="@dimen/auth_title_text_size"
+            android:layout_gravity="center"
+            />
+
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
