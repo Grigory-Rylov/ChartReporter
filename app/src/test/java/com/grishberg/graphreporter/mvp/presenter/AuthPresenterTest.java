@@ -89,8 +89,9 @@ public class AuthPresenterTest {
     public void testAuthWrongCredentials() {
         //given
         final RestError error = mock(RestError.class);
+        final Observable<Boolean> errorObservable = Observable.error(new WrongCredentialsException(error));
         when(authService.login(anyString(), any(CharSequence.class)))
-                .thenReturn(Observable.error(new WrongCredentialsException(error)));
+                .thenReturn(errorObservable);
         //when
         presenter.auth(LOGIN, PASSWORD);
         //then

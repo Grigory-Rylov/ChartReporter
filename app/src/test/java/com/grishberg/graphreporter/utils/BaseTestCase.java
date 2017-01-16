@@ -5,6 +5,7 @@ import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.di.AppComponent;
 import com.grishberg.graphreporter.di.DaggerTestAppComponent;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.di.TestRestModule;
 
 import org.junit.Before;
@@ -28,6 +29,6 @@ public class BaseTestCase {
         final AppComponent component = DaggerTestAppComponent.builder()
                 .testRestModule(new TestRestModule(tokenRepository, api))
                 .build();
-        App.initComponents(component);
+        DiManager.initComponents(component);
     }
 }
