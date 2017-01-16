@@ -11,7 +11,7 @@ import rx.Observable;
  */
 
 public interface DailyDataRepository {
-    Observable<List<DailyValue>> getDailyValues(int productId);
+    Observable<List<DailyValue>> getDailyValues(long productId);
 
-    Observable<List<DailyValue>> getDetailValues(int productId);
+    Observable<List<DailyValue>> getDetailValues(long productId);
 }

@@ -36,17 +36,29 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private CandleStickChart chart;
     private ProgressBar progressBar;
     private List<Long> dates;
+    private long productId;
 
     public CandleFragment() {
         // Required empty public constructor
     }
 
-    public static CandleFragment newInstance(final int productId) {
+    public static CandleFragment newInstance(final long productId) {
         final CandleFragment fragment = new CandleFragment();
         final Bundle args = new Bundle();
-        args.putInt(ARG_PRODUCT_ID, productId);
+        args.putLong(ARG_PRODUCT_ID, productId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            productId = getArguments().getLong(ARG_PRODUCT_ID);
+        }
+        if (savedInstanceState == null) {
+            presenter.requestDailyValues(productId);
+        }
     }
 
     @Override
@@ -55,11 +67,13 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
                              final Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_candle, container, false);
-        progressBar = (ProgressBar) view.findViewById(R.id.fragment_candle_progress_bar);
+        initProgressBar(view);
         initChart(view);
-        final int productId = 1;
-        presenter.requestDailyValues(productId);
         return view;
+    }
+
+    private void initProgressBar(final View view) {
+        progressBar = (ProgressBar) view.findViewById(R.id.fragment_candle_progress_bar);
     }
 
     private void initChart(final View view) {

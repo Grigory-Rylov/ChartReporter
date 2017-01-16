@@ -13,8 +13,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 import rx.Observable;
 
-import static com.grishberg.graphreporter.data.rest.RestConst.API;
-
 /**
  * Created by grishberg on 12.01.17.
  */

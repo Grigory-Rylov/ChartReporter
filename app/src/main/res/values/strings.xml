@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">GraphReporter</string>
     <string name="title_reportitem_detail">ReportItem Detail</string>
-    <string name="title_activity_chart">ChartActivity</string>
+    <string name="title_activity_chart">Дневной график</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
-    <string name="title_activity_auth">AuthActivity</string>
-    <string name="dummy_button">Dummy Button</string>
+    <string name="title_activity_auth">Авторизация</string>
     <string name="dummy_content">Analytics</string>
 
     <!-- TODO: Remove or change this placeholder text -->

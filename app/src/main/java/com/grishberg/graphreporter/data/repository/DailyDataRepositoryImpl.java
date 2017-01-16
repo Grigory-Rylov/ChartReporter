@@ -26,7 +26,7 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
     }
 
     @Override
-    public Observable<List<DailyValue>> getDailyValues(final int productId) {
+    public Observable<List<DailyValue>> getDailyValues(final long productId) {
         final AuthContainer authInfo = authTokenRepository.getAuthInfo();
         if (authInfo == null) {
             return Observable.error(new WrongCredentialsException(null));
@@ -41,7 +41,7 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
     }
 
     @Override
-    public Observable<List<DailyValue>> getDetailValues(final int productId) {
+    public Observable<List<DailyValue>> getDetailValues(final long productId) {
         return null;
     }
 }

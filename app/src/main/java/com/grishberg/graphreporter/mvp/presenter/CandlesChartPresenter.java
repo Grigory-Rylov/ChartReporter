@@ -35,7 +35,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
         App.getAppComponent().inject(this);
     }
 
-    public void requestDailyValues(final int productId) {
+    public void requestDailyValues(final long productId) {
         getViewState().showProgress();
         repository.getDailyValues(productId)
                 .flatMap(dailyValues -> {

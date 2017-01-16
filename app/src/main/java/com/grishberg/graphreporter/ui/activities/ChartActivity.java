@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.ui.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -36,6 +38,7 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
     private ProductsListAdapter adapter;
     private RecyclerView recyclerView;
     private DrawerLayout drawerLayout;
+    private MaterialDrawerHelper drawerHelper;
 
     public static void start(final Context context) {
         final Intent intent = new Intent(context, ChartActivity.class);
@@ -62,7 +65,7 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
 
     private void initDrawer() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        new MaterialDrawerHelper(this, drawerLayout);
+        drawerHelper = new MaterialDrawerHelper(this, getSupportActionBar(), drawerLayout);
     }
 
     private void initRecyclerView() {
@@ -108,5 +111,33 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
                 .replace(R.id.content_chart, fragment)
                 .commit();
         drawerLayout.closeDrawers();
+    }
+
+    @Override
+    protected void onPostCreate(final Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerHelper.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(final Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerHelper.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+
+        // This is required to make the drawer toggle work
+        if (drawerHelper.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        /*
+         * if you have other menu items in your activity/toolbar
+         * handle them here and return true
+         */
+
+        return super.onOptionsItemSelected(item);
     }
 }
