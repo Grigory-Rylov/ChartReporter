@@ -3,6 +3,7 @@ package com.grishberg.graphreporter.mvp.presenter;
 import com.arellomobile.mvp.InjectViewState;
 import com.grishberg.graphreporter.App;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.SplashScreenView;
 import com.grishberg.graphreporter.utils.StringUtils;
@@ -18,7 +19,7 @@ public class SplashScreenPresenter extends BasePresenter<SplashScreenView> {
     AuthTokenRepository repository;
 
     public SplashScreenPresenter() {
-        App.getAppComponent().inject(this);
+        DiManager.getAppComponent().inject(this);
     }
 
     public void checkAuth() {

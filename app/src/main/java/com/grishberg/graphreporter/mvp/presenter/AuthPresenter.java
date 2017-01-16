@@ -5,6 +5,7 @@ import com.grishberg.graphreporter.App;
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.repository.AuthRepository;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.AuthView;
 import com.grishberg.graphreporter.utils.StringUtils;
@@ -26,7 +27,7 @@ public class AuthPresenter extends BasePresenter<AuthView> {
     AuthRepository authService;
 
     public AuthPresenter() {
-        App.getAppComponent().inject(this);
+        DiManager.getAppComponent().inject(this);
     }
 
     public void auth(final String login, final CharSequence password) {

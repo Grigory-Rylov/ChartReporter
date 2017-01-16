@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.data.repository;
 
 import com.grishberg.graphreporter.App;
 import com.grishberg.graphreporter.data.repository.exceptions.TokenExpiredException;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.utils.LogService;
 
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ public class BaseRestRepository {
     AuthRepository authRepository;
 
     public BaseRestRepository() {
-        App.getAppComponent().inject(this);
+        DiManager.getAppComponent().inject(this);
     }
 
     protected <T> Func1<Throwable, ? extends Observable<? extends T>> refreshTokenAndRetry(final Observable<T> toBeResumed) {

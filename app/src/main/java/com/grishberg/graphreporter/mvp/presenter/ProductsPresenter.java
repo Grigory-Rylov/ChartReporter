@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState;
 import com.grishberg.graphreporter.App;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.ProductsView;
 
@@ -21,7 +22,7 @@ public class ProductsPresenter extends BasePresenter<ProductsView> {
     ProductsRepository repository;
 
     public ProductsPresenter() {
-        App.getAppComponent().inject(this);
+        DiManager.getAppComponent().inject(this);
     }
 
     public void requestProducts() {

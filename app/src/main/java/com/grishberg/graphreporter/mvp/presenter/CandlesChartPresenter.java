@@ -7,6 +7,7 @@ import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.LogService;
@@ -32,7 +33,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
     DailyDataRepository repository;
 
     public CandlesChartPresenter() {
-        App.getAppComponent().inject(this);
+        DiManager.getAppComponent().inject(this);
     }
 
     public void requestDailyValues(final long productId) {
