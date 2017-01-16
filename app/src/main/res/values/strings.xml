@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">GraphReporter</string>
+    <string name="app_name">Chart Analysis</string>
     <string name="title_reportitem_detail">ReportItem Detail</string>
     <string name="title_activity_chart">Дневной график</string>
-    <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="title_activity_splash_screen">Chart Analysis</string>
     <string name="title_activity_auth">Авторизация</string>
     <string name="dummy_content">Analytics</string>
 
