@@ -27,4 +27,5 @@
     <dimen name="auth_icon_size">120dp</dimen>
     <dimen name="auth_title_text_size">24sp</dimen>
     <dimen name="auth_title_text_top_margin">40dp</dimen>
+    <dimen name="chart_select_product_title_size">20sp</dimen>
 </resources>

@@ -140,11 +140,13 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void showProgress() {
         progressBar.setVisibility(View.VISIBLE);
+        chart.setVisibility(View.GONE);
     }
 
     @Override
     public void hideProgress() {
         progressBar.setVisibility(View.GONE);
+        chart.setVisibility(View.VISIBLE);
     }
 
     @Override

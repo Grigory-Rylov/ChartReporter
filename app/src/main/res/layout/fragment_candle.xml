@@ -7,7 +7,8 @@
     <com.github.mikephil.charting.charts.CandleStickChart
         android:id="@+id/fragment_candle_chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <ProgressBar
         android:id="@+id/fragment_candle_progress_bar"
