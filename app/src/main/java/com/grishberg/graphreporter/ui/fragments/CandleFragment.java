@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -12,7 +15,6 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -25,6 +27,7 @@ import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.ui.dialogs.PeriodSelectDialog;
+import com.grishberg.graphreporter.ui.view.CandleStickChartInitiable;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,7 +39,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @InjectPresenter
     CandlesChartPresenter presenter;
 
-    private CandleStickChart chart;
+    private CandleStickChartInitiable chart;
     private ProgressBar progressBar;
     private List<Long> dates;
     private long productId;
@@ -56,6 +59,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             productId = getArguments().getLong(ARG_PRODUCT_ID);
         }
@@ -81,26 +85,30 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     private void initChart(final View view) {
 
-        chart = (CandleStickChart) view.findViewById(R.id.fragment_candle_chart);
+        chart = (CandleStickChartInitiable) view.findViewById(R.id.fragment_candle_chart);
+
+        initAxes(ChartPeriod.DAY);
+    }
+
+    private void initAxes(final ChartPeriod period) {
+
+        chart.init();
         chart.setDoubleTapToZoomEnabled(false);
         chart.setScaleYEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
-
         chart.getDescription().setEnabled(false);
-
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
         chart.setMaxVisibleValueCount(60);
-
         // scaling can now only be done on x- and y-axis separately
         chart.setPinchZoom(false);
-
         chart.setDrawGridBackground(false);
+        chart.getLegend().setEnabled(false);
 
         final XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
-        xAxis.setGranularity(1f * 24);
+        xAxis.setGranularity(1f * period.getPeriod());
         xAxis.setValueFormatter(new IAxisValueFormatter() {
 
             private final SimpleDateFormat mFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
@@ -119,15 +127,16 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
         final YAxis rightAxis = chart.getAxisRight();
         rightAxis.setEnabled(false);
-
-        chart.getLegend().setEnabled(false);
-
-        PeriodSelectDialog.showDialog(getActivity().getSupportFragmentManager(), this);
     }
 
     @Override
     public void showChart(final ChartResponseContainer values) {
+        initAxes(values.getPeriod());
         this.dates = values.getDates();
+        initDataSet(values);
+    }
+
+    private void initDataSet(final ChartResponseContainer values) {
         final CandleDataSet set1 = new CandleDataSet(values.getEntries(), "Data Set");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
         set1.setShadowColor(Color.DKGRAY);
@@ -135,11 +144,10 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         set1.setDecreasingColor(Color.RED);
         set1.setDecreasingPaintStyle(Paint.Style.FILL);
         set1.setIncreasingColor(Color.rgb(122, 242, 84));
-        set1.setIncreasingPaintStyle(Paint.Style.STROKE);
+        set1.setIncreasingPaintStyle(Paint.Style.FILL);
         set1.setNeutralColor(Color.BLUE);
 
         final CandleData data = new CandleData(set1);
-
         chart.setData(data);
         chart.invalidate();
     }
@@ -172,6 +180,23 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         if (requestCode == PeriodSelectDialog.PERIOD_SELECT_RESULT_CODE) {
             // This is the return result of your DialogFragment
             presenter.recalculatePeriod(productId, ChartPeriod.values()[resultCode]);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        inflater.inflate(R.menu.candle_chart_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.change_period:
+                PeriodSelectDialog.showDialog(getActivity().getSupportFragmentManager(), this);
+                return true;
+            default:
+                return false;
         }
     }
 }

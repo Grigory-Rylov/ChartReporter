@@ -4,19 +4,19 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by grishberg on 11.01.17.
+ * Модель дневных данных с сервера
  */
-
 public class DailyValue {
 
     private int id;
     private long dt;
-    @SerializedName("priceStart")
+    @SerializedName("price1")
     private float priceStart;
-    @SerializedName("priceEnd")
+    @SerializedName("price2")
     private float priceEnd;
-    @SerializedName("priceHi")
+    @SerializedName("price3")
     private float priceHi;
-    @SerializedName("priceLo")
+    @SerializedName("price4")
     private float priceLo;
     private float volume;
 

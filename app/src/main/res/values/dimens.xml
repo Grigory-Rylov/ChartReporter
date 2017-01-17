@@ -28,4 +28,10 @@
     <dimen name="auth_title_text_size">24sp</dimen>
     <dimen name="auth_title_text_top_margin">40dp</dimen>
     <dimen name="chart_select_product_title_size">20sp</dimen>
+
+    <!-- period dialog -->
+    <dimen name="dialog_select_period_min_height">300dp</dimen>
+    <dimen name="dialog_select_period_min_width">300dp</dimen>
+    <dimen name="dialog_select_period_header_text_size">28sp</dimen>
+
 </resources>

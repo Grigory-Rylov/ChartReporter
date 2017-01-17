@@ -111,31 +111,27 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
         long currentDt = 0;
         int pos = 0;
         final int size = dailyValues.size();
+        int periodCount = 0;
         while (pos < size) {
             float hi = 0;
-            float lo = 0;
+            float lo = Float.MAX_VALUE;
             float start = 0;
             float end = 0;
-            for (int i = 0; i < periodPartionCount && pos < size; i++) {
+            int i;
+            for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
                 final DailyValue element = dailyValues.get(pos);
-                if (element.getPriceHi() > hi) {
-                    hi = element.getPriceHi();
-                }
-                if (element.getPriceLo() < lo) {
-                    lo = element.getPriceLo();
-                }
+                hi = Math.max(element.getPriceHi(), hi);
+                lo = Math.min(element.getPriceLo(), lo);
                 if (i == 0) {
                     start = element.getPriceStart();
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
                     end = element.getPriceEnd();
                 }
-                currentDt += element.getDt() * 1000L;
-                pos++;
+                currentDt = element.getDt() * 1000L;
             }
             dates.add(currentDt);
-            final CandleEntry candleEntry = new CandleEntry(pos - 1, hi, lo, start, end);
-            entries.add(candleEntry);
+            entries.add(new CandleEntry(periodCount++, hi, lo, start, end));
         }
 
         return new ChartResponseContainer(entries, dates, period);

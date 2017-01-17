@@ -17,4 +17,5 @@
     <string name="dialog_select_daily_period_title">Выбор периода</string>
     <string name="dialog_select_daily_period_list_caption">Выберите период</string>
     <string name="dialog_select_daily_period_ok_caption">Подтвердить</string>
+    <string name="candle_screen_menu_select_period">Выбор периода</string>
 </resources>

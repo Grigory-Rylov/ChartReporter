@@ -4,18 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -24,7 +19,6 @@ import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.datafacade.OnItemSelectedListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.ProductItem;
-import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
 import com.grishberg.graphreporter.mvp.view.ProductsView;
 import com.grishberg.graphreporter.ui.adapters.ProductsListAdapter;
@@ -36,7 +30,6 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
     @InjectPresenter
     ProductsPresenter presenter;
     private ProductsListAdapter adapter;
-    private RecyclerView recyclerView;
     private DrawerLayout drawerLayout;
     private MaterialDrawerHelper drawerHelper;
 
@@ -70,7 +63,7 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
 
     private void initRecyclerView() {
         adapter = new ProductsListAdapter(this);
-        recyclerView = (RecyclerView) findViewById(R.id.activity_chart_nav_view);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_chart_nav_view);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -90,12 +83,12 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
 
     @Override
     public void showProgress() {
-
+        //Do nothing
     }
 
     @Override
     public void hideProgress() {
-
+        //Do nothing
     }
 
     @Override
@@ -127,17 +120,8 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-
         // This is required to make the drawer toggle work
-        if (drawerHelper.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        /*
-         * if you have other menu items in your activity/toolbar
-         * handle them here and return true
-         */
-
-        return super.onOptionsItemSelected(item);
+        return drawerHelper.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
+
 }
