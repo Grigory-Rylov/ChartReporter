@@ -1,5 +1,7 @@
 package com.grishberg.graphreporter.data.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by grishberg on 11.01.17.
  */
@@ -8,10 +10,14 @@ public class DailyValue {
 
     private int id;
     private long dt;
-    private float price1;
-    private float price2;
-    private float price3;
-    private float price4;
+    @SerializedName("priceStart")
+    private float priceStart;
+    @SerializedName("priceEnd")
+    private float priceEnd;
+    @SerializedName("priceHi")
+    private float priceHi;
+    @SerializedName("priceLo")
+    private float priceLo;
     private float volume;
 
     public int getId() {
@@ -22,20 +28,20 @@ public class DailyValue {
         return dt;
     }
 
-    public float getPrice1() {
-        return price1;
+    public float getPriceStart() {
+        return priceStart;
     }
 
-    public float getPrice2() {
-        return price2;
+    public float getPriceEnd() {
+        return priceEnd;
     }
 
-    public float getPrice3() {
-        return price3;
+    public float getPriceHi() {
+        return priceHi;
     }
 
-    public float getPrice4() {
-        return price4;
+    public float getPriceLo() {
+        return priceLo;
     }
 
     public float getVolume() {

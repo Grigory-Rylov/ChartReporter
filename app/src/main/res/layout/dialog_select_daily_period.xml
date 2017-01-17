@@ -1,0 +1,32 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_select_daily_period_title"/>
+
+    <Spinner
+        android:id="@+id/dialog_select_daily_period_items_spinner"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/dialog_select_daily_period_list_caption"
+        android:layout_margin="@dimen/horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:id="@+id/dialog_select_daily_period_items_ok_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_select_daily_period_ok_caption"/>
+
+</LinearLayout>

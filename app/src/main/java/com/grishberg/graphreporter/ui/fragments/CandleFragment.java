@@ -1,5 +1,6 @@
 package com.grishberg.graphreporter.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -19,9 +20,11 @@ import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.grishberg.graphreporter.R;
+import com.grishberg.graphreporter.data.model.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
+import com.grishberg.graphreporter.ui.dialogs.PeriodSelectDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -118,6 +121,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         rightAxis.setEnabled(false);
 
         chart.getLegend().setEnabled(false);
+
+        PeriodSelectDialog.showDialog(getActivity().getSupportFragmentManager(), this);
     }
 
     @Override
@@ -159,5 +164,14 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void showEmptyDataError() {
         showFail(getString(R.string.candle_screen_empty_data));
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        // Stuff to do, dependent on requestCode and resultCode
+        if (requestCode == PeriodSelectDialog.PERIOD_SELECT_RESULT_CODE) {
+            // This is the return result of your DialogFragment
+            presenter.recalculatePeriod(productId, ChartPeriod.values()[resultCode]);
+        }
     }
 }

@@ -1,7 +1,10 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.github.mikephil.charting.data.CandleEntry;
+import com.grishberg.graphreporter.data.model.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.DailyDataRepository;
@@ -17,6 +20,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
+
+import static com.grishberg.graphreporter.data.model.ChartPeriod.DAY;
 
 /**
  * Created by grishberg on 01.01.17.
@@ -47,13 +52,13 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
                     for (int i = 0, len = dailyValues.size(); i < len; i++) {
                         final DailyValue element = dailyValues.get(i);
                         entries.add(new CandleEntry(i,
-                                element.getPrice3(),
-                                element.getPrice4(),
-                                element.getPrice1(),
-                                element.getPrice2()));
+                                element.getPriceHi(),
+                                element.getPriceLo(),
+                                element.getPriceStart(),
+                                element.getPriceEnd()));
                         dates.add(element.getDt() * 1000L);
                     }
-                    return Observable.just(new ChartResponseContainer(entries, dates));
+                    return Observable.just(new ChartResponseContainer(entries, dates, DAY));
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();
@@ -67,5 +72,72 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
                     getViewState().showFail(exception.getMessage());
                     log.e(TAG, "requestDailyValues: ", exception);
                 });
+    }
+
+    /**
+     * Пересчитать точки в зависимости от периода
+     *
+     * @param productId -  идентификатор продукта
+     * @param period    -  индекс периода
+     */
+    public void recalculatePeriod(final long productId, final ChartPeriod period) {
+        getViewState().showProgress();
+        repository.getDailyValues(productId)
+                .flatMap(dailyValues -> {
+                    if (dailyValues.isEmpty()) {
+                        return Observable.error(new EmptyDataException());
+                    }
+                    return Observable.just(convertResponsePeriod(period, dailyValues));
+                })
+                .subscribe(response -> {
+                    getViewState().hideProgress();
+                    getViewState().showChart(response);
+                }, exception -> {
+                    getViewState().hideProgress();
+                    if (exception instanceof EmptyDataException) {
+                        getViewState().showEmptyDataError();
+                        return;
+                    }
+                    getViewState().showFail(exception.getMessage());
+                    log.e(TAG, "requestDailyValues: ", exception);
+                });
+    }
+
+    @NonNull
+    private ChartResponseContainer convertResponsePeriod(final ChartPeriod period, final List<DailyValue> dailyValues) {
+        final List<Long> dates = new ArrayList<>();
+        final List<CandleEntry> entries = new ArrayList<>();
+        final int periodPartionCount = period.getPartion();
+        long currentDt = 0;
+        int pos = 0;
+        final int size = dailyValues.size();
+        while (pos < size) {
+            float hi = 0;
+            float lo = 0;
+            float start = 0;
+            float end = 0;
+            for (int i = 0; i < periodPartionCount && pos < size; i++) {
+                final DailyValue element = dailyValues.get(pos);
+                if (element.getPriceHi() > hi) {
+                    hi = element.getPriceHi();
+                }
+                if (element.getPriceLo() < lo) {
+                    lo = element.getPriceLo();
+                }
+                if (i == 0) {
+                    start = element.getPriceStart();
+                }
+                if ((i == periodPartionCount - 1) || (pos == size - 1)) {
+                    end = element.getPriceEnd();
+                }
+                currentDt += element.getDt() * 1000L;
+                pos++;
+            }
+            dates.add(currentDt);
+            final CandleEntry candleEntry = new CandleEntry(pos - 1, hi, lo, start, end);
+            entries.add(candleEntry);
+        }
+
+        return new ChartResponseContainer(entries, dates, period);
     }
 }
