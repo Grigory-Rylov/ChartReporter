@@ -3,7 +3,6 @@ package com.grishberg.graphreporter.data.repository;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
-import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.utils.BaseTestCase;
 import com.grishberg.graphreporter.utils.RxSchedulersOverrideRule;
 
@@ -12,7 +11,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ public class ProductsRepositoryImplTest extends BaseTestCase{
     public void setUp() throws Exception {
         super.setUp();
         repository = new ProductsRepositoryImpl(tokenRepository, api);
-        repository.authRepository = authRepository;
+        repository.refreshTokenService = authRepository;
     }
 
     @Test

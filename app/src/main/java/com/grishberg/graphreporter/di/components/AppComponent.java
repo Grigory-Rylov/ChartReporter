@@ -1,7 +1,10 @@
-package com.grishberg.graphreporter.di;
+package com.grishberg.graphreporter.di.components;
 
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
-import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
+import com.grishberg.graphreporter.di.modules.AppModule;
+import com.grishberg.graphreporter.di.modules.ProfileModule;
+import com.grishberg.graphreporter.di.modules.RestModule;
+import com.grishberg.graphreporter.di.sub.modules.AuthModule;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
 import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
@@ -21,7 +24,8 @@ import dagger.Component;
 })
 
 public interface AppComponent {
-    void inject(AuthPresenter authPresenter);
+
+    AuthComponent plusAuthModule(AuthModule authModule);
 
     void inject(CandlesChartPresenter candlesChartPresenter);
 

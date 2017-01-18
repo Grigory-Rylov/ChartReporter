@@ -3,13 +3,13 @@ package com.grishberg.graphreporter;
 import android.app.Application;
 
 import com.grishberg.graphreporter.data.repository.AuthTokenRepositoryImpl;
-import com.grishberg.graphreporter.di.AppModule;
-import com.grishberg.graphreporter.di.DaggerAppComponent;
 import com.grishberg.graphreporter.di.DiManager;
-import com.grishberg.graphreporter.di.ProfileModule;
-import com.grishberg.graphreporter.di.RestModule;
 
 import com.crashlytics.android.Crashlytics;
+import com.grishberg.graphreporter.di.components.DaggerAppComponent;
+import com.grishberg.graphreporter.di.modules.AppModule;
+import com.grishberg.graphreporter.di.modules.ProfileModule;
+import com.grishberg.graphreporter.di.modules.RestModule;
 
 import io.fabric.sdk.android.Fabric;
 

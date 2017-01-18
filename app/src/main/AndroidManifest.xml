@@ -3,6 +3,7 @@
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -13,23 +14,21 @@
 
         <!-- Splash Screen -->
         <activity
-            android:name="com.grishberg.graphreporter.ui.activities.SplashScreenActivity"
+            android:name=".ui.activities.SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_splash_screen"
-            android:theme="@style/FullscreenTheme"
-            >
+            android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.activities.ChartActivity"
             android:label="@string/title_activity_chart"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
         <activity
             android:name=".ui.activities.AuthActivity"
             android:label="@string/title_activity_auth"
@@ -40,5 +39,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="8aba8b8db08d2044cbc1380c0d4f4783aa6c6391"/>
+
+        <activity android:name=".ui.activities.AboutActivity">
+        </activity>
     </application>
+
 </manifest>

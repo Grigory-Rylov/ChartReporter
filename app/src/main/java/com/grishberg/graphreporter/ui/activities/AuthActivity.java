@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
@@ -16,7 +18,7 @@ import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
 import com.grishberg.graphreporter.mvp.view.AuthView;
 
-public class AuthActivity extends MvpAppCompatActivity implements AuthView, View.OnClickListener {
+public class AuthActivity extends MvpAppCompatActivity implements AuthView, View.OnClickListener, TextView.OnEditorActionListener {
 
     @InjectPresenter
     AuthPresenter presenter;
@@ -43,6 +45,7 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
         loginEdit = (EditText) findViewById(R.id.auth_screen_login);
         passwordEdit = (EditText) findViewById(R.id.auth_screen_password);
         progressBar = (ProgressBar) findViewById(R.id.auth_screen_progress);
+        passwordEdit.setOnEditorActionListener(this);
         setEnabled(true);
     }
 
@@ -92,5 +95,11 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
         loginEdit.setEnabled(enabled);
         passwordEdit.setEnabled(enabled);
         buttonAuth.setEnabled(enabled);
+    }
+
+    @Override
+    public boolean onEditorAction(final TextView textView, final int i, final KeyEvent keyEvent) {
+        onClick(textView);
+        return false;
     }
 }

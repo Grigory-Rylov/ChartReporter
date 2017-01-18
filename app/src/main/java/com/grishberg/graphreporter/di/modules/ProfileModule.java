@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.di;
+package com.grishberg.graphreporter.di.modules;
 
 import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
 
@@ -12,7 +12,6 @@ import dagger.Provides;
  */
 @Module
 public class ProfileModule {
-    private static final String TAG = ProfileModule.class.getSimpleName();
     private final AuthTokenRepository authRepository;
 
     public ProfileModule(final AuthTokenRepository authRepository) {

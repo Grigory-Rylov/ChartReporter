@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.di;
+package com.grishberg.graphreporter.di.modules;
 
 import com.grishberg.graphreporter.data.repository.ValuesRepository;
 
@@ -12,10 +12,9 @@ import dagger.Provides;
  */
 @Module
 public class StorageModule {
-    private static final String TAG = StorageModule.class.getSimpleName();
     private final ValuesRepository valuesRepository;
 
-    public StorageModule(ValuesRepository valuesRepository) {
+    public StorageModule(final ValuesRepository valuesRepository) {
         this.valuesRepository = valuesRepository;
     }
 
@@ -24,5 +23,4 @@ public class StorageModule {
     ValuesRepository provideContext() {
         return valuesRepository;
     }
-
 }

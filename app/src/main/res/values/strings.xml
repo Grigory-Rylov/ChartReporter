@@ -18,4 +18,7 @@
     <string name="dialog_select_daily_period_list_caption">Выберите период</string>
     <string name="dialog_select_daily_period_ok_caption">Подтвердить</string>
     <string name="candle_screen_menu_select_period">Выбор периода</string>
+    <string name="about_text">Graph Analyser v.%s \nАвтор: Григорий Рылов</string>
+    <string name="about_email_text">grishberg@ya.ru</string>
+    <string name="main_screen_menu_about">О программе...</string>
 </resources>

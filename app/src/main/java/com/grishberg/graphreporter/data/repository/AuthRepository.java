@@ -8,6 +8,4 @@ import rx.Observable;
 
 public interface AuthRepository {
     Observable<Boolean> login(String login, CharSequence password);
-
-    Observable<Boolean> refreshToken();
 }

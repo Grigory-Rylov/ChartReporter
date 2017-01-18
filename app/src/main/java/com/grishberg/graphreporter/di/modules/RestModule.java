@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.di;
+package com.grishberg.graphreporter.di.modules;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -13,8 +13,8 @@ import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepositoryImpl;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
-import com.grishberg.graphreporter.data.repository.AuthRepository;
-import com.grishberg.graphreporter.data.repository.AuthRepositoryImpl;
+import com.grishberg.graphreporter.data.services.RefreshTokenService;
+import com.grishberg.graphreporter.data.services.RefreshTokenServiceImpl;
 
 import java.util.Date;
 
@@ -95,12 +95,6 @@ public class RestModule {
 
     @Provides
     @Singleton
-    AuthRepository provideAuthRepository(final Api api, final AuthTokenRepository tokenRepository) {
-        return new AuthRepositoryImpl(api, tokenRepository);
-    }
-
-    @Provides
-    @Singleton
     DailyDataRepository provideDataRepository(final Api api, final AuthTokenRepository tokenRepository) {
         return new DailyDataRepositoryImpl(tokenRepository, api);
     }
@@ -109,6 +103,12 @@ public class RestModule {
     @Singleton
     ProductsRepository provideProductsRepository(final Api api, final AuthTokenRepository tokenRepository) {
         return new ProductsRepositoryImpl(tokenRepository, api);
+    }
+
+    @Provides
+    @Singleton
+    RefreshTokenService provideRefreshTokenServic(final Api api, final AuthTokenRepository tokenRepository) {
+        return new RefreshTokenServiceImpl(tokenRepository, api);
     }
 
     @Provides

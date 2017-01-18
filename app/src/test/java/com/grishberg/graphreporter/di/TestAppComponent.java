@@ -1,6 +1,7 @@
 package com.grishberg.graphreporter.di;
 
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
+import com.grishberg.graphreporter.di.components.AppComponent;
 
 import javax.inject.Singleton;
 

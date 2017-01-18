@@ -1,4 +1,5 @@
-package com.grishberg.graphreporter.di;
+package com.grishberg.graphreporter.di.modules;
+
 
 import android.content.Context;
 import android.content.res.Resources;
