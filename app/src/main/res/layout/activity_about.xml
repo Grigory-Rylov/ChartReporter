@@ -30,5 +30,5 @@
         android:gravity="center"
         android:text="@string/about_email_text"
         android:textSize="@dimen/about_screen_text_size"
-        android:textColor="@android:color/link_text_holo_dark"/>
+        android:textColor="@color/linkColor"/>
 </RelativeLayout>
