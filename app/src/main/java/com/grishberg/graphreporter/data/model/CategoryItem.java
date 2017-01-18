@@ -4,9 +4,9 @@ import com.grishberg.datafacade.helpers.ExapndableItem;
 
 /**
  * Created by grishberg on 01.01.17.
+ * Модель данных для категорий, на данный момент категорий нет
  */
 public class CategoryItem implements ExapndableItem {
-    private static final String TAG = CategoryItem.class.getSimpleName();
     private int id;
     private String name;
     private boolean isExpanded;

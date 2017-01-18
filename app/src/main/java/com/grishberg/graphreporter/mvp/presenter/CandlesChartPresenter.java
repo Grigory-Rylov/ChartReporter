@@ -58,7 +58,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
                                 element.getPriceEnd()));
                         dates.add(element.getDt() * 1000L);
                     }
-                    return Observable.just(new ChartResponseContainer(entries, dates, DAY));
+                    return Observable.just(new ChartResponseContainer<>(entries, dates, DAY));
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();
@@ -104,7 +104,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
     }
 
     @NonNull
-    private ChartResponseContainer convertResponsePeriod(final ChartPeriod period, final List<DailyValue> dailyValues) {
+    private ChartResponseContainer<CandleEntry> convertResponsePeriod(final ChartPeriod period, final List<DailyValue> dailyValues) {
         final List<Long> dates = new ArrayList<>();
         final List<CandleEntry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
@@ -134,6 +134,6 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
             entries.add(new CandleEntry(periodCount++, hi, lo, start, end));
         }
 
-        return new ChartResponseContainer(entries, dates, period);
+        return new ChartResponseContainer<>(entries, dates, period);
     }
 }

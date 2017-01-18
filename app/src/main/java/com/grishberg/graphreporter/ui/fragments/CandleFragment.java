@@ -20,6 +20,7 @@ import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.ChartPeriod;
@@ -43,6 +44,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private ProgressBar progressBar;
     private List<Long> dates;
     private long productId;
+    private ChartPeriod period = ChartPeriod.DAY;
 
     public CandleFragment() {
         // Required empty public constructor
@@ -130,13 +132,14 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
-    public void showChart(final ChartResponseContainer values) {
-        initAxes(values.getPeriod());
+    public void showChart(final ChartResponseContainer<CandleEntry> values) {
+        period = values.getPeriod();
+        initAxes(period);
         this.dates = values.getDates();
         initDataSet(values);
     }
 
-    private void initDataSet(final ChartResponseContainer values) {
+    private void initDataSet(final ChartResponseContainer<CandleEntry> values) {
         final CandleDataSet set1 = new CandleDataSet(values.getEntries(), "Data Set");
         set1.setAxisDependency(YAxis.AxisDependency.LEFT);
         set1.setShadowColor(Color.DKGRAY);
@@ -193,7 +196,9 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.change_period:
-                PeriodSelectDialog.showDialog(getActivity().getSupportFragmentManager(), this);
+                PeriodSelectDialog.showDialog(getActivity().getSupportFragmentManager(),
+                        this,
+                        period.ordinal());
                 return true;
             default:
                 return false;

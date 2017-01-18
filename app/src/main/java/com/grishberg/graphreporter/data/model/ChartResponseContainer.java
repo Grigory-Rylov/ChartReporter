@@ -1,19 +1,20 @@
 package com.grishberg.graphreporter.data.model;
 
-import com.github.mikephil.charting.data.CandleEntry;
+import com.github.mikephil.charting.data.Entry;
 
 import java.util.List;
 
 /**
  * Created by grishberg on 15.01.17.
+ * Модель данных для отображения графика
  */
-public class ChartResponseContainer {
+public class ChartResponseContainer<T extends Entry> {
 
-    private final List<CandleEntry> entries;
+    private final List<T> entries;
     private final List<Long> dates;
     private final ChartPeriod period;
 
-    public ChartResponseContainer(final List<CandleEntry> entries,
+    public ChartResponseContainer(final List<T> entries,
                                   final List<Long> dates,
                                   final ChartPeriod period) {
         this.entries = entries;
@@ -21,7 +22,7 @@ public class ChartResponseContainer {
         this.period = period;
     }
 
-    public List<CandleEntry> getEntries() {
+    public List<T> getEntries() {
         return entries;
     }
 

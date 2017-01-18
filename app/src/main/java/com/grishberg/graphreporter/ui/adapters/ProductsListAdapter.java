@@ -1,6 +1,5 @@
 package com.grishberg.graphreporter.ui.adapters;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,9 @@ import com.grishberg.graphreporter.data.model.ProductItem;
 
 /**
  * Created by grishberg on 15.01.17.
+ * Адаптер для отображения списка продуктов
  */
 public class ProductsListAdapter extends BaseRecyclerViewAdapter<ProductItem> {
-    private static final String TAG = ProductsListAdapter.class.getSimpleName();
 
     private final OnItemSelectedListener<ProductItem> selectedListener;
 
@@ -31,9 +30,9 @@ public class ProductsListAdapter extends BaseRecyclerViewAdapter<ProductItem> {
     }
 
     private static class ProductViewHolder extends BaseViewHolder {
-        public final TextView tvName;
+        final TextView tvName;
 
-        public ProductViewHolder(final View itemView, final OnItemSelectedListener clickListener) {
+        ProductViewHolder(final View itemView, final OnItemSelectedListener clickListener) {
             super(itemView, clickListener);
             tvName = (TextView) itemView.findViewById(R.id.chart_nav_view_name);
         }

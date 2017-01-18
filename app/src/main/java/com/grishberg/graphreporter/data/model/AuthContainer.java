@@ -2,10 +2,11 @@ package com.grishberg.graphreporter.data.model;
 
 /**
  * Created by grishberg on 11.01.17.
+ * Модель данных об авторизации
  */
 public class AuthContainer {
 
-    private String refreshToken;
+    private final String refreshToken;
 
     private String accessToken;
 
