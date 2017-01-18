@@ -7,5 +7,7 @@ package com.grishberg.graphreporter.utils;
 public interface LogService {
     void d(String tag, String message);
 
+    void e(String tag, String message);
+
     void e(String tag, String message, Throwable throwable);
 }

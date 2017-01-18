@@ -5,6 +5,7 @@ import com.grishberg.graphreporter.mvp.presenter.AuthPresenter;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
 import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
+import com.grishberg.graphreporter.ui.fragments.CandleFragment;
 
 import javax.inject.Singleton;
 
@@ -29,4 +30,6 @@ public interface AppComponent {
     void inject(BaseRestRepository baseRestRepository);
 
     void inject(ProductsPresenter productsPresenter);
+
+    void inject(CandleFragment candleFragment);
 }

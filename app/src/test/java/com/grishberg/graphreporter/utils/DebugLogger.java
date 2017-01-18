@@ -12,6 +12,11 @@ public class DebugLogger implements LogService {
     }
 
     @Override
+    public void e(final String tag, final String message) {
+        System.out.println(message);
+    }
+
+    @Override
     public void e(final String tag, final String message, final Throwable throwable) {
         throwable.printStackTrace();
     }

@@ -13,6 +13,11 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
+    public void e(final String tag, final String message) {
+        Log.e(tag, message);
+    }
+
+    @Override
     public void e(final String tag, final String message, final Throwable throwable) {
         Log.e(tag, message, throwable);
     }

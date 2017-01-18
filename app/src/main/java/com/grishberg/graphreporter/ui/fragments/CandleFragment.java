@@ -25,18 +25,26 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
+import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.ui.dialogs.PeriodSelectDialog;
 import com.grishberg.graphreporter.ui.view.CandleStickChartInitiable;
+import com.grishberg.graphreporter.utils.LogService;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Inject;
+
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView {
+    private static final String TAG = CandleFragment.class.getSimpleName();
     private static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
+    @Inject
+    LogService log;
+
     @InjectPresenter
     CandlesChartPresenter presenter;
 
@@ -61,6 +69,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DiManager.getAppComponent().inject(this);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             productId = getArguments().getLong(ARG_PRODUCT_ID);
@@ -118,6 +127,10 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             @Override
             public String getFormattedValue(final float value, final AxisBase axis) {
                 final int index = (int) value;
+                if (index > dates.size()) {
+                    log.e(TAG, "index " + index + " > dates.size " + dates.size() + " for axis " + axis);
+                    return "";
+                }
                 return mFormat.format(new Date(dates.get(index)));
             }
         });
