@@ -15,11 +15,16 @@ import java.util.List;
  * Created by grishberg on 19.01.17.
  */
 public class ChartsHelper {
+
+    private static final int CANDLE_PERIOD_OFFSET = 2;
+    private static final int CANDLE_PERIOD_INCREMENT = 3;
+
     private ChartsHelper() {
     }
 
     public static ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
-                                                            final List<DailyValue> dailyValues) {
+                                                            final List<DailyValue> dailyValues,
+                                                            final boolean isDualChartMode) {
         final List<Long> dates = new ArrayList<>();
         final List<Entry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
@@ -46,11 +51,12 @@ public class ChartsHelper {
             // start
             dates.add(startPeriod);
             entries.add(new Entry(periodCount++, start));
-
-            //end
+            if (isDualChartMode) {
+                //end
+                dates.add(endPeriod);
+                periodCount += 1;
+            }
             dates.add(endPeriod);
-            dates.add(endPeriod);
-            periodCount += 1;
             entries.add(new Entry(periodCount++, end));
         }
 
@@ -59,10 +65,13 @@ public class ChartsHelper {
 
     @NonNull
     public static ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
-                                                                             final List<DailyValue> dailyValues) {
+                                                                             final List<DailyValue> dailyValues,
+                                                                             final boolean isDualChartMode) {
         final List<Long> dates = new ArrayList<>();
         final List<CandleEntry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
+        final int candlePeriodOffset = isDualChartMode ? CANDLE_PERIOD_OFFSET : 0;
+        final int candlePeriodIncrement = isDualChartMode ? CANDLE_PERIOD_INCREMENT : 1;
         long currentDt = 0;
         int pos = 0;
         final int size = dailyValues.size();
@@ -86,10 +95,12 @@ public class ChartsHelper {
                 currentDt = element.getDt() * 1000L;
             }
             dates.add(currentDt);
-            dates.add(currentDt);
-            dates.add(currentDt);
-            periodCount += 3;
-            entries.add(new CandleEntry(periodCount - 2, hi, lo, start, end));
+            if (isDualChartMode) {
+                dates.add(currentDt);
+                dates.add(currentDt);
+            }
+            periodCount += candlePeriodIncrement;
+            entries.add(new CandleEntry(periodCount - candlePeriodOffset, hi, lo, start, end));
         }
 
         return new ChartResponseContainer<>(entries, dates, period);

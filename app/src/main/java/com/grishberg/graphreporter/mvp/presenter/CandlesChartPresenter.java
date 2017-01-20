@@ -50,16 +50,16 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> {
                     switch (chartMode) {
                         case CHART_MODE:
                             return Observable.just(
-                                    DualChartContainer.makeCandle(period, ChartsHelper.getCandleDataForPeriod(period, dailyValues))
+                                    DualChartContainer.makeCandle(period, ChartsHelper.getCandleDataForPeriod(period, dailyValues, false))
                             );
                         case LINE_MODE:
                             return Observable.just(
-                                    DualChartContainer.makeLine(period, ChartsHelper.getLineData(period, dailyValues))
+                                    DualChartContainer.makeLine(period, ChartsHelper.getLineData(period, dailyValues, false))
                             );
                         default:
                             return Observable.just(
-                                    DualChartContainer.makeCandleAndLine(period, ChartsHelper.getLineData(period, dailyValues),
-                                            ChartsHelper.getCandleDataForPeriod(period, dailyValues))
+                                    DualChartContainer.makeCandleAndLine(period, ChartsHelper.getLineData(period, dailyValues, true),
+                                            ChartsHelper.getCandleDataForPeriod(period, dailyValues, true))
                             );
                     }
                 })
