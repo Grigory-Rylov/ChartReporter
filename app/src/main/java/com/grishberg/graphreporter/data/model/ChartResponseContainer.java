@@ -1,6 +1,7 @@
 package com.grishberg.graphreporter.data.model;
 
 import com.github.mikephil.charting.data.Entry;
+import com.grishberg.graphreporter.data.enums.ChartPeriod;
 
 import java.util.List;
 

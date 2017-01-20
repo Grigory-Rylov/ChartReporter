@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.data.repository;
+package com.grishberg.graphreporter.data.repository.auth;
 
 import com.grishberg.graphreporter.data.rest.Api;
 
@@ -8,6 +8,7 @@ import rx.schedulers.Schedulers;
 
 /**
  * Created by grishberg on 12.01.17.
+ * Репозиторий авторизации
  */
 public class AuthRepositoryImpl implements AuthRepository {
 

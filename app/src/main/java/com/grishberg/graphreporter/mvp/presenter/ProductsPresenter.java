@@ -1,8 +1,6 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.grishberg.graphreporter.App;
-import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
@@ -12,10 +10,10 @@ import javax.inject.Inject;
 
 /**
  * Created by grishberg on 15.01.17.
+ * Презентер для экрана отрбражения товаров
  */
 @InjectViewState
 public class ProductsPresenter extends BasePresenter<ProductsView> {
-    private static final String TAG = ProductsPresenter.class.getSimpleName();
     public static final int CATEGORY_ID = 1;
 
     @Inject

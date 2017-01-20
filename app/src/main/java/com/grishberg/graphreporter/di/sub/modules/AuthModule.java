@@ -1,8 +1,8 @@
 package com.grishberg.graphreporter.di.sub.modules;
 
-import com.grishberg.graphreporter.data.repository.AuthRepository;
-import com.grishberg.graphreporter.data.repository.AuthRepositoryImpl;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthRepositoryImpl;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.di.scopes.AuthScope;
 

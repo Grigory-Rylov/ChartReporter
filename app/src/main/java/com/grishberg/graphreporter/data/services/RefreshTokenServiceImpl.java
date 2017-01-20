@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.data.services;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
 

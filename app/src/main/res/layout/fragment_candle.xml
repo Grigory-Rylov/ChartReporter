@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
              android:background="@android:color/darker_gray">
 
-    <com.grishberg.graphreporter.ui.view.CandleStickChartInitiable
+    <com.grishberg.graphreporter.ui.view.CombinedChartInitiable
         android:id="@+id/fragment_candle_chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

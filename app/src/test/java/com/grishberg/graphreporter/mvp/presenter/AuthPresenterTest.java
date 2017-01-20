@@ -1,11 +1,10 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.common.RestError;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
-import com.grishberg.graphreporter.data.repository.AuthRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
 import com.grishberg.graphreporter.mvp.view.AuthView;
 
 import org.junit.Before;

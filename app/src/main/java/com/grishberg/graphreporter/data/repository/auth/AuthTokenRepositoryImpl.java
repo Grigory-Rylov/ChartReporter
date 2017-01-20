@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.data.repository;
+package com.grishberg.graphreporter.data.repository.auth;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,12 +8,12 @@ import com.grishberg.graphreporter.utils.StringUtils;
 
 /**
  * Created by grishberg on 12.01.17.
+ * Репозиторий хранения данных авторизации
  */
 public class AuthTokenRepositoryImpl implements AuthTokenRepository {
     private static final String DEF_VALUE = "";
     private static final String PREF_REFRESH_TOKEN = "pref_refresh_token";
     private static final String PREF_ACCESS_TOKEN = "pref_access_token";
-    private static final String PREF_ROLE = "pref_role";
     private static final String PREF_LOGIN = "pref_login";
 
     private AuthContainer authContainer;

@@ -1,7 +1,9 @@
-package com.grishberg.graphreporter.data.repository;
+package com.grishberg.graphreporter.data.repository.values;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.repository.BaseRestRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
 
@@ -40,8 +42,4 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                 .flatMap(response -> Observable.just(response.getData()));
     }
 
-    @Override
-    public Observable<List<DailyValue>> getDetailValues(final long productId) {
-        return null;
-    }
 }

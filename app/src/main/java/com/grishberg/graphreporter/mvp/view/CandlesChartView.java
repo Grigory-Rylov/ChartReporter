@@ -1,7 +1,6 @@
 package com.grishberg.graphreporter.mvp.view;
 
-import com.github.mikephil.charting.data.CandleEntry;
-import com.grishberg.graphreporter.data.model.ChartResponseContainer;
+import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.mvp.common.BaseViewWithProgress;
 
 /**
@@ -10,7 +9,8 @@ import com.grishberg.graphreporter.mvp.common.BaseViewWithProgress;
  */
 
 public interface CandlesChartView extends BaseViewWithProgress {
-    void showChart(ChartResponseContainer<CandleEntry> values);
 
     void showEmptyDataError();
+
+    void showChart(DualChartContainer response);
 }

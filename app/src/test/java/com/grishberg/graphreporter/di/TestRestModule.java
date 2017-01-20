@@ -1,8 +1,8 @@
 package com.grishberg.graphreporter.di;
 
-import com.grishberg.graphreporter.data.repository.AuthRepository;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
-import com.grishberg.graphreporter.data.repository.DailyDataRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.utils.DebugLogger;

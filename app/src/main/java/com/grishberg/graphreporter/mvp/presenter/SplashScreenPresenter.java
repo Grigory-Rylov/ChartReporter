@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.SplashScreenView;

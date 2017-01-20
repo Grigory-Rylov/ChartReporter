@@ -1,9 +1,9 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.grishberg.graphreporter.data.repository.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
-import com.grishberg.graphreporter.data.repository.AuthRepository;
+import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.di.sub.modules.AuthModule;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;

@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.data.model;
+package com.grishberg.graphreporter.data.enums;
 
 /**
  * Created by grishberg on 17.01.17.

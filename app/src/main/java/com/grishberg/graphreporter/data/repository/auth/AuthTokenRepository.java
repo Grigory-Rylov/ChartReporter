@@ -1,4 +1,4 @@
-package com.grishberg.graphreporter.data.repository;
+package com.grishberg.graphreporter.data.repository.auth;
 
 import com.grishberg.graphreporter.data.model.AuthContainer;
 

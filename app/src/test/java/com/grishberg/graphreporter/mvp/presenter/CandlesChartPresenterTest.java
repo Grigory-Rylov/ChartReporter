@@ -1,10 +1,10 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.github.mikephil.charting.data.CandleEntry;
-import com.grishberg.graphreporter.data.model.ChartPeriod;
+import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.repository.DailyDataRepository;
+import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.BaseTestCase;
@@ -63,7 +63,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
         //when
         presenter.requestDailyValues(PRODUCT_ID);
         //then
-        verify(view, times(1)).showChart(any(ChartResponseContainer.class));
+        verify(view, times(1)).showCandleChart(any(ChartResponseContainer.class));
         verify(view, times(1)).showProgress();
         verify(view, times(1)).hideProgress();
     }
@@ -76,7 +76,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
         //when
         presenter.requestDailyValues(PRODUCT_ID);
         //then
-        verify(view, times(0)).showChart(any(ChartResponseContainer.class));
+        verify(view, times(0)).showCandleChart(any(ChartResponseContainer.class));
         verify(view, times(1)).showProgress();
         verify(view, times(1)).hideProgress();
         verify(view, times(1)).showFail(null);
@@ -106,7 +106,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
                 responseContainer = (ChartResponseContainer) args[0];
                 return responseContainer;
             }
-        }).when(view).showChart(any(ChartResponseContainer.class));
+        }).when(view).showCandleChart(any(ChartResponseContainer.class));
 
         //when
         presenter.recalculatePeriod(PRODUCT_ID, ChartPeriod.WEEK);

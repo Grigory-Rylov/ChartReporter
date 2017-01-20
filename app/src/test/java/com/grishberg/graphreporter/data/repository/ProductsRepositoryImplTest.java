@@ -3,6 +3,7 @@ package com.grishberg.graphreporter.data.repository;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
+import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
 import com.grishberg.graphreporter.utils.BaseTestCase;
 import com.grishberg.graphreporter.utils.RxSchedulersOverrideRule;
 

@@ -21,4 +21,7 @@
     <string name="about_text">Graph Analyser v.%s \nАвтор: Григорий Рылов</string>
     <string name="about_email_text">grishberg@ya.ru</string>
     <string name="main_screen_menu_about">О программе...</string>
+    <string name="candle_screen_menu_candle_chart_mode">Свечи</string>
+    <string name="candle_screen_menu_line_chart_mode">Линейный график</string>
+    <string name="candle_screen_menu_candle_and_line_mode">Свечи и линии</string>
 </resources>

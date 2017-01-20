@@ -15,21 +15,29 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
+import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
+import com.github.mikephil.charting.data.CombinedData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.ChartPeriod;
+import com.grishberg.graphreporter.data.enums.ChartMode;
+import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
+import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.ui.dialogs.PeriodSelectDialog;
-import com.grishberg.graphreporter.ui.view.CandleStickChartInitiable;
+import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
 import com.grishberg.graphreporter.utils.LogService;
 
 import java.text.SimpleDateFormat;
@@ -38,6 +46,9 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE;
+import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView {
     private static final String TAG = CandleFragment.class.getSimpleName();
@@ -48,11 +59,12 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @InjectPresenter
     CandlesChartPresenter presenter;
 
-    private CandleStickChartInitiable chart;
+    private CombinedChartInitiable chart;
     private ProgressBar progressBar;
     private List<Long> dates;
     private long productId;
     private ChartPeriod period = ChartPeriod.DAY;
+    private ChartMode currentChartMode = ChartMode.CHART_MODE;
 
     public CandleFragment() {
         // Required empty public constructor
@@ -75,7 +87,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             productId = getArguments().getLong(ARG_PRODUCT_ID);
         }
         if (savedInstanceState == null) {
-            presenter.requestDailyValues(productId);
+            presenter.recalculatePeriod(productId, currentChartMode, period);
         }
     }
 
@@ -96,14 +108,45 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     private void initChart(final View view) {
 
-        chart = (CandleStickChartInitiable) view.findViewById(R.id.fragment_candle_chart);
+        chart = (CombinedChartInitiable) view.findViewById(R.id.fragment_candle_chart);
 
-        initAxes(ChartPeriod.DAY);
+        initDualChartAxes(ChartPeriod.DAY);
     }
 
-    private void initAxes(final ChartPeriod period) {
+    @Override
+    public void showChart(final DualChartContainer response) {
+        if (response == null || response.getChartMode() == null) {
+            log.e(TAG, "response is null");
+            return;
+        }
+        period = response.getPeriod();
+        initDualChartAxes(period);
+        final CombinedData combinedData = new CombinedData();
 
-        chart.init();
+        switch (response.getChartMode()) {
+            case LINE_MODE:
+                dates = response.getEntryResponse().getDates();
+                combinedData.setData(generateLineData(response.getEntryResponse().getEntries()));
+                break;
+
+            case CHART_MODE:
+                dates = response.getCandleResponse().getDates();
+                combinedData.setData(generateCandleData(response.getCandleResponse().getEntries()));
+                break;
+
+            default:
+                dates = response.getCandleResponse().getDates();
+                combinedData.setData(generateLineData(response.getEntryResponse().getEntries()));
+                combinedData.setData(generateCandleData(response.getCandleResponse().getEntries()));
+                break;
+        }
+
+        chart.setData(combinedData);
+        chart.invalidate();
+    }
+
+    private void initDualChartAxes(final ChartPeriod period) {
+
         chart.setDoubleTapToZoomEnabled(false);
         chart.setScaleYEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -116,6 +159,16 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         chart.setDrawGridBackground(false);
         chart.getLegend().setEnabled(false);
 
+        // draw bars behind lines
+        chart.setDrawOrder(new CombinedChart.DrawOrder[]{CANDLE, LINE});
+
+        final Legend legend = chart.getLegend();
+        legend.setWordWrapEnabled(true);
+        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        legend.setDrawInside(false);
+
         final XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
@@ -127,7 +180,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             @Override
             public String getFormattedValue(final float value, final AxisBase axis) {
                 final int index = (int) value;
-                if (index > dates.size()) {
+                if (index >= dates.size()) {
                     log.e(TAG, "index " + index + " > dates.size " + dates.size() + " for axis " + axis);
                     return "";
                 }
@@ -144,28 +197,42 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         rightAxis.setEnabled(false);
     }
 
-    @Override
-    public void showChart(final ChartResponseContainer<CandleEntry> values) {
-        period = values.getPeriod();
-        initAxes(period);
-        this.dates = values.getDates();
-        initDataSet(values);
+    private LineData generateLineData(final List<Entry> entries) {
+
+        final LineData lineData = new LineData();
+
+        final LineDataSet set = new LineDataSet(entries, "Line DataSet");
+        set.setColor(Color.rgb(240, 238, 70));
+        set.setLineWidth(2.5f);
+        set.setCircleColor(Color.rgb(240, 238, 70));
+        set.setCircleRadius(5f);
+        set.setFillColor(Color.rgb(240, 238, 70));
+        set.setMode(LineDataSet.Mode.LINEAR);
+        set.setDrawValues(true);
+        set.setValueTextSize(10f);
+        set.setValueTextColor(Color.rgb(240, 238, 70));
+
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        lineData.addDataSet(set);
+
+        return lineData;
     }
 
-    private void initDataSet(final ChartResponseContainer<CandleEntry> values) {
-        final CandleDataSet set1 = new CandleDataSet(values.getEntries(), "Data Set");
-        set1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set1.setShadowColor(Color.DKGRAY);
-        set1.setShadowWidth(0.7f);
-        set1.setDecreasingColor(Color.RED);
-        set1.setDecreasingPaintStyle(Paint.Style.FILL);
-        set1.setIncreasingColor(Color.rgb(122, 242, 84));
-        set1.setIncreasingPaintStyle(Paint.Style.FILL);
-        set1.setNeutralColor(Color.BLUE);
+    protected CandleData generateCandleData(final List<CandleEntry> entries) {
 
-        final CandleData data = new CandleData(set1);
-        chart.setData(data);
-        chart.invalidate();
+        final CandleData candleData = new CandleData();
+
+        final CandleDataSet candleDataSet = new CandleDataSet(entries, "Candle DataSet");
+        candleDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        candleDataSet.setShadowColor(Color.DKGRAY);
+        candleDataSet.setShadowWidth(0.7f);
+        candleDataSet.setDecreasingColor(Color.RED);
+        candleDataSet.setDecreasingPaintStyle(Paint.Style.FILL);
+        candleDataSet.setIncreasingColor(Color.rgb(122, 242, 84));
+        candleDataSet.setIncreasingPaintStyle(Paint.Style.FILL);
+        candleDataSet.setNeutralColor(Color.BLUE);
+        candleData.addDataSet(candleDataSet);
+        return candleData;
     }
 
     @Override
@@ -191,11 +258,12 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+    public void onActivityResult(final int requestCode, final int resultCode,
+                                 final Intent data) {
         // Stuff to do, dependent on requestCode and resultCode
         if (requestCode == PeriodSelectDialog.PERIOD_SELECT_RESULT_CODE) {
             // This is the return result of your DialogFragment
-            presenter.recalculatePeriod(productId, ChartPeriod.values()[resultCode]);
+            presenter.recalculatePeriod(productId, currentChartMode, ChartPeriod.values()[resultCode]);
         }
     }
 
@@ -213,6 +281,22 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
                         this,
                         period.ordinal());
                 return true;
+
+            case R.id.candle_chart_mode:
+                currentChartMode = ChartMode.CHART_MODE;
+                presenter.recalculatePeriod(productId, currentChartMode, period);
+                return true;
+
+            case R.id.line_chart_mode:
+                currentChartMode = ChartMode.LINE_MODE;
+                presenter.recalculatePeriod(productId, currentChartMode, period);
+                return true;
+
+            case R.id.candle_and_line_mode:
+                currentChartMode = ChartMode.CANDLE_AND_LINE_MODE;
+                presenter.recalculatePeriod(productId, currentChartMode, period);
+                return true;
+
             default:
                 return false;
         }
