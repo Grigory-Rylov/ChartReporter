@@ -11,6 +11,7 @@ import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepositoryImpl;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepositoryImpl;
+import com.grishberg.graphreporter.data.repository.values.DailyDataStorage;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.services.RefreshTokenService;
@@ -95,8 +96,10 @@ public class RestModule {
 
     @Provides
     @Singleton
-    DailyDataRepository provideDataRepository(final Api api, final AuthTokenRepository tokenRepository) {
-        return new DailyDataRepositoryImpl(tokenRepository, api);
+    DailyDataRepository provideDataRepository(final Api api,
+                                              final AuthTokenRepository tokenRepository,
+                                              final DailyDataStorage storage) {
+        return new DailyDataRepositoryImpl(tokenRepository, api, storage);
     }
 
     @Provides

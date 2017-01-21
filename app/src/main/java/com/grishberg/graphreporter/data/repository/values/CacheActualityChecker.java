@@ -5,7 +5,7 @@ package com.grishberg.graphreporter.data.repository.values;
  * Интерфейс для валидации кэша
  */
 public interface CacheActualityChecker {
-    void updateNewData();
+    void updateNewData(long id);
 
-    boolean isCacheDataValid();
+    boolean isCacheDataValid(long id);
 }

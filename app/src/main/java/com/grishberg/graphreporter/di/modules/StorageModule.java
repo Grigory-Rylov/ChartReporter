@@ -1,6 +1,9 @@
 package com.grishberg.graphreporter.di.modules;
 
-import com.grishberg.graphreporter.data.repository.ValuesRepository;
+import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
+import com.grishberg.graphreporter.data.repository.values.CacheActualityCheckerImpl;
+import com.grishberg.graphreporter.data.repository.values.DailyDataStorage;
+import com.grishberg.graphreporter.data.repository.values.InMemoryDailyDataStorage;
 
 import javax.inject.Singleton;
 
@@ -12,15 +15,18 @@ import dagger.Provides;
  */
 @Module
 public class StorageModule {
-    private final ValuesRepository valuesRepository;
 
-    public StorageModule(final ValuesRepository valuesRepository) {
-        this.valuesRepository = valuesRepository;
+    public static final int TIMEOUT = 10 * 3600 * 1000;
+
+    @Provides
+    @Singleton
+    CacheActualityChecker provideCacheChecker() {
+        return new CacheActualityCheckerImpl(TIMEOUT);
     }
 
     @Provides
     @Singleton
-    ValuesRepository provideContext() {
-        return valuesRepository;
+    DailyDataStorage provideContext(final CacheActualityChecker cacheChecker) {
+        return new InMemoryDailyDataStorage(cacheChecker);
     }
 }

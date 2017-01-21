@@ -13,7 +13,7 @@ import rx.Observable;
 public class DailyDataPersistentStorage implements DailyDataRepository {
 
     @Override
-    public Observable<List<DailyValue>> getDailyValues(long productId) {
+    public Observable<List<DailyValue>> getDailyValues(final long productId) {
         return null;
     }
 }

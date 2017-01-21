@@ -4,6 +4,7 @@ import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.di.modules.AppModule;
 import com.grishberg.graphreporter.di.modules.ProfileModule;
 import com.grishberg.graphreporter.di.modules.RestModule;
+import com.grishberg.graphreporter.di.modules.StorageModule;
 import com.grishberg.graphreporter.di.sub.modules.AuthModule;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
@@ -20,7 +21,8 @@ import dagger.Component;
 @Singleton
 @Component(modules = {RestModule.class,
         AppModule.class,
-        ProfileModule.class
+        ProfileModule.class,
+        StorageModule.class
 })
 
 public interface AppComponent {

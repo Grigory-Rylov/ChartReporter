@@ -11,6 +11,7 @@ import com.grishberg.graphreporter.di.components.DaggerAppComponent;
 import com.grishberg.graphreporter.di.modules.AppModule;
 import com.grishberg.graphreporter.di.modules.ProfileModule;
 import com.grishberg.graphreporter.di.modules.RestModule;
+import com.grishberg.graphreporter.di.modules.StorageModule;
 import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
@@ -37,6 +38,7 @@ public final class App extends Application {
         }
         DiManager.initComponents(DaggerAppComponent
                 .builder()
+                .storageModule(new StorageModule())
                 .appModule(new AppModule(this))
                 .restModule(new RestModule(getString(R.string.end_point)))
                 .profileModule(new ProfileModule(new AuthTokenRepositoryImpl(getApplicationContext())))
