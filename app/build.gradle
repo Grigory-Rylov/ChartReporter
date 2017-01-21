@@ -25,7 +25,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug{
+        debug {
             applicationIdSuffix ".debug"
         }
     }
@@ -58,12 +58,12 @@ dependencies {
 
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxandroid:1.2.1'
-    compile project(':datafacade')
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
     compile "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
 
+    //okhttp
     compile "com.squareup.okhttp3:okhttp:$okhttp_version"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
@@ -73,6 +73,7 @@ dependencies {
     apt "com.google.dagger:dagger-compiler:$dagger_version"
     testApt "com.google.dagger:dagger-compiler:$dagger_version"
 
+    //leakcanary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
@@ -81,4 +82,5 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
+    compile project(':datafacade')
 }
