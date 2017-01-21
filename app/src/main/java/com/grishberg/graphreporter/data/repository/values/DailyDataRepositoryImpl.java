@@ -42,7 +42,7 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
 
         //Извлечь данные из кэша
         final Observable<List<DailyValue>> dailyValuesFromCache = dataStorage.getDailyValues(productId)
-                .filter(Objects::nonNull)
+                .filter(response -> response != null)
                 .subscribeOn(Schedulers.computation());
 
         // извлечь данные из сети
