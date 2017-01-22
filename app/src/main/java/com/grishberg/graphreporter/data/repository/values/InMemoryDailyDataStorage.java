@@ -1,10 +1,10 @@
 package com.grishberg.graphreporter.data.repository.values;
 
-import android.util.SparseArray;
-
+import com.grishberg.datafacade.ArrayListResult;
+import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.DailyValue;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +16,7 @@ import rx.Observable;
  * Реализация хранилища данных в памяти
  */
 public class InMemoryDailyDataStorage implements DailyDataStorage {
-    private final Map<Long, List<DailyValue>> cache;
+    private final Map<Long, ListResultCloseable<DailyValue>> cache;
     private final CacheActualityChecker cacheChecker;
 
     public InMemoryDailyDataStorage(final CacheActualityChecker cacheChecker) {
@@ -26,19 +26,28 @@ public class InMemoryDailyDataStorage implements DailyDataStorage {
 
     @Override
     public void setDailyData(final long productId, final List<DailyValue> values) {
-        List<DailyValue> list = cache.get(productId);
+        ListResultCloseable<DailyValue> list = cache.get(productId);
         if (list != null) {
-            cache.clear();
+            list.clear();
+            list.addAll(values);
         } else {
-            list = new ArrayList<>(300);
+            list = ArrayListResult.fromList(values);
             cache.put(productId, list);
         }
-        list.addAll(values);
         cacheChecker.updateNewData(productId);
     }
 
     @Override
-    public Observable<List<DailyValue>> getDailyValues(final long productId) {
+    public void appendDailyData(final long productId, final List<DailyValue> values) {
+        final ListResultCloseable<DailyValue> list = cache.get(productId);
+        if (list != null) {
+            list.addAll(values);
+        }
+        cacheChecker.updateNewData(productId);
+    }
+
+    @Override
+    public Observable<ListResultCloseable<DailyValue>> getDailyValues(final long productId, final int offset) {
         if (cacheChecker.isCacheDataValid(productId)) {
             return Observable.just(cache.get(productId));
         }

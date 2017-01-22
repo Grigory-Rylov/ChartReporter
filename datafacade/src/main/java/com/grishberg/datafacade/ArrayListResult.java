@@ -9,9 +9,10 @@ import java.util.List;
  */
 public class ArrayListResult<T> extends ArrayList<T> implements ListResultCloseable<T> {
 
+    private boolean isClosed;
+
     public static <T> ListResultCloseable<T> fromList(final List<T> source) {
-        final ListResultCloseable<T> list = new ArrayListResult<>(source);
-        return list;
+        return new ArrayListResult<>(source);
     }
 
     public ArrayListResult(final List<T> list) {
@@ -20,5 +21,11 @@ public class ArrayListResult<T> extends ArrayList<T> implements ListResultClosea
 
     @Override
     public void close() throws IOException {
+        isClosed = true;
+    }
+
+    @Override
+    public boolean isClosed() {
+        return isClosed;
     }
 }

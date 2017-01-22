@@ -28,6 +28,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartMode;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
@@ -301,5 +302,10 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             default:
                 return false;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

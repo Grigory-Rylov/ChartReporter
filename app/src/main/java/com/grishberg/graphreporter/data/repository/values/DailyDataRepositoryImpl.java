@@ -1,5 +1,6 @@
 package com.grishberg.graphreporter.data.repository.values;
 
+import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
@@ -7,7 +8,6 @@ import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
 
-import java.util.List;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -33,33 +33,33 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
     }
 
     @Override
-    public Observable<List<DailyValue>> getDailyValues(final long productId) {
+    public Observable<ListResultCloseable<DailyValue>> getDailyValues(final long productId,
+                                                                      final int offset) {
         final AuthContainer authInfo = authTokenRepository.getAuthInfo();
         if (authInfo == null) {
             return Observable.error(new WrongCredentialsException(null));
         }
 
         //Извлечь данные из кэша
-        final Observable<List<DailyValue>> dailyValuesFromCache = dataStorage.getDailyValues(productId)
-                .filter(response -> response != null)
+        final Observable<ListResultCloseable<DailyValue>> dailyValuesFromCache = dataStorage.getDailyValues(productId, offset)
+                .filter(response -> response != null || offset > 0)
                 .subscribeOn(Schedulers.computation());
 
         // извлечь данные из сети
-        final Observable<List<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(), productId, 0, 1000)
+        final Observable<ListResultCloseable<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(), productId, offset, 1000)
                 .onErrorResumeNext(
                         refreshTokenAndRetry(Observable.defer(() ->
-                                api.getDailyData(authInfo.getAccessToken(), productId, 0, 1000))))
+                                api.getDailyData(authInfo.getAccessToken(), productId, offset, 1000))))
                 .subscribeOn(Schedulers.io())
                 .flatMap(response -> {
                     dataStorage.setDailyData(productId, response.getData());
-                    return Observable.just(response.getData());
+                    return dataStorage.getDailyValues(productId, offset);
                 });
 
         /**
          * соединить observables кэша и rest
          */
         return Observable
-                //.amb(dailyValuesFromCache, dailyValues)
                 .concat(dailyValuesFromCache, dailyValues).first()
                 .observeOn(AndroidSchedulers.mainThread());
     }
