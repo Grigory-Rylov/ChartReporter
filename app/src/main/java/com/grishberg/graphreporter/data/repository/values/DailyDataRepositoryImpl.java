@@ -8,7 +8,6 @@ import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsEx
 import com.grishberg.graphreporter.data.rest.Api;
 
 import java.util.List;
-import java.util.Objects;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

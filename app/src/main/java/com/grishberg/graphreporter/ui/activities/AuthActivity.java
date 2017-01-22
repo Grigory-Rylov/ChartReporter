@@ -74,6 +74,7 @@ public class AuthActivity extends MvpAppCompatActivity implements AuthView, View
     @Override
     public void showSuccess() {
         ChartActivity.start(this);
+        finish();
     }
 
     @Override

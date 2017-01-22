@@ -16,8 +16,8 @@ import java.util.List;
  */
 public class ChartsHelper {
 
-    private static final int CANDLE_PERIOD_OFFSET = 2;
-    private static final int CANDLE_PERIOD_INCREMENT = 3;
+    private static final int CANDLE_PERIOD_OFFSET = 1;
+    private static final int CANDLE_PERIOD_INCREMENT = 2;
 
     private ChartsHelper() {
     }
@@ -57,7 +57,7 @@ public class ChartsHelper {
                 periodCount += 1;
             }
             dates.add(endPeriod);
-            entries.add(new Entry(periodCount++, end));
+            entries.add(new Entry(periodCount, end));
         }
 
         return new ChartResponseContainer<>(entries, dates, period);

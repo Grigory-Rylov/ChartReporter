@@ -31,13 +31,13 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartMode;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
-import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.ui.dialogs.PeriodSelectDialog;
 import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
+import com.grishberg.graphreporter.utils.ColorUtil;
 import com.grishberg.graphreporter.utils.LogService;
 
 import java.text.SimpleDateFormat;
@@ -202,15 +202,15 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         final LineData lineData = new LineData();
 
         final LineDataSet set = new LineDataSet(entries, "Line DataSet");
-        set.setColor(Color.rgb(240, 238, 70));
-        set.setLineWidth(2.5f);
-        set.setCircleColor(Color.rgb(240, 238, 70));
-        set.setCircleRadius(5f);
-        set.setFillColor(Color.rgb(240, 238, 70));
+        set.setColor(ColorUtil.getColor(getContext(), R.color.line_color));
+        set.setLineWidth(2f);
+        set.setCircleColor(ColorUtil.getColor(getContext(), R.color.line_color));
+        set.setCircleRadius(2f);
+        set.setFillColor(ColorUtil.getColor(getContext(), R.color.line_color));
         set.setMode(LineDataSet.Mode.LINEAR);
-        set.setDrawValues(true);
+        set.setDrawValues(false);
         set.setValueTextSize(10f);
-        set.setValueTextColor(Color.rgb(240, 238, 70));
+        set.setValueTextColor(ColorUtil.getColor(getContext(), R.color.line_color));
 
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
         lineData.addDataSet(set);
@@ -226,11 +226,12 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         candleDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         candleDataSet.setShadowColor(Color.DKGRAY);
         candleDataSet.setShadowWidth(0.7f);
-        candleDataSet.setDecreasingColor(Color.RED);
+        candleDataSet.setDecreasingColor(ColorUtil.getColor(getContext(), R.color.candle_decreasing_color));
         candleDataSet.setDecreasingPaintStyle(Paint.Style.FILL);
-        candleDataSet.setIncreasingColor(Color.rgb(122, 242, 84));
+        candleDataSet.setIncreasingColor(ColorUtil.getColor(getContext(), R.color.candle_increasing_color));
         candleDataSet.setIncreasingPaintStyle(Paint.Style.FILL);
-        candleDataSet.setNeutralColor(Color.BLUE);
+        candleDataSet.setNeutralColor(ColorUtil.getColor(getContext(), R.color.candle_neutral_color));
+        candleDataSet.setBarSpace(0f);
         candleData.addDataSet(candleDataSet);
         return candleData;
     }
