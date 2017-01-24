@@ -13,7 +13,7 @@ public class ColorUtil {
         if (SDK_INT >= LOLLIPOP) {
             return context.getColor(colorResId);
         } else {
-            return context.getResources().getColor(colorResId, context.getTheme());
+            return context.getResources().getColor(colorResId);
         }
     }
 }
