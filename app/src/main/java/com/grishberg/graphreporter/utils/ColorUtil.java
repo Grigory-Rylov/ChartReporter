@@ -11,7 +11,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 public class ColorUtil {
     public static int getColor(final Context context, final int colorResId) {
         if (SDK_INT >= LOLLIPOP) {
-            return context.getColor(colorResId);
+            return context.getResources().getColor(colorResId, context.getTheme());
         } else {
             return context.getResources().getColor(colorResId);
         }
