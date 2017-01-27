@@ -1,6 +1,7 @@
 package com.grishberg.graphreporter.utils;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
@@ -11,7 +12,7 @@ import static android.os.Build.VERSION_CODES.LOLLIPOP;
 public class ColorUtil {
     public static int getColor(final Context context, final int colorResId) {
         if (SDK_INT >= LOLLIPOP) {
-            return context.getResources().getColor(colorResId, context.getTheme());
+            return ContextCompat.getColor(context, colorResId)
         } else {
             return context.getResources().getColor(colorResId);
         }
