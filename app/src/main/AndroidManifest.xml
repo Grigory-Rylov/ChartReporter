@@ -42,6 +42,11 @@
 
         <activity android:name=".ui.activities.AboutActivity">
         </activity>
+        <activity
+            android:name=".ui.activities.ProductsListActivity"
+            android:label="@string/title_activity_products_list"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

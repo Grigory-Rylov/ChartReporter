@@ -24,4 +24,8 @@
     <string name="candle_screen_menu_candle_chart_mode">Свечи</string>
     <string name="candle_screen_menu_line_chart_mode">Линейный график</string>
     <string name="candle_screen_menu_candle_and_line_mode">Свечи и линии</string>
+    <string name="title_activity_products_list">ProductsListActivity</string>
+    <string name="drawer_candles_btn_title">Свечи</string>
+    <string name="drawer_lines_btn_title">Линейный график</string>
+    <string name="drawer_candles_and_lines_btn_title">Свечи и линии</string>
 </resources>

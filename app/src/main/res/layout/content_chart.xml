@@ -10,11 +10,4 @@
     tools:context="com.grishberg.graphreporter.ui.activities.ChartActivity"
     tools:showIn="@layout/activity_chart">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/chart_select_product_title"
-        android:textSize="@dimen/chart_select_product_title_size"
-        android:layout_margin="@dimen/horizontal_margin"/>
 </FrameLayout>

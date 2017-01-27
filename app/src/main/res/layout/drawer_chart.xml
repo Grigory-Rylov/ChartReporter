@@ -2,7 +2,6 @@
 <android.support.design.widget.NavigationView
     android:id="@+id/chart_nav_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="start"
@@ -22,14 +21,30 @@
                 layout="@layout/nav_header_chart"
                 />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/activity_chart_nav_view"
-                android:layout_width="@dimen/chart_screen_naw_width"
-                android:layout_height="match_parent"
-                android:layout_gravity="start|left"
-                android:fitsSystemWindows="true"
-                android:scrollbars="vertical"
-                app:headerLayout="@layout/nav_header_chart"/>
+            <!-- menu -->
+            <Button
+                android:id="@+id/drawer_candles_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/drawer_candles_btn_title"/>
+
+            <Button
+                android:id="@+id/drawer_lines_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/drawer_lines_btn_title"/>
+
+            <Button
+                android:id="@+id/drawer_candles_and_lines_btn"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/drawer_candles_and_lines_btn_title"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.NavigationView>

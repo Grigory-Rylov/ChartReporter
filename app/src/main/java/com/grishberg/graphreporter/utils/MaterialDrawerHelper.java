@@ -16,6 +16,7 @@ import com.grishberg.graphreporter.R;
  */
 public class MaterialDrawerHelper {
     private final ActionBarDrawerToggle drawerToggle;
+    private boolean isDrawerOpened;
 
     public MaterialDrawerHelper(final Activity activity,
                                 final ActionBar actionBar,
@@ -30,12 +31,14 @@ public class MaterialDrawerHelper {
                 final AppCompatActivity actionBarActivity = (AppCompatActivity) view.getContext();
                 //actionBarActivity.getSupportActionBar().setTitle(mTitle);
                 actionBarActivity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                isDrawerOpened = false;
             }
 
             public void onDrawerOpened(final View drawerView) {
                 final AppCompatActivity actionBarActivity = (AppCompatActivity) drawerView.getContext();
                 //actionBarActivity.getSupportActionBar().setTitle(mDrawerTitle);
                 actionBarActivity.invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                isDrawerOpened = true;
             }
         };
         drawerLayout.addDrawerListener(drawerToggle);
@@ -53,5 +56,9 @@ public class MaterialDrawerHelper {
 
     public boolean onOptionsItemSelected(final MenuItem item) {
         return drawerToggle.onOptionsItemSelected(item);
+    }
+
+    public boolean isDrawerOpened() {
+        return isDrawerOpened;
     }
 }

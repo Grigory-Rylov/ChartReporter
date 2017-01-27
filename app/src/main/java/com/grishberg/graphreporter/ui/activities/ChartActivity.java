@@ -16,22 +16,13 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.datafacade.OnItemSelectedListener;
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.ProductItem;
-import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
-import com.grishberg.graphreporter.mvp.view.ProductsView;
-import com.grishberg.graphreporter.ui.adapters.ProductsListAdapter;
 import com.grishberg.graphreporter.ui.fragments.CandleFragment;
+import com.grishberg.graphreporter.ui.fragments.ProductsFragment;
 import com.grishberg.graphreporter.utils.MaterialDrawerHelper;
 
-public class ChartActivity extends MvpAppCompatActivity implements ProductsView, OnItemSelectedListener<ProductItem> {
+public class ChartActivity extends MvpAppCompatActivity implements ProductsFragment.ProductsInteractionListener {
 
-    @InjectPresenter
-    ProductsPresenter presenter;
-    private ProductsListAdapter adapter;
     private DrawerLayout drawerLayout;
     private MaterialDrawerHelper drawerHelper;
 
@@ -50,12 +41,13 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
         setContentView(R.layout.activity_chart);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        initRecyclerView();
-
         initDrawer();
-
-        presenter.requestProducts();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.content_chart, ProductsFragment.newInstance(), ProductsFragment.class.getSimpleName())
+                    .commit();
+        }
     }
 
     private void initDrawer() {
@@ -63,49 +55,23 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
         drawerHelper = new MaterialDrawerHelper(this, getSupportActionBar(), drawerLayout);
     }
 
-    private void initRecyclerView() {
-        adapter = new ProductsListAdapter(this);
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_chart_nav_view);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-    }
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        adapter.recycle();
-    }
-
-    @Override
-    public void showProducts(final ListResultCloseable<ProductItem> productItems) {
-        adapter.update(productItems);
-    }
-
-    @Override
-    public void showProgress() {
-        //Do nothing
-    }
-
-    @Override
-    public void hideProgress() {
-        //Do nothing
-    }
-
-    @Override
-    public void showFail(final String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onItemSelected(final ProductItem item, final int position) {
-        final Fragment fragment = CandleFragment.newInstance(item.getId());
+    public void onProductSelected(final long productId) {
+        final Fragment fragment = CandleFragment.newInstance(productId);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_chart, fragment)
+                .addToBackStack(null)
                 .commit();
-        drawerLayout.closeDrawers();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerHelper.isDrawerOpened()) {
+            drawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -122,7 +88,7 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsView,
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        if (item.getItemId() == R.id.about){
+        if (item.getItemId() == R.id.about) {
             AboutActivity.start(this);
         }
         // This is required to make the drawer toggle work
