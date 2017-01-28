@@ -10,8 +10,8 @@ android {
         applicationId "com.grishberg.graphreporter"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 17
-        versionName "1.8.3"
+        versionCode 18
+        versionName "1.8"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // Enable the experimental Jack build tools.
