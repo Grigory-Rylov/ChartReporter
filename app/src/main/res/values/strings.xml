@@ -39,4 +39,8 @@
     <string name="view_period_selector_1Y">1 Y</string>
     <string name="view_period_selector_max">MAX</string>
     <string name="dialog_new_point_title">Новая точка</string>
+    <!-- Диалог создания формулы -->
+    <string name="dialog_new_point_name_hint">Название точки</string>
+    <string name="dialog_new_point_items_formula_title">Формула</string>
+    <string name="dialog_new_point_percent_hint">%</string>
 </resources>

@@ -11,23 +11,80 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/activity_horizontal_margin"
-        android:textSize="@dimen/dialog_select_period_header_text_size"
-        android:text="@string/dialog_new_point_title"/>
+        android:text="@string/dialog_new_point_title"
+        android:textSize="@dimen/dialog_select_period_header_text_size"/>
 
-    <Spinner
-        android:id="@+id/dialog_select_daily_period_items_spinner"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/dialog_select_daily_period_list_caption"
-        android:layout_margin="@dimen/horizontal_margin"
+    <!-- Поле ввода названия точки -->
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
 
+        <EditText
+            android:id="@+id/dialog_new_point_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/dialog_new_point_name_hint"
+            android:inputType="text"
+            android:textSize="@dimen/auth_login_text_size"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <!-- Выбор точки для доп анализа -->
+    <Spinner
+        android:id="@+id/dialog_new_point_items_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/horizontal_margin"
+        android:text="@string/dialog_select_daily_period_list_caption"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_new_point_items_formula_title"
+        android:textSize="@dimen/dialog_select_period_header_text_size"/>
+
+    <!-- Блок с формулой -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <!-- Процент -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/dialog_new_point_percent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/dialog_new_point_percent_hint"
+                android:inputType="text"
+                android:textSize="@dimen/auth_login_text_size"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/dialog_new_point_condition_spinner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:layout_weight="1"
+            android:text="@string/dialog_select_daily_period_list_caption"
+            />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/dialog_select_daily_period_items_ok_button"
-        android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:text="@string/dialog_select_daily_period_ok_caption"/>
 
