@@ -30,6 +30,11 @@
     <dimen name="chart_select_product_title_size">20sp</dimen>
 
     <!-- period dialog -->
+
+    <dimen name="view_period_button_text_size">8sp</dimen>
+    <dimen name="view_period_height">20dp</dimen>
+    <dimen name="view_period_button_width">60dp</dimen>
+
     <dimen name="dialog_select_period_min_height">300dp</dimen>
     <dimen name="dialog_select_period_min_width">300dp</dimen>
     <dimen name="dialog_select_period_header_text_size">28sp</dimen>

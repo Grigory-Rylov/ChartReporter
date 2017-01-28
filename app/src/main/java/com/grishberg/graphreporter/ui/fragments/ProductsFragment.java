@@ -1,9 +1,7 @@
 package com.grishberg.graphreporter.ui.fragments;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -88,6 +86,7 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
 
     @Override
     public void onItemSelected(final ProductItem item, final int position) {
+        getActivity().setTitle(item.getName());
         listener.onProductSelected(item.getId());
     }
 
@@ -117,6 +116,7 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @FunctionalInterface
     public interface ProductsInteractionListener {
 
         void onProductSelected(long id);

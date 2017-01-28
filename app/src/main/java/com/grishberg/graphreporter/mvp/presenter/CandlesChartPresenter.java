@@ -10,7 +10,6 @@ import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.LogService;
-import com.grishberg.graphreporter.utils.TimerUtil;
 
 import java.io.IOException;
 
@@ -26,7 +25,7 @@ import rx.Observable;
 public class CandlesChartPresenter extends BasePresenter<CandlesChartView> implements Runnable {
     private static final String TAG = CandlesChartPresenter.class.getSimpleName();
     public static final int DURATION = 30 * 60 * 1000;
-    public static final int INITIAL_OFFSET = 0;
+    private static final int INITIAL_OFFSET = 0;
 
     @Inject
     LogService log;
@@ -35,6 +34,9 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private int maxOffset;
     //@Inject
     //TimerUtil timer;
+    private ChartMode currentChartMode = ChartMode.CANDLE_MODE;
+    private ChartPeriod period = ChartPeriod.DAY;
+    private long currentProductId;
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
@@ -45,13 +47,35 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
      * Пересчитать точки в зависимости от периода
      *
      * @param productId -  идентификатор продукта
-     * @param period    -  индекс периода
      */
-    public void recalculatePeriod(final long productId,
-                                  final ChartMode chartMode,
-                                  final ChartPeriod period) {
+    public void onSelectedProduct(final long productId) {
+        currentProductId = productId;
         getViewState().showProgress();
-        getDataFromOffset(productId, INITIAL_OFFSET, chartMode, period);
+        getDataFromOffset(productId, INITIAL_OFFSET, currentChartMode, period);
+    }
+
+    public void onCandlesModeClicked() {
+        currentChartMode = ChartMode.CANDLE_MODE;
+        onSelectedProduct(currentProductId);
+    }
+
+    public void onLinesModeClicked() {
+        currentChartMode = ChartMode.LINE_MODE;
+        onSelectedProduct(currentProductId);
+    }
+
+    public void onCandlesAndLinesMode() {
+        currentChartMode = ChartMode.CANDLE_AND_LINE_MODE;
+        onSelectedProduct(currentProductId);
+    }
+
+    /**
+     * Смена периода
+     * @param period новый период
+     */
+    public void onPeriodChanged(final ChartPeriod period){
+        this.period = period;
+        onSelectedProduct(currentProductId);
     }
 
     private void getDataFromOffset(final long productId,
@@ -66,17 +90,20 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                     maxOffset = dailyValues.size();
                     try {
                         switch (chartMode) {
-                            case CHART_MODE:
+                            case CANDLE_MODE:
                                 return Observable.just(
-                                        DualChartContainer.makeCandle(period, ChartsHelper.getCandleDataForPeriod(period, dailyValues, false))
+                                        DualChartContainer.makeCandle(period,
+                                                ChartsHelper.getCandleDataForPeriod(period, dailyValues, false))
                                 );
                             case LINE_MODE:
                                 return Observable.just(
-                                        DualChartContainer.makeLine(period, ChartsHelper.getLineData(period, dailyValues, false))
+                                        DualChartContainer.makeLine(period,
+                                                ChartsHelper.getLineData(period, dailyValues, false))
                                 );
                             default:
                                 return Observable.just(
-                                        DualChartContainer.makeCandleAndLine(period, ChartsHelper.getLineData(period, dailyValues, true),
+                                        DualChartContainer.makeCandleAndLine(period,
+                                                ChartsHelper.getLineData(period, dailyValues, true),
                                                 ChartsHelper.getCandleDataForPeriod(period, dailyValues, true))
                                 );
                         }

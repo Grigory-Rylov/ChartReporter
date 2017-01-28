@@ -5,11 +5,15 @@ package com.grishberg.graphreporter.data.enums;
  * Структура хранения периода графика
  */
 public enum ChartPeriod {
-    DAY(1, 24),
-    WEEK(7, 1),
-    MONTH(30, 1),
-    HALF_YEAR(180, 1),
-    YEAR(365, 1);
+    MINUTE(1, 1),
+    MINUTE_15(1, 15),
+    HOUR(1, 60),
+    HOUR_2(1, 60 * 2),
+    DAY(1, 60 * 24),
+    WEEK(7, 60 * 24 * 7),
+    MONTH(30, 60 * 24 * 7 * 4),
+    YEAR(365, 60 * 24 * 365),
+    MAX(1, 999);
 
     private final int partion;
     private final int period;

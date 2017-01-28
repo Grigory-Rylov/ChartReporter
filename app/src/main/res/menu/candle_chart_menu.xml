@@ -1,11 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/candle_chart_mode"
-          android:title="@string/candle_screen_menu_candle_chart_mode"/>
-    <item android:id="@+id/line_chart_mode"
-          android:title="@string/candle_screen_menu_line_chart_mode"/>
-    <item android:id="@+id/candle_and_line_mode"
-          android:title="@string/candle_screen_menu_candle_and_line_mode"/>
-    <item android:id="@+id/change_period"
-          android:title="@string/candle_screen_menu_select_period"/>
+<menu>
 </menu>

@@ -109,7 +109,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
         }).when(view).showCandleChart(any(ChartResponseContainer.class));
 
         //when
-        presenter.recalculatePeriod(PRODUCT_ID, ChartPeriod.WEEK);
+        presenter.onSelectedProduct(PRODUCT_ID, ChartPeriod.WEEK);
         //then
         verify(view, times(1)).showProgress();
         verify(view, times(1)).hideProgress();

@@ -28,4 +28,14 @@
     <string name="drawer_candles_btn_title">Свечи</string>
     <string name="drawer_lines_btn_title">Линейный график</string>
     <string name="drawer_candles_and_lines_btn_title">Свечи и линии</string>
+    <!-- view_period_selector -->
+    <string name="view_period_selector_1m">1 min</string>
+    <string name="view_period_selector_15m">15 min</string>
+    <string name="view_period_selector_1h">1 H</string>
+    <string name="view_period_selector_2h">2 H</string>
+    <string name="view_period_selector_1D">1 D</string>
+    <string name="view_period_selector_1W">1 W</string>
+    <string name="view_period_selector_1M">1 M</string>
+    <string name="view_period_selector_1Y">1 Y</string>
+    <string name="view_period_selector_max">MAX</string>
 </resources>

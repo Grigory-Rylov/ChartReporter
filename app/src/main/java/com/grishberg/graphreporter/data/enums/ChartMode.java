@@ -5,7 +5,7 @@ package com.grishberg.graphreporter.data.enums;
  * Типы диаграмм
  */
 public enum ChartMode {
-    CHART_MODE,
+    CANDLE_MODE,
     LINE_MODE,
     CANDLE_AND_LINE_MODE
 }

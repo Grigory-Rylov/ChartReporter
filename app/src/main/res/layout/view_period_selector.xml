@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/view_period_height"
+    android:background="@color/color_accent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/view_period_selector_1m"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_1m"
+            tools:visibility="gone"/>
+
+        <Button
+            android:id="@+id/view_period_selector_15m"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_15m"
+            tools:visibility="gone"/>
+
+        <Button
+            android:id="@+id/view_period_selector_1h"
+            style="@style/PeriodSelectorButton"
+
+            android:text="@string/view_period_selector_1h"
+            tools:visibility="gone"/>
+
+        <Button
+            android:id="@+id/view_period_selector_2h"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_2h"
+
+            tools:visibility="gone"/>
+
+        <Button
+            android:id="@+id/view_period_selector_1D"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_1D"/>
+
+        <Button
+            android:id="@+id/view_period_selector_1W"
+            style="@style/PeriodSelectorButton"
+
+            android:text="@string/view_period_selector_1W"/>
+
+        <Button
+            android:id="@+id/view_period_selector_1M"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_1M"/>
+
+        <Button
+            android:id="@+id/view_period_selector_1Y"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_1Y"/>
+
+        <Button
+            android:id="@+id/view_period_selector_max"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_max"/>
+
+    </LinearLayout>
+</HorizontalScrollView>

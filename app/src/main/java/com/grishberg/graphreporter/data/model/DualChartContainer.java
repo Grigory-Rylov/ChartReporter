@@ -44,7 +44,7 @@ public class DualChartContainer {
                                                 final ChartResponseContainer<CandleEntry> candleResponse) {
         final DualChartContainer container = new DualChartContainer();
         container.period = period;
-        container.chartMode = ChartMode.CHART_MODE;
+        container.chartMode = ChartMode.CANDLE_MODE;
         container.entryResponse = null;
         container.candleResponse = candleResponse;
         return container;

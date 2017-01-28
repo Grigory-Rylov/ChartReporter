@@ -6,14 +6,14 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.widget.Button;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.grishberg.graphreporter.R;
@@ -21,8 +21,9 @@ import com.grishberg.graphreporter.ui.fragments.CandleFragment;
 import com.grishberg.graphreporter.ui.fragments.ProductsFragment;
 import com.grishberg.graphreporter.utils.MaterialDrawerHelper;
 
-public class ChartActivity extends MvpAppCompatActivity implements ProductsFragment.ProductsInteractionListener {
+public class ChartActivity extends MvpAppCompatActivity implements ProductsFragment.ProductsInteractionListener, View.OnClickListener {
 
+    private static final String TAG = ChartActivity.class.getSimpleName();
     private DrawerLayout drawerLayout;
     private MaterialDrawerHelper drawerHelper;
 
@@ -42,6 +43,15 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsFragm
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         initDrawer();
+
+        final Button canlesButton = (Button) findViewById(R.id.drawer_candles_btn);
+        final Button canlesAndLinesButton = (Button) findViewById(R.id.drawer_candles_and_lines_btn);
+        final Button canlesLinesButton = (Button) findViewById(R.id.drawer_lines_btn);
+
+        canlesButton.setOnClickListener(this);
+        canlesAndLinesButton.setOnClickListener(this);
+        canlesLinesButton.setOnClickListener(this);
+
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                     .beginTransaction()
@@ -60,7 +70,7 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsFragm
         final Fragment fragment = CandleFragment.newInstance(productId);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_chart, fragment)
+                .replace(R.id.content_chart, fragment, CandleFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
     }
@@ -100,5 +110,25 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsFragm
         final MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         return true;
+    }
+
+    @Override
+    public void onClick(final View view) {
+        drawerLayout.closeDrawers();
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(CandleFragment.class.getSimpleName());
+        if (fragment instanceof CandleFragment)
+            switch (view.getId()) {
+                case R.id.drawer_candles_btn:
+                    ((CandleFragment) fragment).onCandlesModeClicked();
+                    break;
+                case R.id.drawer_candles_and_lines_btn:
+                    ((CandleFragment) fragment).onCanlesAndLinesMode();
+                    break;
+                case R.id.drawer_lines_btn:
+                    ((CandleFragment) fragment).onLinesModeClicked();
+                    break;
+                default:
+                    Log.e(TAG, "onClick: unknown item clicked");
+            }
     }
 }
