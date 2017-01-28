@@ -1,0 +1,34 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:minWidth="@dimen/dialog_select_period_min_width"
+              android:orientation="vertical"
+              android:padding="@dimen/horizontal_margin"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:textSize="@dimen/dialog_select_period_header_text_size"
+        android:text="@string/dialog_new_point_title"/>
+
+    <Spinner
+        android:id="@+id/dialog_select_daily_period_items_spinner"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/dialog_select_daily_period_list_caption"
+        android:layout_margin="@dimen/horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+
+    <Button
+        android:id="@+id/dialog_select_daily_period_items_ok_button"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_select_daily_period_ok_caption"/>
+
+</LinearLayout>

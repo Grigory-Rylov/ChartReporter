@@ -38,4 +38,5 @@
     <string name="view_period_selector_1M">1 M</string>
     <string name="view_period_selector_1Y">1 Y</string>
     <string name="view_period_selector_max">MAX</string>
+    <string name="dialog_new_point_title">Новая точка</string>
 </resources>
