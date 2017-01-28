@@ -187,7 +187,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         final XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
-        xAxis.setGranularity(1f * period.getPeriod());
+        xAxis.setGranularity(1f * period.getPeriod() / (60 * 24f));
         xAxis.setValueFormatter(new IAxisValueFormatter() {
 
             @Override

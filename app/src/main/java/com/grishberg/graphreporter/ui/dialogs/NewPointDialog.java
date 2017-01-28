@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Spinner;
 
 import com.grishberg.graphreporter.mvp.common.BaseMvpDialogFragment;
 
@@ -15,6 +16,7 @@ public class NewPointDialog extends BaseMvpDialogFragment {
     private static final String TAG = NewPointDialog.class.getSimpleName();
     public static final int NEW_POINT_RESULT_CODE = 1001;
 
+    private Spinner spinner;
 
     public static void showDialog(final FragmentManager fm,
                                   final Fragment targetFragment,
