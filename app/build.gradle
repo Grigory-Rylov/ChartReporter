@@ -5,7 +5,7 @@ apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.grishberg.graphreporter"
         minSdkVersion 15
@@ -37,6 +37,7 @@ dependencies {
     String dagger_version = "2.4"
     String retrofit_version = "2.1.0"
     String okhttp_version = "3.4.1"
+    String butteknife_version = "8.5.1"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -79,6 +80,10 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
     compile 'com.android.support:support-v4:25.1.0'
+
+    compile "com.jakewharton:butterknife:$butteknife_version"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butteknife_version"
+
     testCompile 'org.mockito:mockito-core:2.+'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'junit:junit:4.12'

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="vertex_name_array">
+        <item>@string/dialog_new_point_vertex_item_open</item>
+        <item>@string/dialog_new_point_vertex_item_closed</item>
+        <item>@string/dialog_new_point_vertex_item_max</item>
+        <item>@string/dialog_new_point_vertex_item_min</item>
+    </string-array>
+
+    <string-array name="condition_name_array">
+        <item>@string/dialog_new_point_condition_item_less</item>
+        <item>@string/dialog_new_point_condition_item_greater</item>
+    </string-array>
+</resources>

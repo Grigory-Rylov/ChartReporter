@@ -20,7 +20,7 @@
     <string name="candle_screen_menu_select_period">Выбор периода</string>
     <string name="about_text">Graph Analyser v.%s \nАвтор: Григорий Рылов</string>
     <string name="about_email_text">grishberg@ya.ru</string>
-    <string name="main_screen_menu_about">О программе...</string>
+    <string name="main_screen_menu_about">О программе</string>
     <string name="candle_screen_menu_candle_chart_mode">Свечи</string>
     <string name="candle_screen_menu_line_chart_mode">Линейный график</string>
     <string name="candle_screen_menu_candle_and_line_mode">Свечи и линии</string>
@@ -41,6 +41,17 @@
     <string name="dialog_new_point_title">Новая точка</string>
     <!-- Диалог создания формулы -->
     <string name="dialog_new_point_name_hint">Название точки</string>
-    <string name="dialog_new_point_items_formula_title">Формула</string>
+    <string name="dialog_new_point_items_formula_title">Формула:</string>
     <string name="dialog_new_point_percent_hint">%</string>
+    <string name="dialog_new_point_vertex_title">Вершина:</string>
+
+    <string name="dialog_new_point_vertex_item_all">Все</string>
+    <string name="dialog_new_point_vertex_item_open">open</string>
+    <string name="dialog_new_point_vertex_item_closed">closed</string>
+    <string name="dialog_new_point_vertex_item_max">max</string>
+    <string name="dialog_new_point_vertex_item_min">min</string>
+
+    <string name="dialog_new_point_condition_item_less">&lt;</string>
+    <string name="dialog_new_point_condition_item_greater">&gt;</string>
+
 </resources>

@@ -3,8 +3,7 @@
               android:layout_height="match_parent"
               android:minWidth="@dimen/dialog_select_period_min_width"
               android:orientation="vertical"
-              android:padding="@dimen/horizontal_margin"
-    >
+              android:padding="@dimen/horizontal_margin">
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,6 +27,14 @@
             android:inputType="text"
             android:textSize="@dimen/auth_login_text_size"/>
     </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="@string/dialog_new_point_vertex_title"
+        android:textSize="@dimen/dialog_select_period_header_text_size"/>
 
     <!-- Выбор точки для доп анализа -->
     <Spinner
@@ -64,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/dialog_new_point_percent_hint"
-                android:inputType="text"
+                android:inputType="numberSigned"
                 android:textSize="@dimen/auth_login_text_size"/>
         </android.support.design.widget.TextInputLayout>
 
@@ -81,7 +88,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/dialog_select_daily_period_items_ok_button"
+        android:id="@+id/dialog_new_point_ok_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
