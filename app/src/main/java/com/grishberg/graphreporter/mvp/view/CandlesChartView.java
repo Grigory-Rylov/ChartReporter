@@ -1,6 +1,7 @@
 package com.grishberg.graphreporter.mvp.view;
 
 import com.grishberg.graphreporter.data.model.DualChartContainer;
+import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.mvp.common.BaseViewWithProgress;
 
 /**
@@ -13,4 +14,6 @@ public interface CandlesChartView extends BaseViewWithProgress {
     void showEmptyDataError();
 
     void showChart(DualChartContainer response);
+
+    void formulaPoints(FormulaChartContainer response);
 }

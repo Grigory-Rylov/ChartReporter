@@ -5,6 +5,7 @@ import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.rest.Api;
+import com.grishberg.graphreporter.data.services.RefreshTokenService;
 import com.grishberg.graphreporter.utils.DebugLogger;
 import com.grishberg.graphreporter.utils.LogService;
 
@@ -30,11 +31,11 @@ public class TestRestModule {
         this.api = api;
     }
 
-    @Provides
-    @Singleton
-    AuthRepository provideAuthRepository() {
-        return Mockito.mock(AuthRepository.class);
-    }
+    //@Provides
+    //@Singleton
+    //AuthRepository provideAuthRepository() {
+    //    return Mockito.mock(AuthRepository.class);
+    //}
 
     @Provides
     @Singleton
@@ -64,5 +65,11 @@ public class TestRestModule {
     @Singleton
     ProductsRepository provideProductsDataRepository() {
         return Mockito.mock(ProductsRepository.class);
+    }
+
+    @Provides
+    @Singleton
+    RefreshTokenService provideRefreshTokenService() {
+        return Mockito.mock(RefreshTokenService.class);
     }
 }

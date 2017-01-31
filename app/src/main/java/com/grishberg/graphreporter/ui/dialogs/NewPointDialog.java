@@ -7,6 +7,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,13 +16,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.mvp.common.BaseMvpDialogFragment;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by grishberg on 28.01.17.
@@ -30,10 +29,8 @@ import butterknife.ButterKnife;
 public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClickListener {
     public static final int NEW_POINT_RESULT_CODE = 1001;
     private static final String NEW_POINT_RESULT_EXTRA = NewPointDialog.class.getSimpleName();
-    @BindView(R.id.dialog_new_point_name)
-    EditText pointName;
-    @BindView(R.id.dialog_new_point_percent)
-    EditText pointPercent;
+    private EditText pointName;
+    private EditText pointPercent;
 
     private Spinner vertexSpinner;
     private Spinner conditionSpinner;
@@ -63,7 +60,9 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         initVertexSpinner(view);
         initConditionSpinner(view);
         initButton(view);
-        ButterKnife.bind(this, view);
+        pointName = (EditText) view.findViewById(R.id.dialog_new_point_name);
+        pointPercent = (EditText) view.findViewById(R.id.dialog_new_point_percent);
+
         return view;
     }
 
@@ -98,6 +97,12 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
 
     @Override
     public void onClick(final View view) {
+        if (TextUtils.isEmpty(pointName.getText())) {
+            return;
+        }
+        if (TextUtils.isEmpty(pointPercent.getText())) {
+            return;
+        }
         final Intent data = new Intent();
         data.putExtra(NEW_POINT_RESULT_EXTRA,
                 new FormulaContainer(

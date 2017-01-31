@@ -8,17 +8,48 @@ import com.google.gson.annotations.SerializedName;
  */
 public class DailyValue {
 
-    private int id;
-    private long dt;
+    private final int id;
+    private final long dt;
     @SerializedName("price1")
-    private float priceStart;
+    private final float priceStart;
     @SerializedName("price2")
-    private float priceEnd;
+    private final float priceEnd;
     @SerializedName("price3")
-    private float priceHi;
+    private final float priceHi;
     @SerializedName("price4")
-    private float priceLo;
-    private float volume;
+    private final float priceLo;
+    private final float volume;
+
+    public DailyValue(final int id,
+                      final long dt,
+                      final float priceStart,
+                      final float priceEnd,
+                      final float priceHi,
+                      final float priceLo,
+                      final float volume) {
+        this.id = id;
+        this.dt = dt;
+        this.priceStart = priceStart;
+        this.priceEnd = priceEnd;
+        this.priceHi = priceHi;
+        this.priceLo = priceLo;
+        this.volume = volume;
+    }
+
+    public DailyValue(final int id,
+                      final long dt,
+                      final float priceStart,
+                      final float priceHi,
+                      final float priceLo,
+                      final float priceEnd) {
+        this.id = id;
+        this.dt = dt;
+        this.priceStart = priceStart;
+        this.priceEnd = priceEnd;
+        this.priceHi = priceHi;
+        this.priceLo = priceLo;
+        this.volume = 0;
+    }
 
     public int getId() {
         return id;

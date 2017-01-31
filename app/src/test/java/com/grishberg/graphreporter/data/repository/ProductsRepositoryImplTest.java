@@ -3,7 +3,7 @@ package com.grishberg.graphreporter.data.repository;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
-import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
+import com.grishberg.graphreporter.data.services.RefreshTokenService;
 import com.grishberg.graphreporter.utils.BaseTestCase;
 import com.grishberg.graphreporter.utils.RxSchedulersOverrideRule;
 
@@ -40,7 +40,7 @@ public class ProductsRepositoryImplTest extends BaseTestCase{
     RestResponse<List<ProductItem>> response;
 
     @Mock
-    AuthRepository authRepository;
+    RefreshTokenService refreshTokenService;
 
     ProductsRepositoryImpl repository;
 
@@ -48,7 +48,7 @@ public class ProductsRepositoryImplTest extends BaseTestCase{
     public void setUp() throws Exception {
         super.setUp();
         repository = new ProductsRepositoryImpl(tokenRepository, api);
-        repository.refreshTokenService = authRepository;
+        repository.refreshTokenService = refreshTokenService;
     }
 
     @Test

@@ -122,7 +122,7 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsFragm
                     ((CandleFragment) fragment).onCandlesModeClicked();
                     break;
                 case R.id.drawer_candles_and_lines_btn:
-                    ((CandleFragment) fragment).onCanlesAndLinesMode();
+                    ((CandleFragment) fragment).onCandlesAndLinesMode();
                     break;
                 case R.id.drawer_lines_btn:
                     ((CandleFragment) fragment).onLinesModeClicked();

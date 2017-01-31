@@ -82,7 +82,7 @@ dependencies {
     compile 'com.android.support:support-v4:25.1.0'
 
     compile "com.jakewharton:butterknife:$butteknife_version"
-    annotationProcessor "com.jakewharton:butterknife-compiler:$butteknife_version"
+    provided "com.jakewharton:butterknife-compiler:$butteknife_version"
 
     testCompile 'org.mockito:mockito-core:2.+'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'

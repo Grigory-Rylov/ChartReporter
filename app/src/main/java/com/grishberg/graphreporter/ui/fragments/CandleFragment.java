@@ -1,14 +1,15 @@
 package com.grishberg.graphreporter.ui.fragments;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,9 +32,12 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
+import com.grishberg.graphreporter.data.model.FormulaChartContainer;
+import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
+import com.grishberg.graphreporter.ui.dialogs.NewPointDialog;
 import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
 import com.grishberg.graphreporter.ui.view.PeriodSelectorView;
 import com.grishberg.graphreporter.utils.ColorUtil;
@@ -49,7 +53,7 @@ import javax.inject.Inject;
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE;
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
 
-public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener {
+public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener, View.OnClickListener {
     private static final String TAG = CandleFragment.class.getSimpleName();
     private static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
     private final SimpleDateFormat SIMPLE_DATE_FORMAT_DATE = new SimpleDateFormat("dd.MM.yy", Locale.US);
@@ -58,6 +62,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     @InjectPresenter
     CandlesChartPresenter presenter;
+    private ImageButton addFormulaButton;
 
     private CombinedChartInitiable chart;
     private ProgressBar progressBar;
@@ -99,6 +104,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         initProgressBar(view);
         initChart(view);
         initPeriodSelector(view);
+        addFormulaButton = (ImageButton) view.findViewById(R.id.fragment_candle_add_formula_button);
+        addFormulaButton.setOnClickListener(this);
         return view;
     }
 
@@ -259,6 +266,11 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
+    public void formulaPoints(final FormulaChartContainer response) {
+
+    }
+
+    @Override
     public void hideProgress() {
         progressBar.setVisibility(View.GONE);
         chart.setVisibility(View.VISIBLE);
@@ -282,13 +294,29 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         presenter.onLinesModeClicked();
     }
 
-    public void onCanlesAndLinesMode() {
+    public void onCandlesAndLinesMode() {
         presenter.onCandlesAndLinesMode();
     }
-
 
     @Override
     public void onPeriodChanged(final ChartPeriod selectedPeriod) {
         presenter.onPeriodChanged(selectedPeriod);
+    }
+
+    /**
+     * Клик по кнопке добавления точки
+     */
+    @Override
+    public void onClick(final View view) {
+        NewPointDialog.showDialog(getFragmentManager(), this);
+    }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == NewPointDialog.NEW_POINT_RESULT_CODE) {
+            final FormulaContainer formulaContainer = NewPointDialog.getResult(data);
+            presenter.addNewFormula(formulaContainer);
+        }
     }
 }

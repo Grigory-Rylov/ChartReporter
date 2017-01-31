@@ -4,6 +4,8 @@ import com.arellomobile.mvp.InjectViewState;
 import com.grishberg.graphreporter.data.enums.ChartMode;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
+import com.grishberg.graphreporter.data.model.FormulaChartContainer;
+import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
 import com.grishberg.graphreporter.di.DiManager;
@@ -16,6 +18,8 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 import rx.Observable;
+
+import static com.grishberg.graphreporter.data.enums.ChartMode.CANDLE_AND_LINE_MODE;
 
 /**
  * Created by grishberg on 01.01.17.
@@ -65,15 +69,16 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     }
 
     public void onCandlesAndLinesMode() {
-        currentChartMode = ChartMode.CANDLE_AND_LINE_MODE;
+        currentChartMode = CANDLE_AND_LINE_MODE;
         onSelectedProduct(currentProductId);
     }
 
     /**
      * Смена периода
+     *
      * @param period новый период
      */
-    public void onPeriodChanged(final ChartPeriod period){
+    public void onPeriodChanged(final ChartPeriod period) {
         this.period = period;
         onSelectedProduct(currentProductId);
     }
@@ -133,5 +138,43 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     @Override
     public void run() {
         //TODO: update from server
+    }
+
+    /**
+     * Применить формулу
+     *
+     * @param formulaContainer
+     */
+    public void addNewFormula(final FormulaContainer formulaContainer) {
+
+    }
+
+    private void requestPointForFormula(final long productId, final FormulaContainer formulaContainer) {
+        repository.getDailyValues(productId, 0)
+                .flatMap(dailyValues -> {
+                    if (dailyValues.isEmpty()) {
+                        return Observable.error(new EmptyDataException());
+                    }
+                    return Observable.just(
+                            new FormulaChartContainer(period,
+                                    ChartsHelper.getFormulaDataForPeriod(period,
+                                            dailyValues,
+                                            formulaContainer,
+                                            currentChartMode == CANDLE_AND_LINE_MODE),
+                                    formulaContainer)
+                    );
+                })
+                .subscribe(response -> {
+                    getViewState().hideProgress();
+                    getViewState().formulaPoints(response);
+                }, exception -> {
+                    getViewState().hideProgress();
+                    if (exception instanceof EmptyDataException) {
+                        getViewState().showEmptyDataError();
+                        return;
+                    }
+                    getViewState().showFail(exception.getMessage());
+                    log.e(TAG, "requestDailyValues: ", exception);
+                });
     }
 }
