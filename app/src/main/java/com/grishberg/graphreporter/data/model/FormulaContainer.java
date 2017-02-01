@@ -10,8 +10,8 @@ public class FormulaContainer implements Serializable {
     public enum VertexType {
         OPEN,
         CLOSED,
-        MIN,
-        MAX
+        HIGH,
+        LOW
     }
 
     private final String name;

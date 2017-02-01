@@ -1,11 +1,8 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import com.github.mikephil.charting.data.CandleEntry;
-import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
-import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.BaseTestCase;
 import com.grishberg.graphreporter.utils.DebugLogger;
@@ -14,16 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Observable;
-
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -88,10 +80,10 @@ public class CandlesChartPresenterTest extends BaseTestCase {
         final List<DailyValue> values = new ArrayList<>();
         for (long i = 0; i < 10; i++) {
             final DailyValue value = mock(DailyValue.class);
-            when(value.getPriceLo()).thenReturn(1.0F);
-            when(value.getPriceHi()).thenReturn(3.0F);
-            when(value.getPriceStart()).thenReturn(1.0F);
-            when(value.getPriceEnd()).thenReturn(2.0F);
+            when(value.getPriceLo()).thenReturn(1.0D);
+            when(value.getPriceHi()).thenReturn(3.0D);
+            when(value.getPriceOpen()).thenReturn(1.0D);
+            when(value.getPriceClosed()).thenReturn(2.0D);
             when(value.getDt()).thenReturn(i);
             values.add(value);
         }

@@ -35,30 +35,30 @@ public class ChartsHelper {
         final int size = dailyValues.size();
         int periodCount = 0;
         while (pos < size) {
-            float start = 0;
-            float end = 0;
+            double start = 0;
+            double end = 0;
             int i;
             for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
                 final DailyValue element = dailyValues.get(pos);
                 if (i == 0) {
-                    start = element.getPriceStart();
+                    start = element.getPriceOpen();
                     startPeriod = element.getDt() * 1000L;
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceEnd();
+                    end = element.getPriceClosed();
                     endPeriod = element.getDt() * 1000L;
                 }
             }
             // start
             dates.add(startPeriod);
-            entries.add(new Entry(periodCount++, start));
+            entries.add(new Entry(periodCount++, (float) start));
             if (isDualChartMode) {
                 //end
                 dates.add(endPeriod);
                 periodCount += 1;
             }
             dates.add(endPeriod);
-            entries.add(new Entry(periodCount, end));
+            entries.add(new Entry(periodCount, (float) end));
         }
 
         return new ChartResponseContainer<>(entries, dates, period);
@@ -78,20 +78,20 @@ public class ChartsHelper {
         final int size = dailyValues.size();
         int periodCount = 0;
         while (pos < size) {
-            float hi = 0;
-            float lo = Float.MAX_VALUE;
-            float start = 0;
-            float end = 0;
+            double hi = 0;
+            double lo = Float.MAX_VALUE;
+            double start = 0;
+            double end = 0;
             int i;
             for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
                 final DailyValue element = dailyValues.get(pos);
                 hi = Math.max(element.getPriceHi(), hi);
                 lo = Math.min(element.getPriceLo(), lo);
                 if (i == 0) {
-                    start = element.getPriceStart();
+                    start = element.getPriceOpen();
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceEnd();
+                    end = element.getPriceClosed();
                 }
                 currentDt = element.getDt() * 1000L;
             }
@@ -101,7 +101,10 @@ public class ChartsHelper {
                 dates.add(currentDt);
             }
             periodCount += candlePeriodIncrement;
-            entries.add(new CandleEntry(periodCount - candlePeriodOffset, hi, lo, start, end));
+            entries.add(new CandleEntry(periodCount - candlePeriodOffset,
+                    (float) hi,
+                    (float) lo,
+                    (float) start, (float) end));
         }
 
         return new ChartResponseContainer<>(entries, dates, period);
@@ -124,55 +127,157 @@ public class ChartsHelper {
         final List<Long> dates = new ArrayList<>();
         final List<Entry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
-        //TODO: точки выбирать исходя из условия
-        final double maxValue = dailyValues.get(0).getPriceEnd() *
-                (1D + formulaContainer.getFormulaValue() / 100D);
-        final double minValue = dailyValues.get(0).getPriceEnd() -
-                (dailyValues.get(0).getPriceEnd() * formulaContainer.getFormulaValue() / 100D);
+        final DailyValue startValue = getValueToCompare(dailyValues, formulaContainer);
         long endPeriod = 0;
         long startPeriod = 0;
         int pos = 0;
         final int size = dailyValues.size();
         int periodCount = 0;
         while (pos < size) {
-            float start = 0;
-            float end = 0;
+            double open = 0;
+            double close = 0;
+            double hi = 0;
+            double lo = Float.MAX_VALUE;
             int i;
             // пропуск какого то количества точек, которые входят в период
             for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
                 final DailyValue element = dailyValues.get(pos);
                 if (i == 0) {
-                    start = element.getPriceStart();
+                    open = element.getPriceOpen();
                     startPeriod = element.getDt() * 1000L;
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceEnd();
+                    close = element.getPriceClosed();
                     endPeriod = element.getDt() * 1000L;
                 }
+                hi = Math.max(element.getPriceHi(), hi);
+                lo = Math.min(element.getPriceLo(), lo);
             }
-            if (formulaContainer.isGreater()) {
-                if (end > maxValue) {
-                    // ТР
-                    entries.add(new Entry(periodCount, end));
-                }
-            } else {
-                if (end < minValue) {
-                    // ТП
-                    entries.add(new Entry(periodCount, end));
-                }
+            if (addIfConditionTrue(startValue,
+                    DailyValue.makeFromCandle(open, hi, lo, close),
+                    formulaContainer,
+                    periodCount,
+                    entries)) {
+                dates.add((startPeriod + endPeriod) / 2);
             }
-            // start
-            dates.add(startPeriod);
-            //entries.add(new Entry(periodCount++, start));
-            if (isDualChartMode) {
-                //end
-                dates.add(endPeriod);
-                periodCount += 1;
-            }
-            dates.add(endPeriod);
-            //entries.add(new Entry(periodCount, end));
         }
 
-        return new ChartResponseContainer<>(entries, dates, period);
+        return new ChartResponseContainer<>(entries, dates, period, formulaContainer);
+    }
+
+    /**
+     * Сформировать начальную точку
+     *
+     * @param dailyValues
+     * @param formulaContainer
+     * @return
+     */
+    private static DailyValue getValueToCompare(@NonNull final List<DailyValue> dailyValues,
+                                                @NonNull final FormulaContainer formulaContainer) {
+        if (formulaContainer.isGreater()) {
+            switch (formulaContainer.getVertexType()) {
+                case OPEN:
+                    return DailyValue.makeFromOpen(dailyValues.get(0).getPriceOpen() *
+                            (1D + formulaContainer.getFormulaValue() / 100D));
+                case CLOSED:
+                    return DailyValue.makeFromClosed(dailyValues.get(0).getPriceClosed() *
+                            (1D + formulaContainer.getFormulaValue() / 100D));
+                case HIGH:
+                    return DailyValue.makeFromLo(dailyValues.get(0).getPriceLo() *
+                            (1D + formulaContainer.getFormulaValue() / 100D));
+                default:
+                    return DailyValue.makeFromHi(dailyValues.get(0).getPriceHi() *
+                            (1D + formulaContainer.getFormulaValue() / 100D));
+            }
+        } else {
+            switch (formulaContainer.getVertexType()) {
+                case OPEN:
+                    return DailyValue.makeFromOpen(dailyValues.get(0).getPriceOpen() -
+                            (dailyValues.get(0).getPriceOpen() *
+                                    formulaContainer.getFormulaValue() / 100D));
+                case CLOSED:
+                    return DailyValue.makeFromClosed(dailyValues.get(0).getPriceClosed() -
+                            (dailyValues.get(0).getPriceClosed() *
+                                    formulaContainer.getFormulaValue() / 100D));
+                case HIGH:
+                    return DailyValue.makeFromLo(dailyValues.get(0).getPriceClosed() -
+                            (dailyValues.get(0).getPriceClosed() *
+                                    formulaContainer.getFormulaValue() / 100D));
+                default:
+                    return DailyValue.makeFromHi(dailyValues.get(0).getPriceClosed() -
+                            (dailyValues.get(0).getPriceClosed() *
+                                    formulaContainer.getFormulaValue() / 100D));
+            }
+        }
+    }
+
+    /**
+     * Добавить точку, если нужно
+     *
+     * @param valueToCompare
+     * @param value
+     * @param formulaContainer
+     * @param x
+     * @param entries
+     */
+    private static boolean addIfConditionTrue(final DailyValue valueToCompare,
+                                              final DailyValue value,
+                                              final FormulaContainer formulaContainer,
+                                              final int x,
+                                              final List<Entry> entries) {
+        if (formulaContainer.isGreater()) {
+            switch (formulaContainer.getVertexType()) {
+                case OPEN:
+                    if (value.getPriceOpen() > valueToCompare.getPriceOpen()) {
+                        entries.add(new Entry(x, (float) value.getPriceOpen()));
+                        return true;
+                    }
+                    break;
+                case CLOSED:
+                    if (value.getPriceClosed() > valueToCompare.getPriceClosed()) {
+                        entries.add(new Entry(x, (float) value.getPriceClosed()));
+                        return true;
+                    }
+                    break;
+                case HIGH:
+                    if (value.getPriceHi() > valueToCompare.getPriceHi()) {
+                        entries.add(new Entry(x, (float) value.getPriceClosed()));
+                        return true;
+                    }
+                    break;
+                default:
+                    if (value.getPriceLo() > valueToCompare.getPriceLo()) {
+                        entries.add(new Entry(x, (float) value.getPriceClosed()));
+                        return true;
+                    }
+            }
+        } else {
+            switch (formulaContainer.getVertexType()) {
+                case OPEN:
+                    if (value.getPriceOpen() < valueToCompare.getPriceOpen()) {
+                        entries.add(new Entry(x, (float) value.getPriceOpen()));
+                        return true;
+                    }
+                    break;
+                case CLOSED:
+                    if (value.getPriceClosed() < valueToCompare.getPriceClosed()) {
+                        entries.add(new Entry(x, (float) value.getPriceClosed()));
+                        return true;
+                    }
+                    break;
+                case HIGH:
+                    if (value.getPriceHi() < valueToCompare.getPriceHi()) {
+                        entries.add(new Entry(x, (float) value.getPriceHi()));
+                        return true;
+                    }
+                    break;
+                default:
+                    if (value.getPriceLo() < valueToCompare.getPriceLo()) {
+                        entries.add(new Entry(x, (float) value.getPriceLo()));
+                        return true;
+                    }
+            }
+        }
+        return false;
     }
 }

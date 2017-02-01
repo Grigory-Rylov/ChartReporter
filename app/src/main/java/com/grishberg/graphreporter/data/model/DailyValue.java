@@ -8,47 +8,70 @@ import com.google.gson.annotations.SerializedName;
  */
 public class DailyValue {
 
-    private final int id;
-    private final long dt;
+    private int id;
+    private long dt;
     @SerializedName("price1")
-    private final float priceStart;
+    private double priceOpen;
     @SerializedName("price2")
-    private final float priceEnd;
+    private double priceClosed;
     @SerializedName("price3")
-    private final float priceHi;
+    private double priceHi;
     @SerializedName("price4")
-    private final float priceLo;
-    private final float volume;
+    private double priceLo;
+    private double volume;
 
-    public DailyValue(final int id,
-                      final long dt,
-                      final float priceStart,
-                      final float priceEnd,
-                      final float priceHi,
-                      final float priceLo,
-                      final float volume) {
-        this.id = id;
-        this.dt = dt;
-        this.priceStart = priceStart;
-        this.priceEnd = priceEnd;
-        this.priceHi = priceHi;
-        this.priceLo = priceLo;
-        this.volume = volume;
+    public DailyValue() {
     }
 
     public DailyValue(final int id,
                       final long dt,
-                      final float priceStart,
-                      final float priceHi,
-                      final float priceLo,
-                      final float priceEnd) {
+                      final double priceStart,
+                      final double priceHi,
+                      final double priceLo,
+                      final double priceEnd) {
         this.id = id;
         this.dt = dt;
-        this.priceStart = priceStart;
-        this.priceEnd = priceEnd;
+        this.priceOpen = priceStart;
+        this.priceClosed = priceEnd;
         this.priceHi = priceHi;
         this.priceLo = priceLo;
         this.volume = 0;
+    }
+
+    public static DailyValue makeFromOpen(final double priceStart) {
+        final DailyValue value = new DailyValue();
+        value.priceOpen = priceStart;
+        return value;
+    }
+
+    public static DailyValue makeFromClosed(final double priceEnd) {
+        final DailyValue value = new DailyValue();
+        value.priceClosed = priceEnd;
+        return value;
+    }
+
+    public static DailyValue makeFromHi(final double priceHi) {
+        final DailyValue value = new DailyValue();
+        value.priceHi = priceHi;
+        return value;
+    }
+
+    public static DailyValue makeFromLo(final double priceLo) {
+        final DailyValue value = new DailyValue();
+        value.priceLo = priceLo;
+        return value;
+    }
+
+    public static DailyValue makeFromCandle(final double priceOpen,
+                                            final double priceHi,
+                                            final double priceLo,
+                                            final double priceClosed) {
+        final DailyValue value = new DailyValue();
+        value.priceOpen = priceOpen;
+        value.priceHi = priceHi;
+        value.priceLo = priceLo;
+        value.priceClosed = priceClosed;
+        return value;
     }
 
     public int getId() {
@@ -59,23 +82,23 @@ public class DailyValue {
         return dt;
     }
 
-    public float getPriceStart() {
-        return priceStart;
+    public double getPriceOpen() {
+        return priceOpen;
     }
 
-    public float getPriceEnd() {
-        return priceEnd;
+    public double getPriceClosed() {
+        return priceClosed;
     }
 
-    public float getPriceHi() {
+    public double getPriceHi() {
         return priceHi;
     }
 
-    public float getPriceLo() {
+    public double getPriceLo() {
         return priceLo;
     }
 
-    public float getVolume() {
+    public double getVolume() {
         return volume;
     }
 }
