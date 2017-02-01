@@ -16,5 +16,6 @@
     <color name="candle_increasing_color">#21d20a</color>
     <color name="candle_decreasing_color">#ff0400</color>
     <color name="candle_neutral_color">#00a2ff</color>
+    <color name="formula_default_color">#e64be9</color>
 
 </resources>

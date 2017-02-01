@@ -113,17 +113,14 @@ public class ChartsHelper {
     /**
      * Формирование данных для формулы
      *
-     * @param isDualChartMode
      * @param period
      * @param dailyValues
-     * @param isDualChartMode
      * @return
      */
     @NonNull
     public static ChartResponseContainer<Entry> getFormulaDataForPeriod(final ChartPeriod period,
                                                                         final List<DailyValue> dailyValues,
-                                                                        final FormulaContainer formulaContainer,
-                                                                        final boolean isDualChartMode) {
+                                                                        final FormulaContainer formulaContainer) {
         final List<Long> dates = new ArrayList<>();
         final List<Entry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
@@ -160,6 +157,7 @@ public class ChartsHelper {
                     entries)) {
                 dates.add((startPeriod + endPeriod) / 2);
             }
+            periodCount++;
         }
 
         return new ChartResponseContainer<>(entries, dates, period, formulaContainer);

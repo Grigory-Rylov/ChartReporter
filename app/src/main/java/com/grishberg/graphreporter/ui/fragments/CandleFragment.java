@@ -31,6 +31,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
+import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
@@ -69,6 +70,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private PeriodSelectorView periodSelector;
     private List<Long> dates;
     private long productId;
+    private CombinedData combinedData;
 
     public CandleFragment() {
         // Required empty public constructor
@@ -133,7 +135,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             return;
         }
         initDualChartAxes(response.getPeriod());
-        final CombinedData combinedData = new CombinedData();
+        combinedData = new CombinedData();
 
         switch (response.getChartMode()) {
             case LINE_MODE:
@@ -200,7 +202,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             @Override
             public String getFormattedValue(final float value, final AxisBase axis) {
                 final int index = (int) value;
-                if (index >= dates.size()) {
+                if (index >= dates.size() || index < 0) {
                     log.e(TAG, "index " + index + " > dates.size " + dates.size() + " for axis " + axis);
                     return "";
                 }
@@ -266,8 +268,32 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
-    public void formulaPoints(final FormulaChartContainer response) {
+    public void formulaPoints(final ChartResponseContainer<Entry> response) {
+        //final CombinedData combinedData = new CombinedData();
+        combinedData.setData(generateFormulaData(response.getEntries()));
+        chart.setData(combinedData);
+        chart.invalidate();
+    }
 
+    private LineData generateFormulaData(final List<Entry> entries) {
+
+        final LineData lineData = new LineData();
+
+        final LineDataSet linesSet = new LineDataSet(entries, "Line DataSet");
+        linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
+        linesSet.setDrawCircles(true);
+        linesSet.setLineWidth(2f);
+        linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
+        linesSet.setCircleRadius(1f);
+        linesSet.setFillColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
+        linesSet.setMode(LineDataSet.Mode.LINEAR);
+        linesSet.setDrawValues(false);
+        linesSet.setValueTextSize(10f);
+        linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
+        linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        lineData.addDataSet(linesSet);
+
+        return lineData;
     }
 
     @Override

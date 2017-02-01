@@ -29,8 +29,7 @@ public class ChartsHelperTest {
                 7D, true, true);
         final ChartResponseContainer<Entry> chart = ChartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
                 dailyValues,
-                formulaContainer,
-                false);
+                formulaContainer);
         assertEquals(1, chart.getEntries().size());
     }
 
@@ -43,8 +42,7 @@ public class ChartsHelperTest {
                 7D, true, false);
         final ChartResponseContainer<Entry> chart = ChartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
                 dailyValues,
-                formulaContainer,
-                false);
+                formulaContainer);
         assertEquals(3, chart.getEntries().size());
     }
 

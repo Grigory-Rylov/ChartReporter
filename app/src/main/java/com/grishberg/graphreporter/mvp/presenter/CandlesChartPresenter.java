@@ -146,7 +146,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
      * @param formulaContainer
      */
     public void addNewFormula(final FormulaContainer formulaContainer) {
-
+        requestPointForFormula(currentProductId, formulaContainer);
     }
 
     private void requestPointForFormula(final long productId, final FormulaContainer formulaContainer) {
@@ -156,11 +156,8 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                         return Observable.error(new EmptyDataException());
                     }
                     return Observable.just(
-                            new FormulaChartContainer(period,
-                                    ChartsHelper.getFormulaDataForPeriod(period,
-                                            dailyValues,
-                                            formulaContainer,
-                                            currentChartMode == CANDLE_AND_LINE_MODE),
+                            ChartsHelper.getFormulaDataForPeriod(period,
+                                    dailyValues,
                                     formulaContainer)
                     );
                 })
