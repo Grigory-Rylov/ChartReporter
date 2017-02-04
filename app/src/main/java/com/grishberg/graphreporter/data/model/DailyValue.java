@@ -21,6 +21,7 @@ public class DailyValue {
     private double volume;
 
     public DailyValue() {
+        // for fabric methods
     }
 
     public DailyValue(final int id,
@@ -101,4 +102,5 @@ public class DailyValue {
     public double getVolume() {
         return volume;
     }
+
 }

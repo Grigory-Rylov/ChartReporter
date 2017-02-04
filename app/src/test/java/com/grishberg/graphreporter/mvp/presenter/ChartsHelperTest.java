@@ -6,6 +6,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 
 import org.junit.Test;
@@ -21,29 +22,17 @@ import static org.junit.Assert.*;
  */
 public class ChartsHelperTest {
     @Test
-    public void getFormulaDataForPeriodGreater() throws Exception {
+    public void getFormulaDataForPeriod() throws Exception {
         final List<DailyValue> dailyValues = getDailyValues();
 
         final FormulaContainer formulaContainer = new FormulaContainer("test",
                 FormulaContainer.VertexType.CLOSED,
-                7D, true, true);
-        final ChartResponseContainer<Entry> chart = ChartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
+                7D, true, 7D, true);
+        final FormulaChartContainer chart = ChartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
                 dailyValues,
                 formulaContainer);
-        assertEquals(1, chart.getEntries().size());
-    }
-
-    @Test
-    public void getFormulaDataForPeriodSmaller() throws Exception {
-        final List<DailyValue> dailyValues = getDailyValues();
-
-        final FormulaContainer formulaContainer = new FormulaContainer("test",
-                FormulaContainer.VertexType.CLOSED,
-                7D, true, false);
-        final ChartResponseContainer<Entry> chart = ChartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
-                dailyValues,
-                formulaContainer);
-        assertEquals(3, chart.getEntries().size());
+        assertEquals(1, chart.getGrowPoints().size());
+        assertEquals(1, chart.getFallPoints().size());
     }
 
     @NonNull

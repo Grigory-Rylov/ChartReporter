@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
@@ -30,10 +30,12 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     public static final int NEW_POINT_RESULT_CODE = 1001;
     private static final String NEW_POINT_RESULT_EXTRA = NewPointDialog.class.getSimpleName();
     private EditText pointName;
-    private EditText pointPercent;
+    private EditText pointGrow;
+    private EditText pointFall;
 
     private Spinner vertexSpinner;
-    private Spinner conditionSpinner;
+    private CheckBox isGrowPercent;
+    private CheckBox isFallPercent;
 
     public static void showDialog(final FragmentManager fm,
                                   final Fragment targetFragment) {
@@ -58,10 +60,13 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
                              final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.dialog_new_point, container, false);
         initVertexSpinner(view);
-        initConditionSpinner(view);
         initButton(view);
         pointName = (EditText) view.findViewById(R.id.dialog_new_point_name);
-        pointPercent = (EditText) view.findViewById(R.id.dialog_new_point_percent);
+        pointGrow = (EditText) view.findViewById(R.id.dialog_new_point_grow_value);
+        pointFall = (EditText) view.findViewById(R.id.dialog_new_point_fall_value);
+
+        isGrowPercent = (CheckBox) view.findViewById(R.id.dialog_new_point_grow_percent);
+        isFallPercent = (CheckBox) view.findViewById(R.id.dialog_new_point_fall_percent);
 
         return view;
     }
@@ -78,18 +83,6 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         return adapter;
     }
 
-    private void initConditionSpinner(final View view) {
-        conditionSpinner = (Spinner) view.findViewById(R.id.dialog_new_point_condition_spinner);
-        conditionSpinner.setAdapter(createConditionSpinnerAdapter());
-    }
-
-    protected BaseAdapter createConditionSpinnerAdapter() {
-        final ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.condition_name_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        return adapter;
-    }
-
     private void initButton(final View view) {
         final Button okButton = (Button) view.findViewById(R.id.dialog_new_point_ok_button);
         okButton.setOnClickListener(this);
@@ -100,7 +93,10 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         if (TextUtils.isEmpty(pointName.getText())) {
             return;
         }
-        if (TextUtils.isEmpty(pointPercent.getText())) {
+        if (TextUtils.isEmpty(pointGrow.getText())) {
+            return;
+        }
+        if (TextUtils.isEmpty(pointFall.getText())) {
             return;
         }
         final Intent data = new Intent();
@@ -108,9 +104,10 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
                 new FormulaContainer(
                         pointName.getText().toString(),
                         FormulaContainer.VertexType.values()[vertexSpinner.getSelectedItemPosition()],
-                        Double.valueOf(pointPercent.getText().toString()),
-                        true,
-                        conditionSpinner.getSelectedItemPosition() == 0));
+                        Double.valueOf(pointGrow.getText().toString()),
+                        isGrowPercent.isChecked(),
+                        Double.valueOf(pointFall.getText().toString()),
+                        isFallPercent.isChecked()));
         getTargetFragment().onActivityResult(getTargetRequestCode(), 0, data);
         dismiss();
     }

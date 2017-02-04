@@ -2,11 +2,13 @@ package com.grishberg.graphreporter.mvp.presenter;
 
 import android.support.annotation.NonNull;
 
+import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 
 import java.util.ArrayList;
@@ -19,6 +21,13 @@ public class ChartsHelper {
 
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
+    public static final int BUBBLE_SIZE = 1;
+
+    private enum PrevValueState {
+        GROW,
+        FALL,
+        NEUTRAL
+    }
 
     private ChartsHelper() {
     }
@@ -118,18 +127,19 @@ public class ChartsHelper {
      * @return
      */
     @NonNull
-    public static ChartResponseContainer<Entry> getFormulaDataForPeriod(final ChartPeriod period,
-                                                                        final List<DailyValue> dailyValues,
-                                                                        final FormulaContainer formulaContainer) {
-        final List<Long> dates = new ArrayList<>();
-        final List<Entry> entries = new ArrayList<>();
+    public static FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
+                                                                final List<DailyValue> dailyValues,
+                                                                final FormulaContainer formulaContainer) {
+        final List<BubbleEntry> entriesGrow = new ArrayList<>();
+        final List<BubbleEntry> entriesFall = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
-        final DailyValue startValue = getValueToCompare(dailyValues, formulaContainer);
-        long endPeriod = 0;
-        long startPeriod = 0;
+        final FormulaPointsContainer valueToCompare = getValueToCompare(dailyValues.get(0), formulaContainer);
+        final DailyValue firstGrowValue = valueToCompare.valueGrow;
+        final DailyValue firstFallValue = valueToCompare.valueFall;
         int pos = 0;
         final int size = dailyValues.size();
         int periodCount = 0;
+        PrevValueState prevValueState = PrevValueState.NEUTRAL;
         while (pos < size) {
             double open = 0;
             double close = 0;
@@ -141,141 +151,245 @@ public class ChartsHelper {
                 final DailyValue element = dailyValues.get(pos);
                 if (i == 0) {
                     open = element.getPriceOpen();
-                    startPeriod = element.getDt() * 1000L;
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
                     close = element.getPriceClosed();
-                    endPeriod = element.getDt() * 1000L;
                 }
                 hi = Math.max(element.getPriceHi(), hi);
                 lo = Math.min(element.getPriceLo(), lo);
             }
-            if (addIfConditionTrue(startValue,
+            final PrevValueState currentState = addIfConditionTrue(valueToCompare,
                     DailyValue.makeFromCandle(open, hi, lo, close),
                     formulaContainer,
                     periodCount,
-                    entries)) {
-                dates.add((startPeriod + endPeriod) / 2);
+                    entriesGrow,
+                    entriesFall,
+                    prevValueState);
+
+            if (currentState != PrevValueState.NEUTRAL) {
+                prevValueState = currentState;
             }
+
             periodCount++;
         }
+        final boolean isNeedAddGrowValue = valueToCompare.valueGrow != firstGrowValue && prevValueState == PrevValueState.GROW;
+        final boolean isNeedAddFallValue = valueToCompare.valueFall != firstFallValue && prevValueState == PrevValueState.FALL;
+        addGrowAndFallValuesIfNeed(formulaContainer, entriesGrow, entriesFall, valueToCompare, periodCount, isNeedAddGrowValue, isNeedAddFallValue);
+        return new FormulaChartContainer(entriesGrow, entriesFall, formulaContainer);
+    }
 
-        return new ChartResponseContainer<>(entries, dates, period, formulaContainer);
+    private static void addGrowAndFallValuesIfNeed(FormulaContainer formulaContainer, List<BubbleEntry> entriesGrow, List<BubbleEntry> entriesFall, FormulaPointsContainer valueToCompare, int periodCount, boolean isNeedAddGrowValue, boolean isNeedAddFallValue) {
+        if (isNeedAddGrowValue) {
+            addDailyValue(entriesGrow, valueToCompare.valueGrow, formulaContainer, periodCount);
+        }
+        if (isNeedAddFallValue) {
+            addDailyValue(entriesFall, valueToCompare.valueFall, formulaContainer, periodCount);
+        }
+    }
+
+    private static void addDailyValue(final List<BubbleEntry> entries,
+                                      final DailyValue value,
+                                      final FormulaContainer formulaContainer,
+                                      final int x) {
+        switch (formulaContainer.getVertexType()) {
+            case OPEN:
+                entries.add(new BubbleEntry(x, (float) value.getPriceOpen(), BUBBLE_SIZE));
+                break;
+            case CLOSED:
+                entries.add(new BubbleEntry(x, (float) value.getPriceClosed(), BUBBLE_SIZE));
+                break;
+            case HIGH:
+                entries.add(new BubbleEntry(x, (float) value.getPriceHi(), BUBBLE_SIZE));
+                break;
+            case LOW:
+            default:
+                entries.add(new BubbleEntry(x, (float) value.getPriceLo(), BUBBLE_SIZE));
+        }
     }
 
     /**
      * Сформировать начальную точку
      *
-     * @param dailyValues
+     * @param dailyValue
      * @param formulaContainer
      * @return
      */
-    private static DailyValue getValueToCompare(@NonNull final List<DailyValue> dailyValues,
-                                                @NonNull final FormulaContainer formulaContainer) {
-        if (formulaContainer.isGreater()) {
-            switch (formulaContainer.getVertexType()) {
-                case OPEN:
-                    return DailyValue.makeFromOpen(dailyValues.get(0).getPriceOpen() *
-                            (1D + formulaContainer.getFormulaValue() / 100D));
-                case CLOSED:
-                    return DailyValue.makeFromClosed(dailyValues.get(0).getPriceClosed() *
-                            (1D + formulaContainer.getFormulaValue() / 100D));
-                case HIGH:
-                    return DailyValue.makeFromLo(dailyValues.get(0).getPriceLo() *
-                            (1D + formulaContainer.getFormulaValue() / 100D));
-                default:
-                    return DailyValue.makeFromHi(dailyValues.get(0).getPriceHi() *
-                            (1D + formulaContainer.getFormulaValue() / 100D));
-            }
-        } else {
-            switch (formulaContainer.getVertexType()) {
-                case OPEN:
-                    return DailyValue.makeFromOpen(dailyValues.get(0).getPriceOpen() -
-                            (dailyValues.get(0).getPriceOpen() *
-                                    formulaContainer.getFormulaValue() / 100D));
-                case CLOSED:
-                    return DailyValue.makeFromClosed(dailyValues.get(0).getPriceClosed() -
-                            (dailyValues.get(0).getPriceClosed() *
-                                    formulaContainer.getFormulaValue() / 100D));
-                case HIGH:
-                    return DailyValue.makeFromLo(dailyValues.get(0).getPriceClosed() -
-                            (dailyValues.get(0).getPriceClosed() *
-                                    formulaContainer.getFormulaValue() / 100D));
-                default:
-                    return DailyValue.makeFromHi(dailyValues.get(0).getPriceClosed() -
-                            (dailyValues.get(0).getPriceClosed() *
-                                    formulaContainer.getFormulaValue() / 100D));
-            }
+    private static FormulaPointsContainer getValueToCompare(@NonNull final DailyValue dailyValue,
+                                                            @NonNull final FormulaContainer formulaContainer) {
+        switch (formulaContainer.getVertexType()) {
+            case OPEN:
+                return new FormulaPointsContainer(
+                        DailyValue.makeFromOpen(getNewGrowValue(dailyValue.getPriceOpen(), formulaContainer)),
+
+                        DailyValue.makeFromOpen(getNewFallValue(dailyValue.getPriceOpen(), formulaContainer))
+                );
+            case CLOSED:
+                return new FormulaPointsContainer(
+                        DailyValue.makeFromClosed(getNewGrowValue(dailyValue.getPriceClosed(), formulaContainer)),
+
+                        DailyValue.makeFromClosed(getNewFallValue(dailyValue.getPriceClosed(), formulaContainer))
+                );
+            case HIGH:
+                return new FormulaPointsContainer(
+                        DailyValue.makeFromHi(getNewGrowValue(dailyValue.getPriceHi(), formulaContainer)),
+
+                        DailyValue.makeFromHi(getNewFallValue(dailyValue.getPriceHi(), formulaContainer))
+                );
+            case LOW:
+            default:
+                return new FormulaPointsContainer(
+                        DailyValue.makeFromLo(getNewGrowValue(dailyValue.getPriceLo(), formulaContainer)),
+
+                        DailyValue.makeFromLo(getNewFallValue(dailyValue.getPriceLo(), formulaContainer))
+                );
         }
     }
 
     /**
-     * Добавить точку, если нужно
+     * Новая точка роста
+     *
+     * @param firstValue
+     * @param formulaContainer
+     * @return
+     */
+    private static double getNewFallValue(@NonNull final double firstValue,
+                                          @NonNull final FormulaContainer formulaContainer) {
+        return formulaContainer.isFallPercent() ?
+                firstValue -
+                        (firstValue * formulaContainer.getFallValue() / 100D) :
+                firstValue - formulaContainer.getFallValue();
+    }
+
+    /**
+     * Новая точка падения
+     *
+     * @param firstValue
+     * @param formulaContainer
+     * @return
+     */
+    private static double getNewGrowValue(@NonNull final double firstValue,
+                                          @NonNull final FormulaContainer formulaContainer) {
+        return formulaContainer.isGrowPercent() ?
+                firstValue *
+                        (1D + formulaContainer.getGrowValue() / 100D) :
+                firstValue + formulaContainer.getGrowValue();
+    }
+
+    /**
+     * Добавить точку, если нужно, обновить значение старой точки ТР или ТП
      *
      * @param valueToCompare
      * @param value
-     * @param formulaContainer
+     * @param fc
      * @param x
-     * @param entries
+     * @param entriesGrow
+     * @param entriesFall
+     * @param prevState
      */
-    private static boolean addIfConditionTrue(final DailyValue valueToCompare,
-                                              final DailyValue value,
-                                              final FormulaContainer formulaContainer,
-                                              final int x,
-                                              final List<Entry> entries) {
-        if (formulaContainer.isGreater()) {
-            switch (formulaContainer.getVertexType()) {
-                case OPEN:
-                    if (value.getPriceOpen() > valueToCompare.getPriceOpen()) {
-                        entries.add(new Entry(x, (float) value.getPriceOpen()));
-                        return true;
-                    }
-                    break;
-                case CLOSED:
-                    if (value.getPriceClosed() > valueToCompare.getPriceClosed()) {
-                        entries.add(new Entry(x, (float) value.getPriceClosed()));
-                        return true;
-                    }
-                    break;
-                case HIGH:
-                    if (value.getPriceHi() > valueToCompare.getPriceHi()) {
-                        entries.add(new Entry(x, (float) value.getPriceClosed()));
-                        return true;
-                    }
-                    break;
-                default:
-                    if (value.getPriceLo() > valueToCompare.getPriceLo()) {
-                        entries.add(new Entry(x, (float) value.getPriceClosed()));
-                        return true;
-                    }
-            }
-        } else {
-            switch (formulaContainer.getVertexType()) {
-                case OPEN:
-                    if (value.getPriceOpen() < valueToCompare.getPriceOpen()) {
-                        entries.add(new Entry(x, (float) value.getPriceOpen()));
-                        return true;
-                    }
-                    break;
-                case CLOSED:
-                    if (value.getPriceClosed() < valueToCompare.getPriceClosed()) {
-                        entries.add(new Entry(x, (float) value.getPriceClosed()));
-                        return true;
-                    }
-                    break;
-                case HIGH:
-                    if (value.getPriceHi() < valueToCompare.getPriceHi()) {
-                        entries.add(new Entry(x, (float) value.getPriceHi()));
-                        return true;
-                    }
-                    break;
-                default:
-                    if (value.getPriceLo() < valueToCompare.getPriceLo()) {
-                        entries.add(new Entry(x, (float) value.getPriceLo()));
-                        return true;
-                    }
-            }
+    private static PrevValueState addIfConditionTrue(final FormulaPointsContainer valueToCompare,
+                                                     final DailyValue value,
+                                                     final FormulaContainer fc,
+                                                     final int x,
+                                                     final List<BubbleEntry> entriesGrow,
+                                                     final List<BubbleEntry> entriesFall,
+                                                     final PrevValueState prevState) {
+        // ТР
+        double currentValue;
+        double growPriceToCompare;
+        double fallPriceToCompare;
+        switch (fc.getVertexType()) {
+            case OPEN:
+                currentValue = value.getPriceOpen();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
+                break;
+            case CLOSED:
+                currentValue = value.getPriceClosed();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceClosed();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceClosed();
+                break;
+            case HIGH:
+                currentValue = value.getPriceHi();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceHi();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceHi();
+                break;
+            case LOW:
+            default:
+                currentValue = value.getPriceLo();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceLo();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceLo();
         }
-        return false;
+        if (currentValue > growPriceToCompare) {
+            if (prevState == PrevValueState.FALL) {
+                entriesFall.add(new BubbleEntry(x, (float) fallPriceToCompare, BUBBLE_SIZE));
+            }
+            valueToCompare.valueGrow = value; // сдвиг точки
+            valueToCompare.valueFall = makeDailyValue(getNewFallValue(currentValue, fc), fc);
+
+            return PrevValueState.GROW;
+        }
+
+        //ТП
+        switch (fc.getVertexType()) {
+            case OPEN:
+                currentValue = value.getPriceOpen();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
+                break;
+            case CLOSED:
+                currentValue = value.getPriceClosed();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceClosed();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceClosed();
+                break;
+            case HIGH:
+                currentValue = value.getPriceHi();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceHi();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceHi();
+                break;
+            case LOW:
+            default:
+                currentValue = value.getPriceLo();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceLo();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceLo();
+        }
+
+        if (currentValue < fallPriceToCompare) {
+            if (prevState == PrevValueState.GROW) {
+                entriesGrow.add(new BubbleEntry(x, (float) growPriceToCompare, BUBBLE_SIZE));
+            }
+            valueToCompare.valueFall = value;
+            valueToCompare.valueGrow = makeDailyValue(getNewGrowValue(currentValue, fc), fc);
+
+            return PrevValueState.FALL;
+        }
+
+        return PrevValueState.NEUTRAL;
+    }
+
+    private static final class FormulaPointsContainer {
+        DailyValue valueGrow;
+        DailyValue valueFall;
+
+        public FormulaPointsContainer(final DailyValue valueGrow, final DailyValue valueFall) {
+            this.valueGrow = valueGrow;
+            this.valueFall = valueFall;
+        }
+    }
+
+    private static DailyValue makeDailyValue(final double value, @NonNull final FormulaContainer fc) {
+        switch (fc.getVertexType()) {
+            case OPEN:
+                return DailyValue.makeFromOpen(value);
+
+            case CLOSED:
+                return DailyValue.makeFromClosed(value);
+
+            case HIGH:
+                return DailyValue.makeFromHi(value);
+
+            case LOW:
+            default:
+                return DailyValue.makeFromLo(value);
+        }
     }
 }

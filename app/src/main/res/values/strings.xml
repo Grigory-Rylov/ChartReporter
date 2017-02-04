@@ -43,6 +43,8 @@
     <string name="dialog_new_point_name_hint">Название точки</string>
     <string name="dialog_new_point_items_formula_title">Формула:</string>
     <string name="dialog_new_point_percent_hint">%</string>
+    <string name="dialog_new_point_grow_hint">ТР</string>
+    <string name="dialog_new_point_fall_hint">ТП</string>
     <string name="dialog_new_point_vertex_title">Вершина:</string>
 
     <string name="dialog_new_point_vertex_item_all">Все</string>

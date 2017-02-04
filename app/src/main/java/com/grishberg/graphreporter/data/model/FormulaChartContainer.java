@@ -1,30 +1,31 @@
 package com.grishberg.graphreporter.data.model;
 
-import com.github.mikephil.charting.data.Entry;
-import com.grishberg.graphreporter.data.enums.ChartPeriod;
+import com.github.mikephil.charting.data.BubbleEntry;
+
+import java.util.List;
 
 /**
  * Created by grishberg on 30.01.17.
  */
 public class FormulaChartContainer {
-    private final ChartPeriod period;
-    private final ChartResponseContainer<Entry> entryResponse;
+    private final List<BubbleEntry> growPoints;
+    private final List<BubbleEntry> fallPoints;
     private final FormulaContainer formulaContainer;
 
-    public FormulaChartContainer(final ChartPeriod period,
-                                 final ChartResponseContainer<Entry> entryResponse,
+    public FormulaChartContainer(final List<BubbleEntry> growPoints,
+                                 final List<BubbleEntry> fallPoints,
                                  final FormulaContainer formulaContainer) {
-        this.period = period;
-        this.entryResponse = entryResponse;
+        this.growPoints = growPoints;
+        this.fallPoints = fallPoints;
         this.formulaContainer = formulaContainer;
     }
 
-    public ChartPeriod getPeriod() {
-        return period;
+    public List<BubbleEntry> getGrowPoints() {
+        return growPoints;
     }
 
-    public ChartResponseContainer<Entry> getEntryResponse() {
-        return entryResponse;
+    public List<BubbleEntry> getFallPoints() {
+        return fallPoints;
     }
 
     public FormulaContainer getFormulaContainer() {

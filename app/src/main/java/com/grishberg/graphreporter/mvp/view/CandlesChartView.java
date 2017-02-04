@@ -1,7 +1,5 @@
 package com.grishberg.graphreporter.mvp.view;
 
-import com.github.mikephil.charting.data.Entry;
-import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.mvp.common.BaseViewWithProgress;
@@ -17,5 +15,5 @@ public interface CandlesChartView extends BaseViewWithProgress {
 
     void showChart(DualChartContainer response);
 
-    void formulaPoints(ChartResponseContainer<Entry> response);
+    void formulaPoints(FormulaChartContainer response);
 }

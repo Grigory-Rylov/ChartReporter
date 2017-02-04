@@ -53,7 +53,7 @@
         android:text="@string/dialog_new_point_items_formula_title"
         android:textSize="@dimen/dialog_select_period_header_text_size"/>
 
-    <!-- Блок с формулой -->
+    <!-- Блок с формулой ТР-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,22 +67,56 @@
             android:layout_weight="1">
 
             <EditText
-                android:id="@+id/dialog_new_point_percent"
+                android:id="@+id/dialog_new_point_grow_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/dialog_new_point_percent_hint"
-                android:inputType="numberSigned"
+                android:hint="@string/dialog_new_point_grow_hint"
+                android:inputType="numberDecimal"
                 android:textSize="@dimen/auth_login_text_size"/>
         </android.support.design.widget.TextInputLayout>
 
-        <Spinner
-            android:id="@+id/dialog_new_point_condition_spinner"
+        <CheckBox
+            android:id="@+id/dialog_new_point_grow_percent"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/horizontal_margin"
             android:layout_weight="1"
-            android:text="@string/dialog_select_daily_period_list_caption"
+            android:text="@string/dialog_new_point_percent_hint"
+            />
+
+    </LinearLayout>
+
+    <!-- Блок с формулой ТП-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <!-- Процент -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/dialog_new_point_fall_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/dialog_new_point_fall_hint"
+                android:inputType="numberDecimal"
+                android:textSize="@dimen/auth_login_text_size"/>
+        </android.support.design.widget.TextInputLayout>
+
+        <CheckBox
+            android:id="@+id/dialog_new_point_fall_percent"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/horizontal_margin"
+            android:layout_weight="1"
+            android:text="@string/dialog_new_point_percent_hint"
             />
 
     </LinearLayout>

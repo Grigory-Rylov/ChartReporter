@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,6 +19,9 @@ import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BubbleData;
+import com.github.mikephil.charting.data.BubbleDataSet;
+import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
@@ -31,7 +33,6 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
-import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
@@ -51,6 +52,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
+import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.BUBBLE;
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE;
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
 
@@ -63,11 +65,9 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     @InjectPresenter
     CandlesChartPresenter presenter;
-    private ImageButton addFormulaButton;
 
     private CombinedChartInitiable chart;
     private ProgressBar progressBar;
-    private PeriodSelectorView periodSelector;
     private List<Long> dates;
     private long productId;
     private CombinedData combinedData;
@@ -106,13 +106,13 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         initProgressBar(view);
         initChart(view);
         initPeriodSelector(view);
-        addFormulaButton = (ImageButton) view.findViewById(R.id.fragment_candle_add_formula_button);
+        final ImageButton addFormulaButton = (ImageButton) view.findViewById(R.id.fragment_candle_add_formula_button);
         addFormulaButton.setOnClickListener(this);
         return view;
     }
 
     private void initPeriodSelector(final View view) {
-        periodSelector = (PeriodSelectorView) view.findViewById(R.id.fragment_candle_period_selector);
+        final PeriodSelectorView periodSelector = (PeriodSelectorView) view.findViewById(R.id.fragment_candle_period_selector);
         periodSelector.setOnPeriodChangeListener(this);
         periodSelector.setMode(PeriodSelectorView.Mode.DAY);
     }
@@ -184,7 +184,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         chart.setOnTouchListener(chartTouchListener);
 
         // draw bars behind lines
-        chart.setDrawOrder(new CombinedChart.DrawOrder[]{CANDLE, LINE});
+        chart.setDrawOrder(new CombinedChart.DrawOrder[]{CANDLE, LINE, BUBBLE});
 
         final Legend legend = chart.getLegend();
         legend.setWordWrapEnabled(true);
@@ -197,18 +197,14 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
         xAxis.setGranularity(1f * period.getPeriod() / (60 * 24f));
-        xAxis.setValueFormatter(new IAxisValueFormatter() {
-
-            @Override
-            public String getFormattedValue(final float value, final AxisBase axis) {
-                final int index = (int) value;
-                if (index >= dates.size() || index < 0) {
-                    log.e(TAG, "index " + index + " > dates.size " + dates.size() + " for axis " + axis);
-                    return "";
-                }
-                final Date date = new Date(dates.get(index));
-                return SIMPLE_DATE_FORMAT_DATE.format(date);
+        xAxis.setValueFormatter((value, axis) -> {
+            final int index = (int) value;
+            if (index >= dates.size() || index < 0) {
+                log.e(TAG, "index " + index + " > dates.size " + dates.size() + " for axis " + axis);
+                return "";
             }
+            final Date date = new Date(dates.get(index));
+            return SIMPLE_DATE_FORMAT_DATE.format(date);
         });
 
         final YAxis leftAxis = chart.getAxisLeft();
@@ -268,32 +264,44 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
-    public void formulaPoints(final ChartResponseContainer<Entry> response) {
-        //final CombinedData combinedData = new CombinedData();
-        combinedData.setData(generateFormulaData(response.getEntries()));
+    public void formulaPoints(final FormulaChartContainer response) {
+        combinedData.setData(generateFormulaGrowData(response.getGrowPoints()));
+        chart.setData(combinedData);
+        combinedData.setData(generateFormulaFallData(response.getFallPoints()));
         chart.setData(combinedData);
         chart.invalidate();
     }
 
-    private LineData generateFormulaData(final List<Entry> entries) {
+    private BubbleData generateFormulaGrowData(final List<BubbleEntry> entries) {
 
-        final LineData lineData = new LineData();
+        final BubbleData bubbleData = new BubbleData();
 
-        final LineDataSet linesSet = new LineDataSet(entries, "Line DataSet");
-        linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
-        linesSet.setDrawCircles(true);
-        linesSet.setLineWidth(2f);
-        linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
-        linesSet.setCircleRadius(1f);
-        linesSet.setFillColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
-        linesSet.setMode(LineDataSet.Mode.LINEAR);
-        linesSet.setDrawValues(false);
-        linesSet.setValueTextSize(10f);
-        linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_default_color));
-        linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        lineData.addDataSet(linesSet);
+        final BubbleDataSet bubbleSet = new BubbleDataSet(entries, "Bubble DataSet");
+        bubbleSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        bubbleSet.setHighlightCircleWidth(1.5f);
+        bubbleSet.setDrawValues(false);
+        bubbleSet.setValueTextSize(10f);
+        bubbleSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        bubbleSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        bubbleData.addDataSet(bubbleSet);
 
-        return lineData;
+        return bubbleData;
+    }
+
+    private BubbleData generateFormulaFallData(final List<BubbleEntry> entries) {
+
+        final BubbleData bubbleData = new BubbleData();
+
+        final BubbleDataSet bubbleSet = new BubbleDataSet(entries, "Bubble DataSet");
+        bubbleSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+        bubbleSet.setHighlightCircleWidth(1.5f);
+        bubbleSet.setDrawValues(false);
+        bubbleSet.setValueTextSize(10f);
+        bubbleSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+        bubbleSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        bubbleData.addDataSet(bubbleSet);
+
+        return bubbleData;
     }
 
     @Override

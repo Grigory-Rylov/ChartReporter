@@ -16,20 +16,23 @@ public class FormulaContainer implements Serializable {
 
     private final String name;
     private final VertexType vertexType;
-    private final double formulaValue;
-    private final boolean isPercent;
-    private final boolean isGreater;
+    private final double growValue;
+    private final double fallValue;
+    private final boolean isGrowPercent;
+    private final boolean isFallPercent;
 
     public FormulaContainer(final String name,
                             final VertexType vertexType,
-                            final double formulaValue,
-                            final boolean isPercent,
-                            final boolean isGreater) {
+                            final double growValue,
+                            final boolean isGrowPercent,
+                            final double fallValue,
+                            final boolean isFallPercent) {
         this.name = name;
         this.vertexType = vertexType;
-        this.formulaValue = formulaValue;
-        this.isPercent = isPercent;
-        this.isGreater = isGreater;
+        this.growValue = growValue;
+        this.fallValue = fallValue;
+        this.isGrowPercent = isGrowPercent;
+        this.isFallPercent = isFallPercent;
     }
 
     public String getName() {
@@ -40,15 +43,19 @@ public class FormulaContainer implements Serializable {
         return vertexType;
     }
 
-    public double getFormulaValue() {
-        return formulaValue;
+    public double getGrowValue() {
+        return growValue;
     }
 
-    public boolean isPercent() {
-        return isPercent;
+    public double getFallValue() {
+        return fallValue;
     }
 
-    public boolean isGreater() {
-        return isGreater;
+    public boolean isGrowPercent() {
+        return isGrowPercent;
+    }
+
+    public boolean isFallPercent() {
+        return isFallPercent;
     }
 }

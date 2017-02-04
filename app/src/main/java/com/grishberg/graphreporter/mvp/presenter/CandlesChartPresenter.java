@@ -14,6 +14,8 @@ import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.LogService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -31,6 +33,8 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     public static final int DURATION = 30 * 60 * 1000;
     private static final int INITIAL_OFFSET = 0;
 
+    private final List<FormulaChartContainer> formulaArray;
+
     @Inject
     LogService log;
     @Inject
@@ -44,6 +48,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
+        formulaArray = new ArrayList<>();
         //timer.setHandler(this);
     }
 
@@ -124,6 +129,9 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 .subscribe(response -> {
                     getViewState().hideProgress();
                     getViewState().showChart(response);
+                    for (final FormulaChartContainer currentFormula : formulaArray) {
+                        getViewState().formulaPoints(currentFormula);
+                    }
                 }, exception -> {
                     getViewState().hideProgress();
                     if (exception instanceof EmptyDataException) {
@@ -163,7 +171,10 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();
-                    getViewState().formulaPoints(response);
+                    if (!response.getFallPoints().isEmpty() && response.getGrowPoints().isEmpty()) {
+                        formulaArray.add(response);
+                        getViewState().formulaPoints(response);
+                    }
                 }, exception -> {
                     getViewState().hideProgress();
                     if (exception instanceof EmptyDataException) {
