@@ -17,6 +17,7 @@
     <color name="candle_decreasing_color">#ff0400</color>
     <color name="candle_neutral_color">#00a2ff</color>
     <color name="formula_grow_color">#e64be9</color>
-    <color name="formula_fall_color">#794db7</color>
+    <color name="formula_grow_line_color">#00ffffff</color>
+    <color name="formula_fall_color">#7312f2</color>
 
 </resources>

@@ -16,12 +16,15 @@ import java.util.List;
 
 /**
  * Created by grishberg on 19.01.17.
+ * Формирование точек графика и формулы
  */
 public class ChartsHelper {
 
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
-    public static final int BUBBLE_SIZE = 1;
+    private static final int BUBBLE_SIZE = 100;
+    private int previousGrowX;
+    private int previousFallX;
 
     private enum PrevValueState {
         GROW,
@@ -29,12 +32,9 @@ public class ChartsHelper {
         NEUTRAL
     }
 
-    private ChartsHelper() {
-    }
-
-    public static ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
-                                                            final List<DailyValue> dailyValues,
-                                                            final boolean isDualChartMode) {
+    public ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
+                                                     final List<DailyValue> dailyValues,
+                                                     final boolean isDualChartMode) {
         final List<Long> dates = new ArrayList<>();
         final List<Entry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
@@ -74,9 +74,9 @@ public class ChartsHelper {
     }
 
     @NonNull
-    public static ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
-                                                                             final List<DailyValue> dailyValues,
-                                                                             final boolean isDualChartMode) {
+    public ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
+                                                                      final List<DailyValue> dailyValues,
+                                                                      final boolean isDualChartMode) {
         final List<Long> dates = new ArrayList<>();
         final List<CandleEntry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
@@ -122,20 +122,22 @@ public class ChartsHelper {
     /**
      * Формирование данных для формулы
      *
-     * @param period
-     * @param dailyValues
-     * @return
+     * @param period период, за который отображается график
+     * @param dailyValues искодные данные
+     * @return возвращается объект, содержащий данные для отображения 2х типов точек ТР и ТП
      */
     @NonNull
-    public static FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
-                                                                final List<DailyValue> dailyValues,
-                                                                final FormulaContainer formulaContainer) {
-        final List<BubbleEntry> entriesGrow = new ArrayList<>();
-        final List<BubbleEntry> entriesFall = new ArrayList<>();
+    public FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
+                                                         final List<DailyValue> dailyValues,
+                                                         final FormulaContainer formulaContainer) {
+        final List<Entry> entriesGrow = new ArrayList<>();
+        final List<Entry> entriesFall = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
         final FormulaPointsContainer valueToCompare = getValueToCompare(dailyValues.get(0), formulaContainer);
         final DailyValue firstGrowValue = valueToCompare.valueGrow;
         final DailyValue firstFallValue = valueToCompare.valueFall;
+        previousGrowX = 0;
+        previousFallX = 0;
         int pos = 0;
         final int size = dailyValues.size();
         int periodCount = 0;
@@ -174,36 +176,46 @@ public class ChartsHelper {
         }
         final boolean isNeedAddGrowValue = valueToCompare.valueGrow != firstGrowValue && prevValueState == PrevValueState.GROW;
         final boolean isNeedAddFallValue = valueToCompare.valueFall != firstFallValue && prevValueState == PrevValueState.FALL;
-        addGrowAndFallValuesIfNeed(formulaContainer, entriesGrow, entriesFall, valueToCompare, periodCount, isNeedAddGrowValue, isNeedAddFallValue);
+        addGrowAndFallValuesIfNeed(formulaContainer,
+                entriesGrow,
+                entriesFall,
+                valueToCompare,
+                isNeedAddGrowValue,
+                isNeedAddFallValue);
         return new FormulaChartContainer(entriesGrow, entriesFall, formulaContainer);
     }
 
-    private static void addGrowAndFallValuesIfNeed(FormulaContainer formulaContainer, List<BubbleEntry> entriesGrow, List<BubbleEntry> entriesFall, FormulaPointsContainer valueToCompare, int periodCount, boolean isNeedAddGrowValue, boolean isNeedAddFallValue) {
+    private void addGrowAndFallValuesIfNeed(final FormulaContainer formulaContainer,
+                                            final List<Entry> entriesGrow,
+                                            final List<Entry> entriesFall,
+                                            final FormulaPointsContainer valueToCompare,
+                                            final boolean isNeedAddGrowValue,
+                                            final boolean isNeedAddFallValue) {
         if (isNeedAddGrowValue) {
-            addDailyValue(entriesGrow, valueToCompare.valueGrow, formulaContainer, periodCount);
+            addDailyValue(entriesGrow, valueToCompare.valueGrow, formulaContainer, previousGrowX);
         }
         if (isNeedAddFallValue) {
-            addDailyValue(entriesFall, valueToCompare.valueFall, formulaContainer, periodCount);
+            addDailyValue(entriesFall, valueToCompare.valueFall, formulaContainer, previousFallX);
         }
     }
 
-    private static void addDailyValue(final List<BubbleEntry> entries,
-                                      final DailyValue value,
-                                      final FormulaContainer formulaContainer,
-                                      final int x) {
+    private void addDailyValue(final List<Entry> entries,
+                               final DailyValue value,
+                               final FormulaContainer formulaContainer,
+                               final int x) {
         switch (formulaContainer.getVertexType()) {
             case OPEN:
-                entries.add(new BubbleEntry(x, (float) value.getPriceOpen(), BUBBLE_SIZE));
+                entries.add(new Entry(x, (float) value.getPriceOpen()));
                 break;
             case CLOSED:
-                entries.add(new BubbleEntry(x, (float) value.getPriceClosed(), BUBBLE_SIZE));
+                entries.add(new Entry(x, (float) value.getPriceClosed()));
                 break;
             case HIGH:
-                entries.add(new BubbleEntry(x, (float) value.getPriceHi(), BUBBLE_SIZE));
+                entries.add(new Entry(x, (float) value.getPriceHi()));
                 break;
             case LOW:
             default:
-                entries.add(new BubbleEntry(x, (float) value.getPriceLo(), BUBBLE_SIZE));
+                entries.add(new Entry(x, (float) value.getPriceLo()));
         }
     }
 
@@ -214,8 +226,8 @@ public class ChartsHelper {
      * @param formulaContainer
      * @return
      */
-    private static FormulaPointsContainer getValueToCompare(@NonNull final DailyValue dailyValue,
-                                                            @NonNull final FormulaContainer formulaContainer) {
+    private FormulaPointsContainer getValueToCompare(@NonNull final DailyValue dailyValue,
+                                                     @NonNull final FormulaContainer formulaContainer) {
         switch (formulaContainer.getVertexType()) {
             case OPEN:
                 return new FormulaPointsContainer(
@@ -286,13 +298,13 @@ public class ChartsHelper {
      * @param entriesFall
      * @param prevState
      */
-    private static PrevValueState addIfConditionTrue(final FormulaPointsContainer valueToCompare,
-                                                     final DailyValue value,
-                                                     final FormulaContainer fc,
-                                                     final int x,
-                                                     final List<BubbleEntry> entriesGrow,
-                                                     final List<BubbleEntry> entriesFall,
-                                                     final PrevValueState prevState) {
+    private PrevValueState addIfConditionTrue(final FormulaPointsContainer valueToCompare,
+                                              final DailyValue value,
+                                              final FormulaContainer fc,
+                                              final int x,
+                                              final List<Entry> entriesGrow,
+                                              final List<Entry> entriesFall,
+                                              final PrevValueState prevState) {
         // ТР
         double currentValue;
         double growPriceToCompare;
@@ -321,11 +333,11 @@ public class ChartsHelper {
         }
         if (currentValue > growPriceToCompare) {
             if (prevState == PrevValueState.FALL) {
-                entriesFall.add(new BubbleEntry(x, (float) fallPriceToCompare, BUBBLE_SIZE));
+                entriesFall.add(new BubbleEntry(previousFallX, (float) fallPriceToCompare, BUBBLE_SIZE));
             }
             valueToCompare.valueGrow = value; // сдвиг точки
             valueToCompare.valueFall = makeDailyValue(getNewFallValue(currentValue, fc), fc);
-
+            this.previousGrowX = x;
             return PrevValueState.GROW;
         }
 
@@ -355,22 +367,22 @@ public class ChartsHelper {
 
         if (currentValue < fallPriceToCompare) {
             if (prevState == PrevValueState.GROW) {
-                entriesGrow.add(new BubbleEntry(x, (float) growPriceToCompare, BUBBLE_SIZE));
+                entriesGrow.add(new Entry(previousGrowX, (float) growPriceToCompare));
             }
             valueToCompare.valueFall = value;
             valueToCompare.valueGrow = makeDailyValue(getNewGrowValue(currentValue, fc), fc);
-
+            this.previousFallX = x;
             return PrevValueState.FALL;
         }
 
         return PrevValueState.NEUTRAL;
     }
 
-    private static final class FormulaPointsContainer {
+    private static class FormulaPointsContainer {
         DailyValue valueGrow;
         DailyValue valueFall;
 
-        public FormulaPointsContainer(final DailyValue valueGrow, final DailyValue valueFall) {
+        FormulaPointsContainer(final DailyValue valueGrow, final DailyValue valueFall) {
             this.valueGrow = valueGrow;
             this.valueFall = valueFall;
         }

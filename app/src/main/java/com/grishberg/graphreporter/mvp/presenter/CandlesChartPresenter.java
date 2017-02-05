@@ -1,8 +1,12 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
+import android.support.annotation.NonNull;
+
 import com.arellomobile.mvp.InjectViewState;
+import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.enums.ChartMode;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
+import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
@@ -39,6 +43,9 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     LogService log;
     @Inject
     DailyDataRepository repository;
+
+    @Inject
+    ChartsHelper chartsHelper;
     private int maxOffset;
     //@Inject
     //TimerUtil timer;
@@ -98,33 +105,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                         return Observable.error(new EmptyDataException());
                     }
                     maxOffset = dailyValues.size();
-                    try {
-                        switch (chartMode) {
-                            case CANDLE_MODE:
-                                return Observable.just(
-                                        DualChartContainer.makeCandle(period,
-                                                ChartsHelper.getCandleDataForPeriod(period, dailyValues, false))
-                                );
-                            case LINE_MODE:
-                                return Observable.just(
-                                        DualChartContainer.makeLine(period,
-                                                ChartsHelper.getLineData(period, dailyValues, false))
-                                );
-                            default:
-                                return Observable.just(
-                                        DualChartContainer.makeCandleAndLine(period,
-                                                ChartsHelper.getLineData(period, dailyValues, true),
-                                                ChartsHelper.getCandleDataForPeriod(period, dailyValues, true))
-                                );
-                        }
-                    } finally {
-                        try {
-                            dailyValues.close();
-                        } catch (final IOException e) {
-                            log.e(TAG, "close exception", e);
-                        }
-                        //timer.startTimer(DURATION);
-                    }
+                    return getChartsPoints(chartMode, period, dailyValues);
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();
@@ -143,6 +124,37 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 });
     }
 
+    @NonNull
+    private Observable<? extends DualChartContainer> getChartsPoints(ChartMode chartMode, ChartPeriod period, ListResultCloseable<DailyValue> dailyValues) {
+        try {
+            switch (chartMode) {
+                case CANDLE_MODE:
+                    return Observable.just(
+                            DualChartContainer.makeCandle(period,
+                                    chartsHelper.getCandleDataForPeriod(period, dailyValues, false))
+                    );
+                case LINE_MODE:
+                    return Observable.just(
+                            DualChartContainer.makeLine(period,
+                                    chartsHelper.getLineData(period, dailyValues, false))
+                    );
+                default:
+                    return Observable.just(
+                            DualChartContainer.makeCandleAndLine(period,
+                                    chartsHelper.getLineData(period, dailyValues, true),
+                                    chartsHelper.getCandleDataForPeriod(period, dailyValues, true))
+                    );
+            }
+        } finally {
+            try {
+                dailyValues.close();
+            } catch (final IOException e) {
+                log.e(TAG, "close exception", e);
+            }
+            //timer.startTimer(DURATION);
+        }
+    }
+
     @Override
     public void run() {
         //TODO: update from server
@@ -151,7 +163,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     /**
      * Применить формулу
      *
-     * @param formulaContainer
+     * @param formulaContainer данные для построения точек формулы
      */
     public void addNewFormula(final FormulaContainer formulaContainer) {
         requestPointForFormula(currentProductId, formulaContainer);
@@ -164,14 +176,14 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                         return Observable.error(new EmptyDataException());
                     }
                     return Observable.just(
-                            ChartsHelper.getFormulaDataForPeriod(period,
+                            chartsHelper.getFormulaDataForPeriod(period,
                                     dailyValues,
                                     formulaContainer)
                     );
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();
-                    if (!response.getFallPoints().isEmpty() && response.getGrowPoints().isEmpty()) {
+                    if (!(response.getFallPoints().isEmpty() && response.getGrowPoints().isEmpty())) {
                         formulaArray.add(response);
                         getViewState().formulaPoints(response);
                     }

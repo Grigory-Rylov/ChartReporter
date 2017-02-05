@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.di.components;
 
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.di.modules.AppModule;
+import com.grishberg.graphreporter.di.modules.FormulaModule;
 import com.grishberg.graphreporter.di.modules.ProfileModule;
 import com.grishberg.graphreporter.di.modules.RestModule;
 import com.grishberg.graphreporter.di.modules.StorageModule;
@@ -17,13 +18,15 @@ import dagger.Component;
 
 /**
  * Created by grishberg on 12.01.17.
+ * Компонент Dagger
  */
 @Singleton
 @Component(modules = {RestModule.class,
         AppModule.class,
         ProfileModule.class,
-        StorageModule.class
-})
+        StorageModule.class,
+        FormulaModule.class
+        })
 
 public interface AppComponent {
 
