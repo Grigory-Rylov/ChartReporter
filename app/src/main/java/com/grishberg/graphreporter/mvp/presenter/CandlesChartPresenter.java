@@ -36,8 +36,10 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private static final String TAG = CandlesChartPresenter.class.getSimpleName();
     public static final int DURATION = 30 * 60 * 1000;
     private static final int INITIAL_OFFSET = 0;
+    public static final int FORMULA_CAPACITY = 5;
 
-    private final List<FormulaChartContainer> formulaArray;
+    private final List<FormulaChartContainer> formulaChartArray;
+    private final List<FormulaContainer> formulaArray;
 
     @Inject
     LogService log;
@@ -55,7 +57,8 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
-        formulaArray = new ArrayList<>();
+        formulaChartArray = new ArrayList<>(FORMULA_CAPACITY);
+        formulaArray = new ArrayList<>(FORMULA_CAPACITY);
         //timer.setHandler(this);
     }
 
@@ -110,7 +113,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 .subscribe(response -> {
                     getViewState().hideProgress();
                     getViewState().showChart(response);
-                    for (final FormulaChartContainer currentFormula : formulaArray) {
+                    for (final FormulaChartContainer currentFormula : formulaChartArray) {
                         getViewState().formulaPoints(currentFormula);
                     }
                 }, exception -> {
@@ -124,21 +127,44 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 });
     }
 
+    /**
+     * перестроить формулы для нового периода
+     *
+     * @param period
+     * @param dailyValues
+     */
+    private void rebuildFormulaCharts(final ChartPeriod period,
+                                      final ListResultCloseable<DailyValue> dailyValues,
+                                      final boolean isDualChartMode) {
+        formulaChartArray.clear();
+        for (final FormulaContainer formulaContainer : formulaArray) {
+            formulaChartArray.add(chartsHelper.getFormulaDataForPeriod(period,
+                    dailyValues,
+                    formulaContainer,
+                    isDualChartMode));
+        }
+    }
+
     @NonNull
-    private Observable<? extends DualChartContainer> getChartsPoints(ChartMode chartMode, ChartPeriod period, ListResultCloseable<DailyValue> dailyValues) {
+    private Observable<? extends DualChartContainer> getChartsPoints(final ChartMode chartMode,
+                                                                     final ChartPeriod period,
+                                                                     final ListResultCloseable<DailyValue> dailyValues) {
         try {
             switch (chartMode) {
                 case CANDLE_MODE:
+                    rebuildFormulaCharts(period, dailyValues, false);
                     return Observable.just(
                             DualChartContainer.makeCandle(period,
                                     chartsHelper.getCandleDataForPeriod(period, dailyValues, false))
                     );
                 case LINE_MODE:
+                    rebuildFormulaCharts(period, dailyValues, false);
                     return Observable.just(
                             DualChartContainer.makeLine(period,
                                     chartsHelper.getLineData(period, dailyValues, false))
                     );
                 default:
+                    rebuildFormulaCharts(period, dailyValues, true);
                     return Observable.just(
                             DualChartContainer.makeCandleAndLine(period,
                                     chartsHelper.getLineData(period, dailyValues, true),
@@ -166,10 +192,13 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
      * @param formulaContainer данные для построения точек формулы
      */
     public void addNewFormula(final FormulaContainer formulaContainer) {
-        requestPointForFormula(currentProductId, formulaContainer);
+        requestPointForFormula(currentProductId, formulaContainer, currentChartMode);
     }
 
-    private void requestPointForFormula(final long productId, final FormulaContainer formulaContainer) {
+    private void requestPointForFormula(final long productId,
+                                        final FormulaContainer formulaContainer,
+                                        final ChartMode currentChartMode) {
+        formulaArray.add(formulaContainer);
         repository.getDailyValues(productId, 0)
                 .flatMap(dailyValues -> {
                     if (dailyValues.isEmpty()) {
@@ -178,13 +207,14 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                     return Observable.just(
                             chartsHelper.getFormulaDataForPeriod(period,
                                     dailyValues,
-                                    formulaContainer)
+                                    formulaContainer,
+                                    currentChartMode == CANDLE_AND_LINE_MODE)
                     );
                 })
                 .subscribe(response -> {
                     getViewState().hideProgress();
                     if (!(response.getFallPoints().isEmpty() && response.getGrowPoints().isEmpty())) {
-                        formulaArray.add(response);
+                        formulaChartArray.add(response);
                         getViewState().formulaPoints(response);
                     }
                 }, exception -> {

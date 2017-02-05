@@ -129,10 +129,12 @@ public class ChartsHelper {
     @NonNull
     public FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
                                                          final List<DailyValue> dailyValues,
-                                                         final FormulaContainer formulaContainer) {
+                                                         final FormulaContainer formulaContainer,
+                                                         final boolean isDualChartMode) {
         final List<Entry> entriesGrow = new ArrayList<>();
         final List<Entry> entriesFall = new ArrayList<>();
-        final int periodPartionCount = period.getPartion();
+        final int periodPartitionCount = period.getPartion();
+
         final FormulaPointsContainer valueToCompare = getValueToCompare(dailyValues.get(0), formulaContainer);
         final DailyValue firstGrowValue = valueToCompare.valueGrow;
         final DailyValue firstFallValue = valueToCompare.valueFall;
@@ -149,17 +151,22 @@ public class ChartsHelper {
             double lo = Float.MAX_VALUE;
             int i;
             // пропуск какого то количества точек, которые входят в период
-            for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
+            for (i = 0; i < periodPartitionCount && pos < size; i++, pos++) {
                 final DailyValue element = dailyValues.get(pos);
                 if (i == 0) {
                     open = element.getPriceOpen();
                 }
-                if ((i == periodPartionCount - 1) || (pos == size - 1)) {
+                if ((i == periodPartitionCount - 1) || (pos == size - 1)) {
                     close = element.getPriceClosed();
                 }
                 hi = Math.max(element.getPriceHi(), hi);
                 lo = Math.min(element.getPriceLo(), lo);
             }
+            if (isDualChartMode) {
+                periodCount++;
+            }
+            periodCount++;
+
             final PrevValueState currentState = addIfConditionTrue(valueToCompare,
                     DailyValue.makeFromCandle(open, hi, lo, close),
                     formulaContainer,
@@ -172,7 +179,6 @@ public class ChartsHelper {
                 prevValueState = currentState;
             }
 
-            periodCount++;
         }
         final boolean isNeedAddGrowValue = valueToCompare.valueGrow != firstGrowValue && prevValueState == PrevValueState.GROW;
         final boolean isNeedAddFallValue = valueToCompare.valueFall != firstFallValue && prevValueState == PrevValueState.FALL;
