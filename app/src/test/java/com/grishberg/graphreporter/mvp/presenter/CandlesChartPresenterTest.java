@@ -80,10 +80,10 @@ public class CandlesChartPresenterTest extends BaseTestCase {
         final List<DailyValue> values = new ArrayList<>();
         for (long i = 0; i < 10; i++) {
             final DailyValue value = mock(DailyValue.class);
-            when(value.getPriceLo()).thenReturn(1.0D);
-            when(value.getPriceHi()).thenReturn(3.0D);
+            when(value.getPriceLow()).thenReturn(1.0D);
+            when(value.getPriceHigh()).thenReturn(3.0D);
             when(value.getPriceOpen()).thenReturn(1.0D);
-            when(value.getPriceClosed()).thenReturn(2.0D);
+            when(value.getPriceClose()).thenReturn(2.0D);
             when(value.getDt()).thenReturn(i);
             values.add(value);
         }

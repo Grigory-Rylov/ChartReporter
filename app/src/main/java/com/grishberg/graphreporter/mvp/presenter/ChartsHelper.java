@@ -54,7 +54,7 @@ public class ChartsHelper {
                     startPeriod = element.getDt() * 1000L;
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceClosed();
+                    end = element.getPriceClose();
                     endPeriod = element.getDt() * 1000L;
                 }
             }
@@ -94,13 +94,13 @@ public class ChartsHelper {
             int i;
             for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
                 final DailyValue element = dailyValues.get(pos);
-                hi = Math.max(element.getPriceHi(), hi);
-                lo = Math.min(element.getPriceLo(), lo);
+                hi = Math.max(element.getPriceHigh(), hi);
+                lo = Math.min(element.getPriceLow(), lo);
                 if (i == 0) {
                     start = element.getPriceOpen();
                 }
                 if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceClosed();
+                    end = element.getPriceClose();
                 }
                 currentDt = element.getDt() * 1000L;
             }
@@ -157,10 +157,10 @@ public class ChartsHelper {
                     open = element.getPriceOpen();
                 }
                 if ((i == periodPartitionCount - 1) || (pos == size - 1)) {
-                    close = element.getPriceClosed();
+                    close = element.getPriceClose();
                 }
-                hi = Math.max(element.getPriceHi(), hi);
-                lo = Math.min(element.getPriceLo(), lo);
+                hi = Math.max(element.getPriceHigh(), hi);
+                lo = Math.min(element.getPriceLow(), lo);
             }
             if (isDualChartMode) {
                 periodCount++;
@@ -214,14 +214,14 @@ public class ChartsHelper {
                 entries.add(new Entry(x, (float) value.getPriceOpen()));
                 break;
             case CLOSED:
-                entries.add(new Entry(x, (float) value.getPriceClosed()));
+                entries.add(new Entry(x, (float) value.getPriceClose()));
                 break;
             case HIGH:
-                entries.add(new Entry(x, (float) value.getPriceHi()));
+                entries.add(new Entry(x, (float) value.getPriceHigh()));
                 break;
             case LOW:
             default:
-                entries.add(new Entry(x, (float) value.getPriceLo()));
+                entries.add(new Entry(x, (float) value.getPriceLow()));
         }
     }
 
@@ -243,22 +243,22 @@ public class ChartsHelper {
                 );
             case CLOSED:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromClosed(getNewGrowValue(dailyValue.getPriceClosed(), formulaContainer)),
+                        DailyValue.makeFromClosed(getNewGrowValue(dailyValue.getPriceClose(), formulaContainer)),
 
-                        DailyValue.makeFromClosed(getNewFallValue(dailyValue.getPriceClosed(), formulaContainer))
+                        DailyValue.makeFromClosed(getNewFallValue(dailyValue.getPriceClose(), formulaContainer))
                 );
             case HIGH:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromHi(getNewGrowValue(dailyValue.getPriceHi(), formulaContainer)),
+                        DailyValue.makeFromHi(getNewGrowValue(dailyValue.getPriceHigh(), formulaContainer)),
 
-                        DailyValue.makeFromHi(getNewFallValue(dailyValue.getPriceHi(), formulaContainer))
+                        DailyValue.makeFromHi(getNewFallValue(dailyValue.getPriceHigh(), formulaContainer))
                 );
             case LOW:
             default:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromLo(getNewGrowValue(dailyValue.getPriceLo(), formulaContainer)),
+                        DailyValue.makeFromLo(getNewGrowValue(dailyValue.getPriceLow(), formulaContainer)),
 
-                        DailyValue.makeFromLo(getNewFallValue(dailyValue.getPriceLo(), formulaContainer))
+                        DailyValue.makeFromLo(getNewFallValue(dailyValue.getPriceLow(), formulaContainer))
                 );
         }
     }
@@ -322,20 +322,20 @@ public class ChartsHelper {
                 fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
                 break;
             case CLOSED:
-                currentValue = value.getPriceClosed();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceClosed();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceClosed();
+                currentValue = value.getPriceClose();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceClose();
                 break;
             case HIGH:
-                currentValue = value.getPriceHi();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceHi();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceHi();
+                currentValue = value.getPriceHigh();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceHigh();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceHigh();
                 break;
             case LOW:
             default:
-                currentValue = value.getPriceLo();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceLo();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceLo();
+                currentValue = value.getPriceLow();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
         }
         if (currentValue > growPriceToCompare) {
             if (prevState == PrevValueState.FALL) {
@@ -355,20 +355,20 @@ public class ChartsHelper {
                 fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
                 break;
             case CLOSED:
-                currentValue = value.getPriceClosed();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceClosed();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceClosed();
+                currentValue = value.getPriceClose();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceClose();
                 break;
             case HIGH:
-                currentValue = value.getPriceHi();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceHi();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceHi();
+                currentValue = value.getPriceHigh();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceHigh();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceHigh();
                 break;
             case LOW:
             default:
-                currentValue = value.getPriceLo();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceLo();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceLo();
+                currentValue = value.getPriceLow();
+                growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
+                fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
         }
 
         if (currentValue < fallPriceToCompare) {
