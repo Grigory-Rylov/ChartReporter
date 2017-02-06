@@ -24,20 +24,22 @@ public class LineChartRendererEx extends LineChartRenderer {
     }
 
     @Override
-    protected void drawLinear(Canvas c, ILineDataSet dataSet) {
+    protected void drawLinear(final Canvas c, final ILineDataSet dataSet) {
 
-        int entryCount = dataSet.getEntryCount();
+        final boolean isNeedToShowLines = !(dataSet instanceof LineFormulaDataSet);
+
+        final int entryCount = dataSet.getEntryCount();
 
         final boolean isDrawSteppedEnabled = dataSet.isDrawSteppedEnabled();
         final int pointsPerEntryPair = isDrawSteppedEnabled ? 4 : 2;
 
-        Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
+        final Transformer trans = mChart.getTransformer(dataSet.getAxisDependency());
 
-        float phaseY = mAnimator.getPhaseY();
+        final float phaseY = mAnimator.getPhaseY();
 
         mRenderPaint.setStyle(Paint.Style.STROKE);
 
-        Canvas canvas = null;
+        Canvas canvas;
 
         // if the data-set is dashed, draw on bitmap-canvas
         if (dataSet.isDashedLineEnabled()) {
@@ -62,7 +64,9 @@ public class LineChartRendererEx extends LineChartRenderer {
             for (int j = mXBounds.min; j <= mXBounds.range + mXBounds.min; j++) {
 
                 Entry e = dataSet.getEntryForIndex(j);
-                if (e == null) continue;
+                if (e == null) {
+                    continue;
+                }
 
                 mLineBuffer[0] = e.getX();
                 mLineBuffer[1] = e.getY() * phaseY;
@@ -71,7 +75,9 @@ public class LineChartRendererEx extends LineChartRenderer {
 
                     e = dataSet.getEntryForIndex(j + 1);
 
-                    if (e == null) break;
+                    if (e == null) {
+                        break;
+                    }
 
                     if (isDrawSteppedEnabled) {
                         mLineBuffer[2] = e.getX();
@@ -84,7 +90,6 @@ public class LineChartRendererEx extends LineChartRenderer {
                         mLineBuffer[2] = e.getX();
                         mLineBuffer[3] = e.getY() * phaseY;
                     }
-
                 } else {
                     mLineBuffer[2] = mLineBuffer[0];
                     mLineBuffer[3] = mLineBuffer[1];
@@ -105,9 +110,10 @@ public class LineChartRendererEx extends LineChartRenderer {
                 // get the color that is set for this line-segment
                 mRenderPaint.setColor(dataSet.getColor(j));
 
-                //canvas.drawLines(mLineBuffer, 0, pointsPerEntryPair * 2, mRenderPaint);
+                if (isNeedToShowLines) {
+                    canvas.drawLines(mLineBuffer, 0, pointsPerEntryPair * 2, mRenderPaint);
+                }
             }
-
         } else { // only one color per dataset
 
             if (mLineBuffer.length < Math.max((entryCount) * pointsPerEntryPair, pointsPerEntryPair) * 2)
@@ -125,7 +131,9 @@ public class LineChartRendererEx extends LineChartRenderer {
                     e1 = dataSet.getEntryForIndex(x == 0 ? 0 : (x - 1));
                     e2 = dataSet.getEntryForIndex(x);
 
-                    if (e1 == null || e2 == null) continue;
+                    if (e1 == null || e2 == null) {
+                        continue;
+                    }
 
                     mLineBuffer[j++] = e1.getX();
                     mLineBuffer[j++] = e1.getY() * phaseY;
@@ -148,7 +156,9 @@ public class LineChartRendererEx extends LineChartRenderer {
 
                     mRenderPaint.setColor(dataSet.getColor());
 
-                    //canvas.drawLines(mLineBuffer, 0, size, mRenderPaint);
+                    if (isNeedToShowLines) {
+                        canvas.drawLines(mLineBuffer, 0, size, mRenderPaint);
+                    }
                 }
             }
         }

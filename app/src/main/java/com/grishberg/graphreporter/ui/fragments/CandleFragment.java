@@ -34,6 +34,7 @@ import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.ui.dialogs.NewPointDialog;
 import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
+import com.grishberg.graphreporter.ui.view.LineFormulaDataSet;
 import com.grishberg.graphreporter.ui.view.PeriodSelectorView;
 import com.grishberg.graphreporter.utils.ColorUtil;
 import com.grishberg.graphreporter.utils.LogService;
@@ -270,9 +271,9 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         chart.invalidate();
     }
 
-    private LineDataSet generateFormulaGrowData(final List<Entry> entries) {
+    private LineFormulaDataSet generateFormulaGrowData(final List<Entry> entries) {
 
-        final LineDataSet linesSet = new LineDataSet(entries, "Line Grow DataSet");
+        final LineFormulaDataSet linesSet = new LineFormulaDataSet(entries, "Line Grow DataSet");
         linesSet.setDrawCircles(true);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
@@ -282,13 +283,16 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        linesSet.setCircleHoleRadius(1);
+        linesSet.setDrawCircleHole(false);
+
 
         return linesSet;
     }
 
-    private LineDataSet generateFormulaFallData(final List<Entry> entries) {
+    private LineFormulaDataSet generateFormulaFallData(final List<Entry> entries) {
 
-        final LineDataSet linesSet = new LineDataSet(entries, "Line Fall DataSet");
+        final LineFormulaDataSet linesSet = new LineFormulaDataSet(entries, "Line Fall DataSet");
         linesSet.setDrawCircles(true);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
@@ -298,6 +302,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        linesSet.setCircleHoleRadius(1);
+        linesSet.setDrawCircleHole(false);
 
         return linesSet;
     }
