@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -25,7 +24,6 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
@@ -162,6 +160,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     private void initDualChartAxes(final ChartPeriod period) {
 
+        /*
         final ChartTouchListener<CombinedChartInitiable> chartTouchListener = new ChartTouchListener<CombinedChartInitiable>(chart) {
             @Override
             public boolean onTouch(final View view, final MotionEvent event) {
@@ -171,6 +170,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
                 return false;
             }
         };
+        */
+
         chart.setDoubleTapToZoomEnabled(false);
         chart.setScaleYEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -182,7 +183,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         chart.setPinchZoom(false);
         chart.setDrawGridBackground(false);
         chart.getLegend().setEnabled(false);
-        chart.setOnTouchListener(chartTouchListener);
 
         // draw bars behind lines
         chart.setDrawOrder(new CombinedChart.DrawOrder[]{CANDLE, LINE});
@@ -273,7 +273,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private LineDataSet generateFormulaGrowData(final List<Entry> entries) {
 
         final LineDataSet linesSet = new LineDataSet(entries, "Line Grow DataSet");
-        linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_grow_line_color));
         linesSet.setDrawCircles(true);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
@@ -283,6 +282,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        //linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_invisible_line_color));
 
         return linesSet;
     }
@@ -290,7 +290,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private LineDataSet generateFormulaFallData(final List<Entry> entries) {
 
         final LineDataSet linesSet = new LineDataSet(entries, "Line Fall DataSet");
-        linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_grow_line_color));
         linesSet.setDrawCircles(true);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
@@ -300,6 +299,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        //linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_invisible_line_color));
 
         return linesSet;
     }
