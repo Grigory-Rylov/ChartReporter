@@ -276,13 +276,12 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setDrawCircles(true);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
-        linesSet.setFillColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        linesSet.setFillAlpha(0);
         linesSet.setMode(LineDataSet.Mode.LINEAR);
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        //linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_invisible_line_color));
 
         return linesSet;
     }
@@ -293,13 +292,12 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setDrawCircles(true);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
-        linesSet.setFillColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+        linesSet.setFillAlpha(0);
         linesSet.setMode(LineDataSet.Mode.LINEAR);
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        //linesSet.setColor(ColorUtil.getColor(getContext(), R.color.formula_invisible_line_color));
 
         return linesSet;
     }

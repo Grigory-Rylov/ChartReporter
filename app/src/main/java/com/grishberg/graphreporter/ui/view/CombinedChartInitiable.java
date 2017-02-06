@@ -25,5 +25,6 @@ public class CombinedChartInitiable extends CombinedChart {
     @Override
     public void init() {
         super.init();
+        mRenderer = new CombinedChartRendererEx(this, mAnimator, mViewPortHandler);
     }
 }

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.highlight.CombinedHighlighter;
+import com.github.mikephil.charting.renderer.CombinedChartRenderer;
 
 /**
  * Created by grishberg on 17.01.17.
