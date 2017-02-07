@@ -55,5 +55,6 @@
 
     <string name="dialog_new_point_condition_item_less">&lt;</string>
     <string name="dialog_new_point_condition_item_greater">&gt;</string>
+    <string name="dialog_new_point_color">цвет</string>
 
 </resources>

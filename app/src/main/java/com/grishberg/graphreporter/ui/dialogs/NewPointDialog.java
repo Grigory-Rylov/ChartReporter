@@ -1,5 +1,6 @@
 package com.grishberg.graphreporter.ui.dialogs;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,12 +16,16 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.mvp.common.BaseMvpDialogFragment;
+import com.grishberg.graphreporter.ui.view.color.ColorPickerView;
 
 /**
  * Created by grishberg on 28.01.17.
@@ -36,6 +41,14 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     private Spinner vertexSpinner;
     private CheckBox isGrowPercent;
     private CheckBox isFallPercent;
+    private ColorPickerView growColorPicker;
+    private ColorPickerView fallColorPicker;
+
+    private Switch growColorSwitch;
+    private Switch fallColorSwitch;
+
+    private FrameLayout growColorPreview;
+    private FrameLayout fallColorPreview;
 
     public static void showDialog(final FragmentManager fm,
                                   final Fragment targetFragment) {
@@ -54,11 +67,21 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         newFragment.show(ft, PeriodSelectDialog.class.getSimpleName());
     }
 
+    @Nullable
+    public static FormulaContainer getResult(final Intent intent) {
+        if (intent != null) {
+            return (FormulaContainer) intent.getSerializableExtra(NEW_POINT_RESULT_EXTRA);
+        }
+        return null;
+    }
+
     @Override
     public View onCreateView(final LayoutInflater inflater,
                              final ViewGroup container,
                              final Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.dialog_new_point, container, false);
+        getDialog().setTitle(getString(R.string.dialog_new_point_title));
+        getDialog().setCanceledOnTouchOutside(true);
         initVertexSpinner(view);
         initButton(view);
         pointName = (EditText) view.findViewById(R.id.dialog_new_point_name);
@@ -68,7 +91,50 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         isGrowPercent = (CheckBox) view.findViewById(R.id.dialog_new_point_grow_percent);
         isFallPercent = (CheckBox) view.findViewById(R.id.dialog_new_point_fall_percent);
 
+        growColorPreview = (FrameLayout) view.findViewById(R.id.dialog_new_point_grow_color);
+        fallColorPreview = (FrameLayout) view.findViewById(R.id.dialog_new_point_fall_color);
+
+        initColorPickers(view);
+
+        initSwitchers(view);
+
         return view;
+    }
+
+    private void initColorPickers(View view) {
+        growColorPicker = (ColorPickerView) view.findViewById(R.id.dialog_new_point_grow_color_picker);
+        fallColorPicker = (ColorPickerView) view.findViewById(R.id.dialog_new_point_fall_color_picker);
+        growColorPicker.setColorSelectedListener(new ColorPickerView.OnColorSelectedListener() {
+            @Override
+            public void colorSelected(final int color) {
+                growColorPreview.setBackgroundColor(color);
+            }
+        });
+        fallColorPicker.setColorSelectedListener(new ColorPickerView.OnColorSelectedListener() {
+            @Override
+            public void colorSelected(final int color) {
+                fallColorPreview.setBackgroundColor(color);
+            }
+        });
+    }
+
+    private void initSwitchers(final View view) {
+        growColorSwitch = (Switch) view.findViewById(R.id.dialog_new_point_grow_color_switcher);
+        fallColorSwitch = (Switch) view.findViewById(R.id.dialog_new_point_fall_color_switcher);
+
+        growColorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton compoundButton, final boolean checked) {
+                growColorPicker.setVisibility(checked ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        fallColorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(final CompoundButton compoundButton, final boolean checked) {
+                fallColorPicker.setVisibility(checked ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     private void initVertexSpinner(final View view) {
@@ -89,6 +155,15 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        final Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+    }
+
+    @Override
     public void onClick(final View view) {
         if (TextUtils.isEmpty(pointName.getText())) {
             return;
@@ -106,17 +181,11 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
                         FormulaContainer.VertexType.values()[vertexSpinner.getSelectedItemPosition()],
                         Double.valueOf(pointGrow.getText().toString()),
                         isGrowPercent.isChecked(),
+                        growColorPicker.getSelectedColor(),
                         Double.valueOf(pointFall.getText().toString()),
-                        isFallPercent.isChecked()));
+                        isFallPercent.isChecked(),
+                        fallColorPicker.getSelectedColor()));
         getTargetFragment().onActivityResult(getTargetRequestCode(), 0, data);
         dismiss();
-    }
-
-    @Nullable
-    public static FormulaContainer getResult(final Intent intent) {
-        if (intent != null) {
-            return (FormulaContainer) intent.getSerializableExtra(NEW_POINT_RESULT_EXTRA);
-        }
-        return null;
     }
 }

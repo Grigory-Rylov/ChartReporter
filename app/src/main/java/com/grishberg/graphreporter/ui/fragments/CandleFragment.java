@@ -50,9 +50,10 @@ import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener, View.OnClickListener {
+    public static final float FORMULA_POINT_RADIUS = 3f;
+    public static final int MAX_X_RANGE = 1000;
     private static final String TAG = CandleFragment.class.getSimpleName();
     private static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
-    public static final float FORMULA_POINT_RADIUS = 3f;
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.US);
     @Inject
     LogService log;
@@ -130,6 +131,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             return;
         }
         initDualChartAxes(response.getPeriod());
+
         combinedData = new CombinedData();
         lineData = new LineData();
 
@@ -154,24 +156,15 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
                 combinedData.setData(generateCandleData(response.getCandleResponse().getEntries()));
                 break;
         }
+        combinedData.notifyDataChanged();
 
         chart.setData(combinedData);
-        chart.invalidate();
+        chart.setVisibleXRangeMaximum(MAX_X_RANGE);
+
+        chart.moveViewToX(combinedData.getEntryCount());
     }
 
     private void initDualChartAxes(final ChartPeriod period) {
-
-        /*
-        final ChartTouchListener<CombinedChartInitiable> chartTouchListener = new ChartTouchListener<CombinedChartInitiable>(chart) {
-            @Override
-            public boolean onTouch(final View view, final MotionEvent event) {
-
-                final Entry entryByTouchPoint = chart.getEntryByTouchPoint(event.getX(), event.getY());
-                Toast.makeText(getContext(), String.format(Locale.US, "%f", entryByTouchPoint.getY()), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        };
-        */
 
         chart.setDoubleTapToZoomEnabled(false);
         chart.setScaleYEnabled(false);
@@ -264,46 +257,47 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     @Override
     public void formulaPoints(final FormulaChartContainer response) {
-        lineData.addDataSet(generateFormulaGrowData(response.getGrowPoints()));
-        lineData.addDataSet(generateFormulaFallData(response.getFallPoints()));
+        lineData.addDataSet(generateFormulaGrowData(response.getGrowPoints(), response.getFormulaContainer()));
+        lineData.addDataSet(generateFormulaFallData(response.getFallPoints(), response.getFormulaContainer()));
         combinedData.setData(lineData);
         chart.setData(combinedData);
         chart.invalidate();
     }
 
-    private LineFormulaDataSet generateFormulaGrowData(final List<Entry> entries) {
+    private LineFormulaDataSet generateFormulaGrowData(final List<Entry> entries,
+                                                       final FormulaContainer formulaContainer) {
 
         final LineFormulaDataSet linesSet = new LineFormulaDataSet(entries, "Line Grow DataSet");
         linesSet.setDrawCircles(true);
-        linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        linesSet.setCircleColor(formulaContainer.getGrowColor());
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
         linesSet.setFillAlpha(0);
         linesSet.setMode(LineDataSet.Mode.LINEAR);
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
-        linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        linesSet.setValueTextColor(formulaContainer.getGrowColor());
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         linesSet.setCircleHoleRadius(1);
-        linesSet.setDrawCircleHole(false);
-
+        linesSet.setDrawCircleHole(true);
 
         return linesSet;
     }
 
-    private LineFormulaDataSet generateFormulaFallData(final List<Entry> entries) {
+    private LineFormulaDataSet generateFormulaFallData(final List<Entry> entries,
+                                                       final FormulaContainer formulaContainer) {
 
         final LineFormulaDataSet linesSet = new LineFormulaDataSet(entries, "Line Fall DataSet");
         linesSet.setDrawCircles(true);
-        linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+        linesSet.setCircleColor(formulaContainer.getFallColor());
         linesSet.setCircleRadius(FORMULA_POINT_RADIUS);
         linesSet.setFillAlpha(0);
         linesSet.setMode(LineDataSet.Mode.LINEAR);
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
-        linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+        linesSet.setValueTextColor(formulaContainer.getFallColor());
         linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         linesSet.setCircleHoleRadius(1);
-        linesSet.setDrawCircleHole(false);
+        linesSet.setDrawCircleHole(true);
 
         return linesSet;
     }
