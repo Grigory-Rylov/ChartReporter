@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import android.widget.Button;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.grishberg.graphreporter.R;
+import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.ui.fragments.CandleFragment;
 import com.grishberg.graphreporter.ui.fragments.ProductsFragment;
 import com.grishberg.graphreporter.utils.MaterialDrawerHelper;
@@ -66,8 +68,8 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsFragm
     }
 
     @Override
-    public void onProductSelected(final long productId) {
-        final Fragment fragment = CandleFragment.newInstance(productId);
+    public void onProductSelected(@NonNull final ProductItem productItem) {
+        final Fragment fragment = CandleFragment.newInstance(productItem);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_chart, fragment, CandleFragment.class.getSimpleName())

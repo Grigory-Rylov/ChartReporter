@@ -99,10 +99,11 @@
                 android:background="@android:color/black"/>
         </LinearLayout>
 
-        <com.grishberg.graphreporter.ui.view.color.ColorPickerView
+        <com.grishberg.graphreporter.ui.view.color.HSVColorWheel
             android:id="@+id/dialog_new_point_grow_color_picker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dialog_new_point_color_size"
+            android:layout_height="@dimen/dialog_new_point_color_size"
+            android:layout_gravity="center_horizontal"
             android:visibility="gone"
             tools:visibility="visible"
             />
@@ -155,10 +156,11 @@
                 android:background="@android:color/black"/>
         </LinearLayout>
 
-        <com.grishberg.graphreporter.ui.view.color.ColorPickerView
+        <com.grishberg.graphreporter.ui.view.color.HSVColorWheel
             android:id="@+id/dialog_new_point_fall_color_picker"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dialog_new_point_color_size"
+            android:layout_height="@dimen/dialog_new_point_color_size"
+            android:layout_gravity="center_horizontal"
             android:visibility="gone"
             tools:visibility="visible"
             />

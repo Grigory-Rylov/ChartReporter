@@ -1,10 +1,11 @@
 package com.grishberg.graphreporter.data.model;
 
+import java.io.Serializable;
+
 /**
  * Created by grishberg on 01.01.17.
  */
-public class ProductItem {
-    private static final String TAG = ProductItem.class.getSimpleName();
+public class ProductItem implements Serializable {
     private int id;
     private String name;
 

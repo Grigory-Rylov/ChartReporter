@@ -24,11 +24,14 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
@@ -53,7 +56,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     public static final float FORMULA_POINT_RADIUS = 3f;
     public static final int MAX_X_RANGE = 1000;
     private static final String TAG = CandleFragment.class.getSimpleName();
-    private static final String ARG_PRODUCT_ID = "ARG_PRODUCT_ID";
+    private static final String ARG_PRODUCT = "ARG_PRODUCT";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.US);
     @Inject
     LogService log;
@@ -64,7 +67,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private CombinedChartInitiable chart;
     private ProgressBar progressBar;
     private List<Long> dates;
-    private long productId;
+    private ProductItem productItem;
     private CombinedData combinedData;
     private LineData lineData;
 
@@ -72,10 +75,10 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         // Required empty public constructor
     }
 
-    public static CandleFragment newInstance(final long productId) {
+    public static CandleFragment newInstance(final ProductItem productItem) {
         final CandleFragment fragment = new CandleFragment();
         final Bundle args = new Bundle();
-        args.putLong(ARG_PRODUCT_ID, productId);
+        args.putSerializable(ARG_PRODUCT, productItem);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,10 +89,10 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         DiManager.getAppComponent().inject(this);
         setHasOptionsMenu(true);
         if (getArguments() != null) {
-            productId = getArguments().getLong(ARG_PRODUCT_ID);
+            productItem = (ProductItem) getArguments().getSerializable(ARG_PRODUCT);
         }
         if (savedInstanceState == null) {
-            presenter.onSelectedProduct(productId);
+            presenter.onSelectedProduct(productItem.getId());
         }
     }
 
@@ -120,8 +123,26 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private void initChart(final View view) {
 
         chart = (CombinedChartInitiable) view.findViewById(R.id.fragment_candle_chart);
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(final Entry e, final Highlight h) {
+                changeTitleValue(e);
+            }
 
+            @Override
+            public void onNothingSelected() {
+                resetTitleValue();
+            }
+        });
         initDualChartAxes(ChartPeriod.DAY);
+    }
+
+    private void resetTitleValue() {
+        getActivity().setTitle(productItem.getName());
+    }
+
+    private void changeTitleValue(final Entry entry) {
+        getActivity().setTitle(String.format(Locale.US, "%s : %f", productItem.getName(), entry.getY()));
     }
 
     @Override

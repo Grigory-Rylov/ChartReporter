@@ -19,7 +19,7 @@ public class HSVValueSlider extends View {
     private Rect dstRect;
     private Bitmap bitmap;
     private int[] pixels;
-    private ColorPickerView.OnColorSelectedListener listener;
+    private HSVColorWheel.OnColorSelectedListener listener;
 
     public HSVValueSlider(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
@@ -33,7 +33,7 @@ public class HSVValueSlider extends View {
         super(context);
     }
 
-    public void setListener(final ColorPickerView.OnColorSelectedListener listener) {
+    public void setListener(final HSVColorWheel.OnColorSelectedListener listener) {
         this.listener = listener;
     }
 

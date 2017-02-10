@@ -87,7 +87,7 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
     @Override
     public void onItemSelected(final ProductItem item, final int position) {
         getActivity().setTitle(item.getName());
-        listener.onProductSelected(item.getId());
+        listener.onProductSelected(item);
     }
 
     @Override
@@ -119,6 +119,6 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
     @FunctionalInterface
     public interface ProductsInteractionListener {
 
-        void onProductSelected(long id);
+        void onProductSelected(ProductItem item);
     }
 }

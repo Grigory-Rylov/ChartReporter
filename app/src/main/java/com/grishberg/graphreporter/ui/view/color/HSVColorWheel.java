@@ -12,7 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 /**
- * Created by grishberg on 07.02.17.
+ * github
  */
 public class HSVColorWheel extends View {
 
@@ -37,10 +37,11 @@ public class HSVColorWheel extends View {
     private float scaledInnerCircleRadius;
     private float scaledFullCircleRadius;
     private float scaledFadeOutSize;
-    private ColorPickerView.OnColorSelectedListener listener;
-    private int scale;
+    private int screenScale;
     private int pointerLength;
     private int innerPadding;
+    private OnColorSelectedListener listener;
+    private int selectedColor;
 
     public HSVColorWheel(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
@@ -62,17 +63,14 @@ public class HSVColorWheel extends View {
 
     private void init() {
         final float density = context.getResources().getDisplayMetrics().density;
-        scale = (int) (density * SCALE);
+        screenScale = (int) (density * SCALE);
         pointerLength = (int) (density * POINTER_LENGTH_DP);
         pointerPaint.setStrokeWidth((int) (density * POINTER_LINE_WIDTH_DP));
         innerPadding = pointerLength / 2;
     }
 
-    public void setListener(final ColorPickerView.OnColorSelectedListener listener) {
-        this.listener = listener;
-    }
-
-    public void setColor(int color) {
+    public void setColor(final int color) {
+        selectedColor = color;
         Color.colorToHSV(color, colorHsv);
         invalidate();
     }
@@ -92,7 +90,7 @@ public class HSVColorWheel extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
         rect = new Rect(innerPadding, innerPadding, w - innerPadding, h - innerPadding);
@@ -101,8 +99,8 @@ public class HSVColorWheel extends View {
         fullCircleRadius = Math.min(rect.width(), rect.height()) / 2;
         innerCircleRadius = fullCircleRadius * (1 - FADE_OUT_FRACTION);
 
-        scaledWidth = rect.width() / scale;
-        scaledHeight = rect.height() / scale;
+        scaledWidth = rect.width() / screenScale;
+        scaledHeight = rect.height() / screenScale;
         scaledFullCircleRadius = Math.min(scaledWidth, scaledHeight) / 2f;
         scaledInnerCircleRadius = scaledFullCircleRadius * (1 - FADE_OUT_FRACTION);
         scaledFadeOutSize = scaledFullCircleRadius - scaledInnerCircleRadius;
@@ -117,9 +115,10 @@ public class HSVColorWheel extends View {
         final int h = rect.height();
 
         final float[] hsv = new float[]{0f, 0f, 1f};
-        int alpha = 255;
+        int alpha;
 
-        int x = (int) -scaledFullCircleRadius, y = (int) -scaledFullCircleRadius;
+        int x = (int) -scaledFullCircleRadius;
+        int y = (int) -scaledFullCircleRadius;
         for (int i = 0; i < scaledPixels.length; i++) {
             if (i % scaledWidth == 0) {
                 x = (int) -scaledFullCircleRadius;
@@ -145,11 +144,15 @@ public class HSVColorWheel extends View {
 
         int scaledX, scaledY;
         for (x = 0; x < w; x++) {
-            scaledX = x / scale;
-            if (scaledX >= scaledWidth) scaledX = scaledWidth - 1;
+            scaledX = x / screenScale;
+            if (scaledX >= scaledWidth) {
+                scaledX = scaledWidth - 1
+            } ;
             for (y = 0; y < h; y++) {
-                scaledY = y / scale;
-                if (scaledY >= scaledHeight) scaledY = scaledHeight - 1;
+                scaledY = y / screenScale;
+                if (scaledY >= scaledHeight) {
+                    scaledY = scaledHeight - 1
+                } ;
                 pixels[x * h + y] = scaledPixels[scaledX * scaledHeight + scaledY];
             }
         }
@@ -160,7 +163,7 @@ public class HSVColorWheel extends View {
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
         final int maxHeight = MeasureSpec.getSize(heightMeasureSpec);
 
@@ -174,7 +177,7 @@ public class HSVColorWheel extends View {
         setMeasuredDimension(width, height);
     }
 
-    public int getColorForPoint(int x, int y, float[] hsv) {
+    public int getColorForPoint(int x, int y, final float[] hsv) {
         x -= fullCircleRadius;
         y -= fullCircleRadius;
         final double centerDist = Math.sqrt(x * x + y * y);
@@ -185,17 +188,31 @@ public class HSVColorWheel extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(final MotionEvent event) {
         final int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
                 if (listener != null) {
-                    listener.colorSelected(getColorForPoint((int) event.getX(), (int) event.getY(), colorHsv));
+                    selectedColor = getColorForPoint((int) event.getX(), (int) event.getY(), colorHsv);
+                    listener.colorSelected(selectedColor);
                 }
                 invalidate();
                 return true;
         }
         return super.onTouchEvent(event);
+    }
+
+    public int getSelectedColor() {
+        return selectedColor;
+    }
+
+    public void setColorSelectedListener(final OnColorSelectedListener colorSelectedListener) {
+        this.listener = colorSelectedListener;
+    }
+
+    @FunctionalInterface
+    public interface OnColorSelectedListener {
+        void colorSelected(int color);
     }
 }

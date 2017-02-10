@@ -25,7 +25,7 @@ import android.widget.Switch;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.mvp.common.BaseMvpDialogFragment;
-import com.grishberg.graphreporter.ui.view.color.ColorPickerView;
+import com.grishberg.graphreporter.ui.view.color.HSVColorWheel;
 
 /**
  * Created by grishberg on 28.01.17.
@@ -41,8 +41,8 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     private Spinner vertexSpinner;
     private CheckBox isGrowPercent;
     private CheckBox isFallPercent;
-    private ColorPickerView growColorPicker;
-    private ColorPickerView fallColorPicker;
+    private HSVColorWheel growColorPicker;
+    private HSVColorWheel fallColorPicker;
 
     private Switch growColorSwitch;
     private Switch fallColorSwitch;
@@ -102,20 +102,10 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     }
 
     private void initColorPickers(View view) {
-        growColorPicker = (ColorPickerView) view.findViewById(R.id.dialog_new_point_grow_color_picker);
-        fallColorPicker = (ColorPickerView) view.findViewById(R.id.dialog_new_point_fall_color_picker);
-        growColorPicker.setColorSelectedListener(new ColorPickerView.OnColorSelectedListener() {
-            @Override
-            public void colorSelected(final int color) {
-                growColorPreview.setBackgroundColor(color);
-            }
-        });
-        fallColorPicker.setColorSelectedListener(new ColorPickerView.OnColorSelectedListener() {
-            @Override
-            public void colorSelected(final int color) {
-                fallColorPreview.setBackgroundColor(color);
-            }
-        });
+        growColorPicker = (HSVColorWheel) view.findViewById(R.id.dialog_new_point_grow_color_picker);
+        fallColorPicker = (HSVColorWheel) view.findViewById(R.id.dialog_new_point_fall_color_picker);
+        growColorPicker.setColorSelectedListener(color -> growColorPreview.setBackgroundColor(color));
+        fallColorPicker.setColorSelectedListener(color -> fallColorPreview.setBackgroundColor(color));
     }
 
     private void initSwitchers(final View view) {
