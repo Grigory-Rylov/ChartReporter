@@ -152,7 +152,7 @@ public class HSVColorWheel extends View {
                 scaledY = y / screenScale;
                 if (scaledY >= scaledHeight) {
                     scaledY = scaledHeight - 1;
-                } 
+                }
                 pixels[x * h + y] = scaledPixels[scaledX * scaledHeight + scaledY];
             }
         }

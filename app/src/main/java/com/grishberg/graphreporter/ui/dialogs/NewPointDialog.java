@@ -26,6 +26,7 @@ import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.mvp.common.BaseMvpDialogFragment;
 import com.grishberg.graphreporter.ui.view.color.HSVColorWheel;
+import com.grishberg.graphreporter.utils.ColorUtil;
 
 /**
  * Created by grishberg on 28.01.17.
@@ -101,9 +102,16 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         return view;
     }
 
-    private void initColorPickers(View view) {
+    private void initColorPickers(final View view) {
         growColorPicker = (HSVColorWheel) view.findViewById(R.id.dialog_new_point_grow_color_picker);
         fallColorPicker = (HSVColorWheel) view.findViewById(R.id.dialog_new_point_fall_color_picker);
+
+        growColorPicker.setColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        fallColorPicker.setColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+
+        growColorPreview.setBackgroundColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
+        fallColorPreview.setBackgroundColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+
         growColorPicker.setColorSelectedListener(color -> growColorPreview.setBackgroundColor(color));
         fallColorPicker.setColorSelectedListener(color -> fallColorPreview.setBackgroundColor(color));
     }
@@ -111,7 +119,6 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     private void initSwitchers(final View view) {
         growColorSwitch = (Switch) view.findViewById(R.id.dialog_new_point_grow_color_switcher);
         fallColorSwitch = (Switch) view.findViewById(R.id.dialog_new_point_fall_color_switcher);
-
         growColorSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(final CompoundButton compoundButton, final boolean checked) {
