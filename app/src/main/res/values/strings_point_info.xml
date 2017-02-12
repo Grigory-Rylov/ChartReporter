@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="point_info_open">O</string>
+    <string name="point_info_high">H</string>
+    <string name="point_info_low">L</string>
+    <string name="point_info_close">C</string>
+    <string name="point_info_volume">V</string>
+    <string name="point_info_value">Y</string>
+</resources>

@@ -37,4 +37,8 @@
 
     </style>
 
+    <style name="PointInfoLabelStyle">
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">6dp</item>
+    </style>
 </resources>

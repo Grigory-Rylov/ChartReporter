@@ -20,16 +20,58 @@ import java.util.List;
  */
 public class ChartsHelper {
 
+    public static final int LINE_PERIOD_OFFSET = -2;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
     private static final int BUBBLE_SIZE = 100;
     private int previousGrowX;
     private int previousFallX;
 
-    private enum PrevValueState {
-        GROW,
-        FALL,
-        NEUTRAL
+    /**
+     * Новая точка роста
+     *
+     * @param firstValue
+     * @param formulaContainer
+     * @return
+     */
+    private static double getNewFallValue(@NonNull final double firstValue,
+                                          @NonNull final FormulaContainer formulaContainer) {
+        return formulaContainer.isFallPercent() ?
+                firstValue -
+                        (firstValue * formulaContainer.getFallValue() / 100D) :
+                firstValue - formulaContainer.getFallValue();
+    }
+
+    /**
+     * Новая точка падения
+     *
+     * @param firstValue
+     * @param formulaContainer
+     * @return
+     */
+    private static double getNewGrowValue(@NonNull final double firstValue,
+                                          @NonNull final FormulaContainer formulaContainer) {
+        return formulaContainer.isGrowPercent() ?
+                firstValue *
+                        (1D + formulaContainer.getGrowValue() / 100D) :
+                firstValue + formulaContainer.getGrowValue();
+    }
+
+    private static DailyValue makeDailyValue(final double value, @NonNull final FormulaContainer fc) {
+        switch (fc.getVertexType()) {
+            case OPEN:
+                return DailyValue.makeFromOpen(value);
+
+            case CLOSED:
+                return DailyValue.makeFromClosed(value);
+
+            case HIGH:
+                return DailyValue.makeFromHi(value);
+
+            case LOW:
+            default:
+                return DailyValue.makeFromLo(value);
+        }
     }
 
     public ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
@@ -42,7 +84,7 @@ public class ChartsHelper {
         long startPeriod = 0;
         int pos = 0;
         final int size = dailyValues.size();
-        int periodCount = 0;
+        int periodCount = isDualChartMode ? 0 : LINE_PERIOD_OFFSET;
         while (pos < size) {
             double start = 0;
             double end = 0;
@@ -60,14 +102,14 @@ public class ChartsHelper {
             }
             // start
             dates.add(startPeriod);
-            entries.add(new Entry(periodCount++, (float) start));
+            entries.add(new Entry(periodCount, (float) start));
             if (isDualChartMode) {
                 //end
-                dates.add(endPeriod);
+                dates.add((long) ((startPeriod + endPeriod) / 2.d));
                 periodCount += 1;
             }
-            dates.add(endPeriod);
-            entries.add(new Entry(periodCount, (float) end));
+            //dates.add(endPeriod);
+            entries.add(new Entry(++periodCount, (float) end));
         }
 
         return new ChartResponseContainer<>(entries, dates, period);
@@ -82,10 +124,10 @@ public class ChartsHelper {
         final int periodPartionCount = period.getPartion();
         final int candlePeriodOffset = isDualChartMode ? CANDLE_PERIOD_OFFSET : 0;
         final int candlePeriodIncrement = isDualChartMode ? CANDLE_PERIOD_INCREMENT : 1;
+        int periodCount = isDualChartMode ? 0 : -1;
         long currentDt = 0;
         int pos = 0;
         final int size = dailyValues.size();
-        int periodCount = 0;
         while (pos < size) {
             double hi = 0;
             double lo = Float.MAX_VALUE;
@@ -107,7 +149,6 @@ public class ChartsHelper {
             dates.add(currentDt);
             if (isDualChartMode) {
                 dates.add(currentDt);
-                dates.add(currentDt);
             }
             periodCount += candlePeriodIncrement;
             entries.add(new CandleEntry(periodCount - candlePeriodOffset,
@@ -122,7 +163,7 @@ public class ChartsHelper {
     /**
      * Формирование данных для формулы
      *
-     * @param period период, за который отображается график
+     * @param period      период, за который отображается график
      * @param dailyValues искодные данные
      * @return возвращается объект, содержащий данные для отображения 2х типов точек ТР и ТП
      */
@@ -178,7 +219,6 @@ public class ChartsHelper {
             if (currentState != PrevValueState.NEUTRAL) {
                 prevValueState = currentState;
             }
-
         }
         final boolean isNeedAddGrowValue = valueToCompare.valueGrow != firstGrowValue && prevValueState == PrevValueState.GROW;
         final boolean isNeedAddFallValue = valueToCompare.valueFall != firstFallValue && prevValueState == PrevValueState.FALL;
@@ -264,36 +304,6 @@ public class ChartsHelper {
     }
 
     /**
-     * Новая точка роста
-     *
-     * @param firstValue
-     * @param formulaContainer
-     * @return
-     */
-    private static double getNewFallValue(@NonNull final double firstValue,
-                                          @NonNull final FormulaContainer formulaContainer) {
-        return formulaContainer.isFallPercent() ?
-                firstValue -
-                        (firstValue * formulaContainer.getFallValue() / 100D) :
-                firstValue - formulaContainer.getFallValue();
-    }
-
-    /**
-     * Новая точка падения
-     *
-     * @param firstValue
-     * @param formulaContainer
-     * @return
-     */
-    private static double getNewGrowValue(@NonNull final double firstValue,
-                                          @NonNull final FormulaContainer formulaContainer) {
-        return formulaContainer.isGrowPercent() ?
-                firstValue *
-                        (1D + formulaContainer.getGrowValue() / 100D) :
-                firstValue + formulaContainer.getGrowValue();
-    }
-
-    /**
      * Добавить точку, если нужно, обновить значение старой точки ТР или ТП
      *
      * @param valueToCompare
@@ -338,9 +348,7 @@ public class ChartsHelper {
                 fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
         }
         if (currentValue > growPriceToCompare) {
-            if (prevState == PrevValueState.FALL) {
-                entriesFall.add(new BubbleEntry(previousFallX, (float) fallPriceToCompare, BUBBLE_SIZE));
-            }
+            entriesFall.add(new Entry(x, (float) currentValue));
             valueToCompare.valueGrow = value; // сдвиг точки
             valueToCompare.valueFall = makeDailyValue(getNewFallValue(currentValue, fc), fc);
             this.previousGrowX = x;
@@ -372,9 +380,7 @@ public class ChartsHelper {
         }
 
         if (currentValue < fallPriceToCompare) {
-            if (prevState == PrevValueState.GROW) {
-                entriesGrow.add(new Entry(previousGrowX, (float) growPriceToCompare));
-            }
+            entriesGrow.add(new Entry(x, (float) currentValue));
             valueToCompare.valueFall = value;
             valueToCompare.valueGrow = makeDailyValue(getNewGrowValue(currentValue, fc), fc);
             this.previousFallX = x;
@@ -384,6 +390,12 @@ public class ChartsHelper {
         return PrevValueState.NEUTRAL;
     }
 
+    private enum PrevValueState {
+        GROW,
+        FALL,
+        NEUTRAL
+    }
+
     private static class FormulaPointsContainer {
         DailyValue valueGrow;
         DailyValue valueFall;
@@ -391,23 +403,6 @@ public class ChartsHelper {
         FormulaPointsContainer(final DailyValue valueGrow, final DailyValue valueFall) {
             this.valueGrow = valueGrow;
             this.valueFall = valueFall;
-        }
-    }
-
-    private static DailyValue makeDailyValue(final double value, @NonNull final FormulaContainer fc) {
-        switch (fc.getVertexType()) {
-            case OPEN:
-                return DailyValue.makeFromOpen(value);
-
-            case CLOSED:
-                return DailyValue.makeFromClosed(value);
-
-            case HIGH:
-                return DailyValue.makeFromHi(value);
-
-            case LOW:
-            default:
-                return DailyValue.makeFromLo(value);
         }
     }
 }

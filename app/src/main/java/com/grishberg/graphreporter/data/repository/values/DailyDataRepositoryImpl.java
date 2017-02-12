@@ -18,11 +18,10 @@ import rx.schedulers.Schedulers;
  */
 public class DailyDataRepositoryImpl extends BaseRestRepository implements DailyDataRepository {
 
+    public static final int PAGE_LIMIT = 300;
     private final AuthTokenRepository authTokenRepository;
-
-    DailyDataStorage dataStorage;
-
     private final Api api;
+    DailyDataStorage dataStorage;
 
     public DailyDataRepositoryImpl(final AuthTokenRepository authTokenRepository,
                                    final Api api,
@@ -46,10 +45,10 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                 .subscribeOn(Schedulers.computation());
 
         // извлечь данные из сети
-        final Observable<ListResultCloseable<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(), productId, offset, 1000)
+        final Observable<ListResultCloseable<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(), productId, offset, PAGE_LIMIT)
                 .onErrorResumeNext(
                         refreshTokenAndRetry(Observable.defer(() ->
-                                api.getDailyData(authInfo.getAccessToken(), productId, offset, 1000))))
+                                api.getDailyData(authInfo.getAccessToken(), productId, offset, PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
                 .flatMap(response -> {
                     dataStorage.setDailyData(productId, response.getData());

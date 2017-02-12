@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/point_info_candle_value_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/point_info_open_tv"
+            style="@style/PointInfoLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/point_info_open"/>
+
+        <TextView
+            android:id="@+id/point_info_open_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/point_info_open_tv"
+            android:layout_toRightOf="@id/point_info_open_tv"
+            tools:text="2700"/>
+
+        <TextView
+            android:id="@+id/point_info_high_tv"
+            style="@style/PointInfoLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_open_tv"
+            android:text="@string/point_info_high"/>
+
+        <TextView
+            android:id="@+id/point_info_high_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_open_tv"
+            android:layout_toEndOf="@id/point_info_high_tv"
+            android:layout_toRightOf="@id/point_info_high_tv"
+            tools:text="3700"/>
+
+        <TextView
+            android:id="@+id/point_info_low_tv"
+            style="@style/PointInfoLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_high_tv"
+            android:text="@string/point_info_low"/>
+
+        <TextView
+            android:id="@+id/point_info_low_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_high_tv"
+            android:layout_toEndOf="@id/point_info_low_tv"
+            android:layout_toRightOf="@id/point_info_low_tv"
+            tools:text="1700"/>
+
+        <TextView
+            android:id="@+id/point_info_close_tv"
+            style="@style/PointInfoLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_low_tv"
+            android:text="@string/point_info_close"/>
+
+        <TextView
+            android:id="@+id/point_info_close_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_low_tv"
+            android:layout_toEndOf="@id/point_info_close_tv"
+            android:layout_toRightOf="@id/point_info_close_tv"
+            tools:text="2600"/>
+
+        <TextView
+            android:id="@+id/point_info_volume_tv"
+            style="@style/PointInfoLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_close_tv"
+            android:text="@string/point_info_volume"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/point_info_candle_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_volume_tv"
+            tools:text="13.01.2017"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/point_info_single_value_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/point_info_tv"
+            style="@style/PointInfoLabelStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/point_info_value"/>
+
+        <TextView
+            android:id="@+id/point_info_value_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/point_info_tv"
+            android:layout_toRightOf="@id/point_info_tv"
+            tools:text="2700"/>
+
+        <TextView
+            android:id="@+id/point_info_single_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/point_info_tv"
+            tools:text="13.01.2017"/>
+    </RelativeLayout>
+</FrameLayout>

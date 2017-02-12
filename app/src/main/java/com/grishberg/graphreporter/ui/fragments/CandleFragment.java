@@ -39,8 +39,10 @@ import com.grishberg.graphreporter.ui.dialogs.NewPointDialog;
 import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
 import com.grishberg.graphreporter.ui.view.LineFormulaDataSet;
 import com.grishberg.graphreporter.ui.view.PeriodSelectorView;
+import com.grishberg.graphreporter.ui.view.PointInfoView;
 import com.grishberg.graphreporter.utils.ColorUtil;
 import com.grishberg.graphreporter.utils.LogService;
+import com.grishberg.graphreporter.utils.XAxisValueToDateFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,22 +56,25 @@ import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener, View.OnClickListener {
     public static final float FORMULA_POINT_RADIUS = 3f;
-    public static final int MAX_X_RANGE = 1000;
+    public static final int MAX_X_RANGE = 300;
     private static final String TAG = CandleFragment.class.getSimpleName();
     private static final String ARG_PRODUCT = "ARG_PRODUCT";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.US);
+
     @Inject
     LogService log;
 
     @InjectPresenter
     CandlesChartPresenter presenter;
 
+    private XAxisValueToDateFormatter dateFormatter;
+
     private CombinedChartInitiable chart;
     private ProgressBar progressBar;
-    private List<Long> dates;
     private ProductItem productItem;
     private CombinedData combinedData;
     private LineData lineData;
+    private PointInfoView pointInfoView;
 
     public CandleFragment() {
         // Required empty public constructor
@@ -107,6 +112,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         initPeriodSelector(view);
         final ImageButton addFormulaButton = (ImageButton) view.findViewById(R.id.fragment_candle_add_formula_button);
         addFormulaButton.setOnClickListener(this);
+        pointInfoView = (PointInfoView) view.findViewById(R.id.fragment_candle_point_info);
         return view;
     }
 
@@ -126,31 +132,25 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
             public void onValueSelected(final Entry e, final Highlight h) {
-                changeTitleValue(e);
+                presenter.onChartValueSelected(e);
             }
 
             @Override
             public void onNothingSelected() {
-                resetTitleValue();
+                presenter.onNothingSelected();
             }
         });
+
         initDualChartAxes(ChartPeriod.DAY);
     }
 
-    private void resetTitleValue() {
-        getActivity().setTitle(productItem.getName());
-    }
-
-    private void changeTitleValue(final Entry entry) {
-        getActivity().setTitle(String.format(Locale.US, "%s : %f", productItem.getName(), entry.getY()));
-    }
-
     @Override
-    public void showChart(final DualChartContainer response) {
+    public void showChart(final DualChartContainer response, final XAxisValueToDateFormatter dateFormatter) {
         if (response == null || response.getChartMode() == null) {
             log.e(TAG, "response is null");
             return;
         }
+        this.dateFormatter = dateFormatter;
         initDualChartAxes(response.getPeriod());
 
         combinedData = new CombinedData();
@@ -158,18 +158,15 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
         switch (response.getChartMode()) {
             case LINE_MODE:
-                dates = response.getEntryResponse().getDates();
                 lineData.addDataSet(generateLineData(response.getEntryResponse().getEntries()));
                 combinedData.setData(lineData);
                 break;
 
             case CANDLE_MODE:
-                dates = response.getCandleResponse().getDates();
                 combinedData.setData(generateCandleData(response.getCandleResponse().getEntries()));
                 break;
 
             default:
-                dates = response.getCandleResponse().getDates();
                 // добавить данные для линий
                 lineData.addDataSet(generateLineData(response.getEntryResponse().getEntries()));
                 combinedData.setData(lineData);
@@ -213,24 +210,21 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
         xAxis.setGranularity(1f * period.getPeriod() / (60 * 24f));
-        xAxis.setValueFormatter((value, axis) -> {
-            final int index = (int) value;
-            if (index >= dates.size() || index < 0) {
-                log.e(TAG, "index " + index + " > dates.size " + dates.size() + " for axis " + axis);
-                return "";
-            }
-            final Date date = new Date(dates.get(index));
-            return dateFormat.format(date);
-        });
-
-        final YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setLabelCount(5, false);
-        leftAxis.setDrawGridLines(false);
-        leftAxis.setDrawAxisLine(false);
-        leftAxis.setGranularity(1.0f);
+        xAxis.setValueFormatter((value, axis) -> dateFormatter.getDateAsString(value, dateFormat));
+        xAxis.setDrawAxisLine(true);
+        xAxis.setDrawGridLines(true);
+        xAxis.setCenterAxisLabels(true);
 
         final YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setEnabled(false);
+        rightAxis.setEnabled(true);
+        rightAxis.setLabelCount(10, false);
+        rightAxis.setDrawGridLines(true);
+        rightAxis.setDrawAxisLine(true);
+        rightAxis.setGranularity(1.0f);
+        rightAxis.setDrawTopYLabelEntry(true);
+
+        final YAxis leftAxis = chart.getAxisLeft();
+        leftAxis.setEnabled(false);
     }
 
     private LineDataSet generateLineData(final List<Entry> entries) {
@@ -238,7 +232,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         final LineDataSet linesSet = new LineDataSet(entries, "Line DataSet");
         linesSet.setColor(ColorUtil.getColor(getContext(), R.color.line_color));
         linesSet.setDrawCircles(false);
-        linesSet.setLineWidth(2f);
+        linesSet.setLineWidth(1f);
         linesSet.setCircleColor(ColorUtil.getColor(getContext(), R.color.line_color));
         linesSet.setCircleRadius(1f);
         linesSet.setFillColor(ColorUtil.getColor(getContext(), R.color.line_color));
@@ -246,7 +240,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(ColorUtil.getColor(getContext(), R.color.line_color));
-        linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        linesSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
 
         return linesSet;
     }
@@ -257,7 +251,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
         final CandleDataSet candleDataSet = new CandleDataSet(entries, "Candle DataSet");
         candleDataSet.setDrawValues(false);
-        candleDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        candleDataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
         candleDataSet.setShadowColor(Color.DKGRAY);
         candleDataSet.setShadowWidth(0.7f);
         candleDataSet.setDecreasingColor(ColorUtil.getColor(getContext(), R.color.candle_decreasing_color));
@@ -297,7 +291,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(formulaContainer.getGrowColor());
-        linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        linesSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
         linesSet.setCircleHoleRadius(1);
         linesSet.setDrawCircleHole(true);
 
@@ -316,7 +310,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         linesSet.setDrawValues(false);
         linesSet.setValueTextSize(10f);
         linesSet.setValueTextColor(formulaContainer.getFallColor());
-        linesSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        linesSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
         linesSet.setCircleHoleRadius(1);
         linesSet.setDrawCircleHole(true);
 
@@ -371,5 +365,26 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             final FormulaContainer formulaContainer = NewPointDialog.getResult(data);
             presenter.addNewFormula(formulaContainer);
         }
+    }
+
+    @Override
+    public void showPointInfo(final float open,
+                              final float high,
+                              final float low,
+                              final float close,
+                              final String date) {
+        pointInfoView.setValue(open, high, low, close, date);
+        pointInfoView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showPointInfo(final float y, final String date) {
+        pointInfoView.setValue(y, date);
+        pointInfoView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hidePointInfo() {
+        pointInfoView.setVisibility(View.GONE);
     }
 }
