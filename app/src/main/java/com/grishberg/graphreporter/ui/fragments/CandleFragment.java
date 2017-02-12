@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -25,6 +26,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
@@ -32,6 +34,7 @@ import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
 import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
@@ -42,10 +45,10 @@ import com.grishberg.graphreporter.ui.view.PeriodSelectorView;
 import com.grishberg.graphreporter.ui.view.PointInfoView;
 import com.grishberg.graphreporter.utils.ColorUtil;
 import com.grishberg.graphreporter.utils.LogService;
+import com.grishberg.graphreporter.utils.OnSimpleChartGestureListener;
 import com.grishberg.graphreporter.utils.XAxisValueToDateFormatter;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -53,10 +56,10 @@ import javax.inject.Inject;
 
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE;
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
+import static com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture.DRAG;
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener, View.OnClickListener {
     public static final float FORMULA_POINT_RADIUS = 3f;
-    public static final int MAX_X_RANGE = 300;
     private static final String TAG = CandleFragment.class.getSimpleName();
     private static final String ARG_PRODUCT = "ARG_PRODUCT";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.US);
@@ -96,7 +99,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         if (getArguments() != null) {
             productItem = (ProductItem) getArguments().getSerializable(ARG_PRODUCT);
         }
-        if (savedInstanceState == null) {
+        if (productItem != null && savedInstanceState == null) {
             presenter.onSelectedProduct(productItem.getId());
         }
     }
@@ -140,6 +143,15 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
                 presenter.onNothingSelected();
             }
         });
+        chart.setOnChartGestureListener(new OnSimpleChartGestureListener() {
+
+            @Override
+            public void onChartGestureEnd(final MotionEvent me, final ChartGesture lastPerformedGesture) {
+                if (lastPerformedGesture == DRAG && chart.getLowestVisibleX() == 0) {
+                    presenter.onScrolledToStart();
+                }
+            }
+        });
 
         initDualChartAxes(ChartPeriod.DAY);
     }
@@ -177,7 +189,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         combinedData.notifyDataChanged();
 
         chart.setData(combinedData);
-        chart.setVisibleXRangeMaximum(MAX_X_RANGE);
+        chart.setVisibleXRangeMaximum(RestConst.MAX_POINTS_PER_SCREEN);
 
         chart.moveViewToX(combinedData.getEntryCount());
     }

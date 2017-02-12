@@ -39,7 +39,7 @@ public class LineChartRendererEx extends LineChartRenderer {
 
         mRenderPaint.setStyle(Paint.Style.STROKE);
 
-        Canvas canvas;
+        final Canvas canvas;
 
         // if the data-set is dashed, draw on bitmap-canvas
         if (dataSet.isDashedLineEnabled()) {

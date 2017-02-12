@@ -7,7 +7,7 @@ import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
-
+import com.grishberg.graphreporter.data.rest.RestConst;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -18,7 +18,6 @@ import rx.schedulers.Schedulers;
  */
 public class DailyDataRepositoryImpl extends BaseRestRepository implements DailyDataRepository {
 
-    public static final int PAGE_LIMIT = 300;
     private final AuthTokenRepository authTokenRepository;
     private final Api api;
     DailyDataStorage dataStorage;
@@ -45,10 +44,13 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                 .subscribeOn(Schedulers.computation());
 
         // извлечь данные из сети
-        final Observable<ListResultCloseable<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(), productId, offset, PAGE_LIMIT)
+        final Observable<ListResultCloseable<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(),
+                productId,
+                offset,
+                RestConst.PAGE_LIMIT)
                 .onErrorResumeNext(
                         refreshTokenAndRetry(Observable.defer(() ->
-                                api.getDailyData(authInfo.getAccessToken(), productId, offset, PAGE_LIMIT))))
+                                api.getDailyData(authInfo.getAccessToken(), productId, offset, RestConst.PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
                 .flatMap(response -> {
                     dataStorage.setDailyData(productId, response.getData());

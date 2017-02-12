@@ -39,8 +39,8 @@ import static com.grishberg.graphreporter.data.enums.ChartMode.CANDLE_AND_LINE_M
  */
 @InjectViewState
 public class CandlesChartPresenter extends BasePresenter<CandlesChartView> implements Runnable {
-    public static final int DURATION = 30 * 60 * 1000;
-    public static final int FORMULA_CAPACITY = 5;
+    private static final int DURATION = 30 * 60 * 1000;
+    private static final int FORMULA_CAPACITY = 5;
     private static final String TAG = CandlesChartPresenter.class.getSimpleName();
     private static final int INITIAL_OFFSET = 0;
     private final List<FormulaChartContainer> formulaChartArray;
@@ -51,6 +51,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     DailyDataRepository repository;
     @Inject
     ChartsHelper chartsHelper;
+    private ListResultCloseable<DailyValue> dailyListResult;
     private XAxisValueToDateFormatter dateFormatter;
     private int maxOffset;
     //@Inject
@@ -58,6 +59,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private ChartMode currentChartMode = ChartMode.CANDLE_MODE;
     private ChartPeriod period = ChartPeriod.DAY;
     private long currentProductId;
+    private boolean isLoading;
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
@@ -112,9 +114,11 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                         return Observable.error(new EmptyDataException());
                     }
                     maxOffset = dailyValues.size();
+                    dailyListResult = dailyValues;
                     return getChartsPoints(chartMode, period, dailyValues);
                 })
                 .subscribe(response -> {
+                    isLoading = false;
                     dateFormatter = new XAxisValueToDateFormatterImpl(response.getCandleResponse() != null
                             ? response.getCandleResponse().getDates()
                             : response.getEntryResponse().getDates());
@@ -156,40 +160,31 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private Observable<? extends DualChartContainer> getChartsPoints(final ChartMode chartMode,
                                                                      final ChartPeriod period,
                                                                      final ListResultCloseable<DailyValue> dailyValues) {
-        try {
-            switch (chartMode) {
-                case CANDLE_MODE:
-                    rebuildFormulaCharts(period, dailyValues, false);
+        switch (chartMode) {
+            case CANDLE_MODE:
+                rebuildFormulaCharts(period, dailyValues, false);
 
-                    final DualChartContainer value = DualChartContainer.makeCandle(period,
-                            chartsHelper.getCandleDataForPeriod(period, dailyValues, false));
-                    dateFormatter = new XAxisValueToDateFormatterImpl(
-                            value.getCandleResponse() != null ? value.getCandleResponse().getDates()
-                                    : value.getEntryResponse().getDates());
-                    return Observable.just(
-                            value
-                    );
-                case LINE_MODE:
-                    rebuildFormulaCharts(period, dailyValues, false);
-                    return Observable.just(
-                            DualChartContainer.makeLine(period,
-                                    chartsHelper.getLineData(period, dailyValues, false))
-                    );
-                default:
-                    rebuildFormulaCharts(period, dailyValues, true);
-                    return Observable.just(
-                            DualChartContainer.makeCandleAndLine(period,
-                                    chartsHelper.getLineData(period, dailyValues, true),
-                                    chartsHelper.getCandleDataForPeriod(period, dailyValues, true))
-                    );
-            }
-        } finally {
-            try {
-                dailyValues.close();
-            } catch (final IOException e) {
-                log.e(TAG, "close exception", e);
-            }
-            //timer.startTimer(DURATION);
+                final DualChartContainer value = DualChartContainer.makeCandle(period,
+                        chartsHelper.getCandleDataForPeriod(period, dailyValues, false));
+                dateFormatter = new XAxisValueToDateFormatterImpl(
+                        value.getCandleResponse() != null ? value.getCandleResponse().getDates()
+                                : value.getEntryResponse().getDates());
+                return Observable.just(
+                        value
+                );
+            case LINE_MODE:
+                rebuildFormulaCharts(period, dailyValues, false);
+                return Observable.just(
+                        DualChartContainer.makeLine(period,
+                                chartsHelper.getLineData(period, dailyValues, false))
+                );
+            default:
+                rebuildFormulaCharts(period, dailyValues, true);
+                return Observable.just(
+                        DualChartContainer.makeCandleAndLine(period,
+                                chartsHelper.getLineData(period, dailyValues, true),
+                                chartsHelper.getCandleDataForPeriod(period, dailyValues, true))
+                );
         }
     }
 
@@ -255,5 +250,26 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
 
     public void onNothingSelected() {
         getViewState().hidePointInfo();
+    }
+
+    public void onScrolledToStart() {
+        if (isLoading) {
+            return;
+        }
+        getViewState().showProgress();
+        getDataFromOffset(currentProductId, INITIAL_OFFSET, currentChartMode, period);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dailyListResult != null) {
+            try {
+                dailyListResult.close();
+            } catch (final IOException e) {
+                //not handled
+                log.e(TAG, "onDestroy", e);
+            }
+        }
     }
 }

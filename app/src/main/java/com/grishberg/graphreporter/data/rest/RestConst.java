@@ -4,7 +4,11 @@ package com.grishberg.graphreporter.data.rest;
  * Created by grishberg on 12.01.17.
  */
 public final class RestConst {
-    public static final String API = "/analytics/api/v1.0/";
+    public static final int PAGE_LIMIT = 200;
+    public static final int MAX_POINTS_PER_SCREEN = 100;
+
+    private RestConst() {
+    }
 
     // Ошибки
     public static final class Errors {
@@ -13,8 +17,5 @@ public final class RestConst {
 
         private Errors() {
         }
-    }
-
-    private RestConst() {
     }
 }
