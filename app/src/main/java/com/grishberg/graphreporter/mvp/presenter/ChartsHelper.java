@@ -2,7 +2,6 @@ package com.grishberg.graphreporter.mvp.presenter;
 
 import android.support.annotation.NonNull;
 
-import com.github.mikephil.charting.data.BubbleEntry;
 import com.github.mikephil.charting.data.CandleEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
@@ -20,10 +19,9 @@ import java.util.List;
  */
 public class ChartsHelper {
 
-    public static final int LINE_PERIOD_OFFSET = -2;
+    private static final int LINE_PERIOD_OFFSET = -2;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
-    private static final int BUBBLE_SIZE = 100;
     private int previousGrowX;
     private int previousFallX;
 
@@ -108,7 +106,6 @@ public class ChartsHelper {
                 dates.add((long) ((startPeriod + endPeriod) / 2.d));
                 periodCount += 1;
             }
-            //dates.add(endPeriod);
             entries.add(new Entry(++periodCount, (float) end));
         }
 
