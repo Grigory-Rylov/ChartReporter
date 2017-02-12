@@ -19,6 +19,7 @@ import java.util.List;
  */
 public class ChartsHelper {
 
+    public static final int CANDLE_PRIOD_OFFSET = -1;
     private static final int LINE_PERIOD_OFFSET = -2;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
@@ -121,7 +122,7 @@ public class ChartsHelper {
         final int periodPartionCount = period.getPartion();
         final int candlePeriodOffset = isDualChartMode ? CANDLE_PERIOD_OFFSET : 0;
         final int candlePeriodIncrement = isDualChartMode ? CANDLE_PERIOD_INCREMENT : 1;
-        int periodCount = isDualChartMode ? 0 : -1;
+        int periodCount = isDualChartMode ? 0 : CANDLE_PRIOD_OFFSET;
         long currentDt = 0;
         int pos = 0;
         final int size = dailyValues.size();
