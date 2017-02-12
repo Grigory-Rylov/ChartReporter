@@ -208,17 +208,12 @@ public class ChartsHelper {
             }
             periodCount++;
 
-            final PrevValueState currentState = addIfConditionTrue(valueToCompare,
+            addIfConditionTrue(valueToCompare,
                     DailyValue.makeFromCandle(open, hi, lo, close),
                     formulaContainer,
                     periodCount,
                     entriesGrow,
-                    entriesFall,
-                    prevValueState);
-
-            if (currentState != PrevValueState.NEUTRAL) {
-                prevValueState = currentState;
-            }
+                    entriesFall);
         }
         final boolean isNeedAddGrowValue = valueToCompare.valueGrow != firstGrowValue && prevValueState == PrevValueState.GROW;
         final boolean isNeedAddFallValue = valueToCompare.valueFall != firstFallValue && prevValueState == PrevValueState.FALL;
@@ -312,40 +307,34 @@ public class ChartsHelper {
      * @param x
      * @param entriesGrow
      * @param entriesFall
-     * @param prevState
      */
     private PrevValueState addIfConditionTrue(final FormulaPointsContainer valueToCompare,
                                               final DailyValue value,
                                               final FormulaContainer fc,
                                               final int x,
                                               final List<Entry> entriesGrow,
-                                              final List<Entry> entriesFall,
-                                              final PrevValueState prevState) {
+                                              final List<Entry> entriesFall) {
         // ТР
         double currentValue;
-        double growPriceToCompare;
-        double fallPriceToCompare;
+        final double growPriceToCompare;
+        final double fallPriceToCompare;
         switch (fc.getVertexType()) {
             case OPEN:
                 currentValue = value.getPriceOpen();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceClose();
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceHigh();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceHigh();
                 break;
             case LOW:
             default:
                 currentValue = value.getPriceLow();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
-                fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
         }
         if (currentValue > growPriceToCompare) {
             entriesFall.add(new Entry(x, (float) currentValue));
@@ -359,23 +348,19 @@ public class ChartsHelper {
         switch (fc.getVertexType()) {
             case OPEN:
                 currentValue = value.getPriceOpen();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceClose();
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceHigh();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceHigh();
                 break;
             case LOW:
             default:
                 currentValue = value.getPriceLow();
-                growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
         }
 
