@@ -18,6 +18,7 @@ import rx.schedulers.Schedulers;
  */
 public class DailyDataRepositoryImpl extends BaseRestRepository implements DailyDataRepository {
 
+    public static final int INITIAL_OFFSET = 0;
     private final AuthTokenRepository authTokenRepository;
     private final Api api;
     DailyDataStorage dataStorage;
@@ -39,8 +40,9 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
         }
 
         //Извлечь данные из кэша
-        final Observable<ListResultCloseable<DailyValue>> dailyValuesFromCache = dataStorage.getDailyValues(productId, offset)
-                .filter(response -> response != null || offset > 0)
+        final Observable<ListResultCloseable<DailyValue>> dailyValuesFromCache = dataStorage
+                .getDailyValues(productId, offset)
+                .filter(response -> checkCacheValid(response))
                 .subscribeOn(Schedulers.computation());
 
         // извлечь данные из сети
@@ -53,8 +55,12 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                                 api.getDailyData(authInfo.getAccessToken(), productId, offset, RestConst.PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
                 .flatMap(response -> {
-                    dataStorage.setDailyData(productId, response.getData());
-                    return dataStorage.getDailyValues(productId, offset);
+                    if (offset == INITIAL_OFFSET) {
+                        dataStorage.setDailyData(productId, response.getData());
+                    } else {
+                        dataStorage.appendDailyData(productId, response.getData());
+                    }
+                    return dataStorage.getDailyValues(productId, INITIAL_OFFSET);
                 });
 
         /**
@@ -63,5 +69,9 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
         return Observable
                 .concat(dailyValuesFromCache, dailyValues).first()
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    private boolean checkCacheValid(final ListResultCloseable<DailyValue> response) {
+        return response != null;
     }
 }

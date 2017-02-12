@@ -41,7 +41,7 @@ public class InMemoryDailyDataStorage implements DailyDataStorage {
     public void appendDailyData(final long productId, final List<DailyValue> values) {
         final ListResultCloseable<DailyValue> list = cache.get(productId);
         if (list != null) {
-            list.addAll(values);
+            list.addAll(0, values);
         }
         cacheChecker.updateNewData(productId);
     }
@@ -49,6 +49,9 @@ public class InMemoryDailyDataStorage implements DailyDataStorage {
     @Override
     public Observable<ListResultCloseable<DailyValue>> getDailyValues(final long productId, final int offset) {
         if (cacheChecker.isCacheDataValid(productId)) {
+            if (cache.get(productId).size() <= offset) {
+                return Observable.just(null);
+            }
             return Observable.just(cache.get(productId));
         }
         cache.remove(productId);

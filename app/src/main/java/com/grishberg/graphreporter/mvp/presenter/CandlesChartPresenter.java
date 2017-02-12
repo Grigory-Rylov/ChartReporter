@@ -22,10 +22,8 @@ import com.grishberg.graphreporter.utils.XAxisValueToDateFormatter;
 import com.grishberg.graphreporter.utils.XAxisValueToDateFormatterImpl;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -59,7 +57,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private ChartMode currentChartMode = ChartMode.CANDLE_MODE;
     private ChartPeriod period = ChartPeriod.DAY;
     private long currentProductId;
-    private boolean isLoading;
+    private boolean hasMore;
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
@@ -110,15 +108,15 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                                    final ChartPeriod period) {
         repository.getDailyValues(productId, initialOffset)
                 .flatMap(dailyValues -> {
-                    if (dailyValues.isEmpty()) {
+                    if (dailyValues == null || dailyValues.isEmpty()) {
                         return Observable.error(new EmptyDataException());
                     }
+                    hasMore = dailyValues.size() > maxOffset;
                     maxOffset = dailyValues.size();
                     dailyListResult = dailyValues;
                     return getChartsPoints(chartMode, period, dailyValues);
                 })
                 .subscribe(response -> {
-                    isLoading = false;
                     dateFormatter = new XAxisValueToDateFormatterImpl(response.getCandleResponse() != null
                             ? response.getCandleResponse().getDates()
                             : response.getEntryResponse().getDates());
@@ -253,11 +251,11 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     }
 
     public void onScrolledToStart() {
-        if (isLoading) {
+        if (!hasMore) {
             return;
         }
         getViewState().showProgress();
-        getDataFromOffset(currentProductId, INITIAL_OFFSET, currentChartMode, period);
+        getDataFromOffset(currentProductId, dailyListResult.size(), currentChartMode, period);
     }
 
     @Override

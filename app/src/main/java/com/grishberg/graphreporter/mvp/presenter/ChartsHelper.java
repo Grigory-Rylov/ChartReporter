@@ -83,7 +83,7 @@ public class ChartsHelper {
         long startPeriod = 0;
         int pos = 0;
         final int size = dailyValues.size();
-        int periodCount = isDualChartMode ? 0 : LINE_PERIOD_OFFSET;
+        int periodCount = isDualChartMode ? 0 : 0;
         while (pos < size) {
             double start = 0;
             double end = 0;
@@ -175,14 +175,12 @@ public class ChartsHelper {
         final int periodPartitionCount = period.getPartion();
 
         final FormulaPointsContainer valueToCompare = getValueToCompare(dailyValues.get(0), formulaContainer);
-        final DailyValue firstGrowValue = valueToCompare.valueGrow;
-        final DailyValue firstFallValue = valueToCompare.valueFall;
         previousGrowX = 0;
         previousFallX = 0;
         int pos = 0;
         final int size = dailyValues.size();
         int periodCount = 0;
-        PrevValueState prevValueState = PrevValueState.NEUTRAL;
+
         while (pos < size) {
             double open = 0;
             double close = 0;
@@ -204,7 +202,6 @@ public class ChartsHelper {
             if (isDualChartMode) {
                 periodCount++;
             }
-            periodCount++;
 
             addIfConditionTrue(valueToCompare,
                     DailyValue.makeFromCandle(open, hi, lo, close),
@@ -212,50 +209,9 @@ public class ChartsHelper {
                     periodCount,
                     entriesGrow,
                     entriesFall);
+            periodCount++;
         }
-        final boolean isNeedAddGrowValue = valueToCompare.valueGrow != firstGrowValue && prevValueState == PrevValueState.GROW;
-        final boolean isNeedAddFallValue = valueToCompare.valueFall != firstFallValue && prevValueState == PrevValueState.FALL;
-        addGrowAndFallValuesIfNeed(formulaContainer,
-                entriesGrow,
-                entriesFall,
-                valueToCompare,
-                isNeedAddGrowValue,
-                isNeedAddFallValue);
         return new FormulaChartContainer(entriesGrow, entriesFall, formulaContainer);
-    }
-
-    private void addGrowAndFallValuesIfNeed(final FormulaContainer formulaContainer,
-                                            final List<Entry> entriesGrow,
-                                            final List<Entry> entriesFall,
-                                            final FormulaPointsContainer valueToCompare,
-                                            final boolean isNeedAddGrowValue,
-                                            final boolean isNeedAddFallValue) {
-        if (isNeedAddGrowValue) {
-            addDailyValue(entriesGrow, valueToCompare.valueGrow, formulaContainer, previousGrowX);
-        }
-        if (isNeedAddFallValue) {
-            addDailyValue(entriesFall, valueToCompare.valueFall, formulaContainer, previousFallX);
-        }
-    }
-
-    private void addDailyValue(final List<Entry> entries,
-                               final DailyValue value,
-                               final FormulaContainer formulaContainer,
-                               final int x) {
-        switch (formulaContainer.getVertexType()) {
-            case OPEN:
-                entries.add(new Entry(x, (float) value.getPriceOpen()));
-                break;
-            case CLOSED:
-                entries.add(new Entry(x, (float) value.getPriceClose()));
-                break;
-            case HIGH:
-                entries.add(new Entry(x, (float) value.getPriceHigh()));
-                break;
-            case LOW:
-            default:
-                entries.add(new Entry(x, (float) value.getPriceLow()));
-        }
     }
 
     /**

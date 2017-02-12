@@ -17,7 +17,7 @@ public class XAxisValueToDateFormatterImpl implements XAxisValueToDateFormatter 
 
     public XAxisValueToDateFormatterImpl(final List<Long> dates) {
         this.dates = dates;
-        dateFormat.setTimeZone(GMT);
+        //dateFormat.setTimeZone(GMT);
     }
 
     @Override

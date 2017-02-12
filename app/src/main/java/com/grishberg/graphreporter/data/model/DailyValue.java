@@ -1,12 +1,24 @@
 package com.grishberg.graphreporter.data.model;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Index;
+import org.greenrobot.greendao.annotation.Property;
+
 /**
  * Created by grishberg on 11.01.17.
  * Модель дневных данных с сервера
  */
+@Entity(indexes = {
+        @Index(value = "dt ASC", unique = false)
+})
 public class DailyValue {
 
-    private int id;
+    private long productId;
+    @Id
+    private long id;
+    @Property()
     private long dt;
     private double priceOpen;
     private double priceClose;
@@ -31,6 +43,19 @@ public class DailyValue {
         this.priceHigh = priceHi;
         this.priceLow = priceLo;
         this.volume = 0;
+    }
+
+    @Generated(hash = 175731636)
+    public DailyValue(long productId, long id, long dt, double priceOpen,
+                      double priceClose, double priceHigh, double priceLow, double volume) {
+        this.productId = productId;
+        this.id = id;
+        this.dt = dt;
+        this.priceOpen = priceOpen;
+        this.priceClose = priceClose;
+        this.priceHigh = priceHigh;
+        this.priceLow = priceLow;
+        this.volume = volume;
     }
 
     public static DailyValue makeFromOpen(final double priceStart) {
@@ -69,32 +94,67 @@ public class DailyValue {
         return value;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public long getDt() {
         return dt;
     }
 
+    public void setDt(long dt) {
+        this.dt = dt;
+    }
+
     public double getPriceOpen() {
         return priceOpen;
+    }
+
+    public void setPriceOpen(double priceOpen) {
+        this.priceOpen = priceOpen;
     }
 
     public double getPriceClose() {
         return priceClose;
     }
 
+    public void setPriceClose(double priceClose) {
+        this.priceClose = priceClose;
+    }
+
     public double getPriceHigh() {
         return priceHigh;
+    }
+
+    public void setPriceHigh(double priceHigh) {
+        this.priceHigh = priceHigh;
     }
 
     public double getPriceLow() {
         return priceLow;
     }
 
+    public void setPriceLow(double priceLow) {
+        this.priceLow = priceLow;
+    }
+
     public double getVolume() {
         return volume;
     }
 
+    public void setVolume(double volume) {
+        this.volume = volume;
+    }
+
+    public long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(final long productId) {
+        this.productId = productId;
+    }
 }

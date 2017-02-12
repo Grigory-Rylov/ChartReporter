@@ -2,6 +2,7 @@ package com.grishberg.graphreporter.di.components;
 
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.di.modules.AppModule;
+import com.grishberg.graphreporter.di.modules.DbModule;
 import com.grishberg.graphreporter.di.modules.FormulaModule;
 import com.grishberg.graphreporter.di.modules.ProfileModule;
 import com.grishberg.graphreporter.di.modules.RestModule;
@@ -25,8 +26,9 @@ import dagger.Component;
         AppModule.class,
         ProfileModule.class,
         StorageModule.class,
-        FormulaModule.class
-        })
+        FormulaModule.class,
+        DbModule.class
+})
 
 public interface AppComponent {
 

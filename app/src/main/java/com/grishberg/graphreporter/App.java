@@ -1,14 +1,18 @@
 package com.grishberg.graphreporter;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
 
+import com.grishberg.graphreporter.data.model.DaoMaster;
+import com.grishberg.graphreporter.data.model.DaoSession;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepositoryImpl;
 import com.grishberg.graphreporter.di.DiManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.grishberg.graphreporter.di.components.DaggerAppComponent;
 import com.grishberg.graphreporter.di.modules.AppModule;
+import com.grishberg.graphreporter.di.modules.DbModule;
 import com.grishberg.graphreporter.di.modules.ProfileModule;
 import com.grishberg.graphreporter.di.modules.RestModule;
 import com.grishberg.graphreporter.di.modules.StorageModule;
@@ -42,6 +46,7 @@ public final class App extends Application {
                 .appModule(new AppModule(this))
                 .restModule(new RestModule(getString(R.string.end_point)))
                 .profileModule(new ProfileModule(new AuthTokenRepositoryImpl(getApplicationContext())))
+                .dbModule(new DbModule(this))
                 .build()
         );
     }
