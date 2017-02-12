@@ -4,17 +4,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Created by grishberg on 11.02.17.
  */
 public class XAxisValueToDateFormatterImpl implements XAxisValueToDateFormatter {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy hh:mm", Locale.US);
+    private static final TimeZone GMT = TimeZone.getTimeZone("GMT");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy HH:mm", Locale.US);
 
     private final List<Long> dates;
 
     public XAxisValueToDateFormatterImpl(final List<Long> dates) {
         this.dates = dates;
+        dateFormat.setTimeZone(GMT);
     }
 
     @Override
