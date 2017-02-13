@@ -17,7 +17,7 @@ public class XAxisValueToDateFormatterImpl implements XAxisValueToDateFormatter 
 
     public XAxisValueToDateFormatterImpl(final List<Long> dates) {
         this.dates = dates;
-        //dateFormat.setTimeZone(GMT);
+        dateFormat.setTimeZone(GMT);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class XAxisValueToDateFormatterImpl implements XAxisValueToDateFormatter 
     }
 
     @Override
-    public String getDateAsString(float x, final SimpleDateFormat dateFormat) {
+    public String getDateAsString(final float x, final SimpleDateFormat dateFormat) {
         final int index = (int) x;
         if (dates == null || index >= dates.size() || index < 0) {
             return "";

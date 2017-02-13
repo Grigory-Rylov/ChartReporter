@@ -20,7 +20,6 @@ import java.util.List;
 public class ChartsHelper {
 
     public static final int CANDLE_PRIOD_OFFSET = -1;
-    private static final int LINE_PERIOD_OFFSET = -2;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
     private int previousGrowX;
@@ -83,7 +82,7 @@ public class ChartsHelper {
         long startPeriod = 0;
         int pos = 0;
         final int size = dailyValues.size();
-        int periodCount = isDualChartMode ? 0 : 0;
+        int periodCount = isDualChartMode ? 0 : -1;
         while (pos < size) {
             double start = 0;
             double end = 0;

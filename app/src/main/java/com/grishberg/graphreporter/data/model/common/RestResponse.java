@@ -12,6 +12,8 @@ public class RestResponse<T> {
 
     private RestError error;
 
+    private RestPage page;
+
     public RestResponse(final T data) {
         this.data = data;
         this.isCached = false;
@@ -32,5 +34,9 @@ public class RestResponse<T> {
 
     public RestError getError() {
         return error;
+    }
+
+    public RestPage getPage() {
+        return page;
     }
 }

@@ -9,6 +9,11 @@ import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsEx
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.rest.RestConst;
 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -45,15 +50,19 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                 .filter(response -> checkCacheValid(response))
                 .subscribeOn(Schedulers.computation());
 
+        final AtomicLong offsetAtomic = new AtomicLong(offset);
         // извлечь данные из сети
-        final Observable<ListResultCloseable<DailyValue>> dailyValues = api.getDailyData(authInfo.getAccessToken(),
-                productId,
-                offset,
-                RestConst.PAGE_LIMIT)
+        final Observable<ListResultCloseable<DailyValue>> dailyValues = Observable.defer(() -> api
+                .getDailyData(authInfo.getAccessToken(),
+                        productId,
+                        offsetAtomic.get(),
+                        RestConst.PAGE_LIMIT))
+                .repeatWhen(completed -> completed.delay(1, TimeUnit.SECONDS))
                 .onErrorResumeNext(
                         refreshTokenAndRetry(Observable.defer(() ->
                                 api.getDailyData(authInfo.getAccessToken(), productId, offset, RestConst.PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
+                .repeat()
                 .flatMap(response -> {
                     if (offset == INITIAL_OFFSET) {
                         dataStorage.setDailyData(productId, response.getData());
