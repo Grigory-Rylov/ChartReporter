@@ -41,6 +41,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private static final int FORMULA_CAPACITY = 5;
     private static final String TAG = CandlesChartPresenter.class.getSimpleName();
     private static final int INITIAL_OFFSET = 0;
+    private static final boolean PAGING_ENABLED = false;
     private final List<FormulaChartContainer> formulaChartArray;
     private final List<FormulaContainer> formulaArray;
     @Inject
@@ -251,7 +252,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     }
 
     public void onScrolledToStart() {
-        if (!hasMore) {
+        if (!hasMore || !PAGING_ENABLED) {
             return;
         }
         getViewState().showProgress();

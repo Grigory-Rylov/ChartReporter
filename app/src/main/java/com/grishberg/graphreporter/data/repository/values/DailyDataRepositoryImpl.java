@@ -3,12 +3,14 @@ package com.grishberg.graphreporter.data.repository.values;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.rest.RestConst;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -52,25 +54,28 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
 
         final AtomicLong offsetAtomic = new AtomicLong(offset);
         // извлечь данные из сети
-        final Observable<ListResultCloseable<DailyValue>> dailyValues = Observable.defer(() -> api
-                .getDailyData(authInfo.getAccessToken(),
-                        productId,
-                        offsetAtomic.get(),
-                        RestConst.PAGE_LIMIT))
-                .repeatWhen(completed -> completed.delay(1, TimeUnit.SECONDS))
+        final Observable<ListResultCloseable<DailyValue>> dailyValues = Observable
+                .range(0, Integer.MAX_VALUE)
+                .concatMap(pageIndex -> {
+                    offsetAtomic.set(pageIndex * RestConst.PAGE_LIMIT);
+                    return api.getDailyData(authInfo.getAccessToken(),
+                            productId,
+                            offsetAtomic.get(),
+                            RestConst.PAGE_LIMIT);
+                })
+                .takeWhile(response -> !response.getData().isEmpty())
                 .onErrorResumeNext(
                         refreshTokenAndRetry(Observable.defer(() ->
-                                api.getDailyData(authInfo.getAccessToken(), productId, offset, RestConst.PAGE_LIMIT))))
+                                api.getDailyData(authInfo.getAccessToken(), productId, offsetAtomic.get(), RestConst.PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
-                .repeat()
                 .flatMap(response -> {
-                    if (offset == INITIAL_OFFSET) {
+                    if (offsetAtomic.get() == INITIAL_OFFSET) {
                         dataStorage.setDailyData(productId, response.getData());
                     } else {
                         dataStorage.appendDailyData(productId, response.getData());
                     }
                     return dataStorage.getDailyValues(productId, INITIAL_OFFSET);
-                });
+                }).last();
 
         /**
          * соединить observables кэша и rest
