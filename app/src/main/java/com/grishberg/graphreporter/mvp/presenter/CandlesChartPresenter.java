@@ -164,14 +164,14 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
      * @param dailyValues
      */
     private void rebuildFormulaCharts(final ChartPeriod period,
-                                      final ListResultCloseable<DailyValue> dailyValues,
-                                      final boolean isDualChartMode) {
+                                      final ListResultCloseable<DailyValue> dailyValues) {
         formulaChartArray.clear();
         for (final FormulaContainer formulaContainer : formulaArray) {
             formulaChartArray.add(chartsHelper.getFormulaDataForPeriod(period,
                     dailyValues,
                     formulaContainer,
-                    isDualChartMode));
+                    true
+            ));
         }
     }
 
@@ -181,10 +181,10 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                                                                      final ListResultCloseable<DailyValue> dailyValues) {
         switch (chartMode) {
             case CANDLE_MODE:
-                rebuildFormulaCharts(period, dailyValues, false);
+                rebuildFormulaCharts(period, dailyValues);
 
                 final DualChartContainer value = DualChartContainer.makeCandle(period,
-                        chartsHelper.getCandleDataForPeriod(period, dailyValues, false));
+                        chartsHelper.getCandleDataForPeriod(period, dailyValues, true));
                 dateFormatter = new XAxisValueToDateFormatterImpl(
                         value.getCandleResponse() != null ? value.getCandleResponse().getDates()
                                 : value.getEntryResponse().getDates());
@@ -192,13 +192,13 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                         value
                 );
             case LINE_MODE:
-                rebuildFormulaCharts(period, dailyValues, false);
+                rebuildFormulaCharts(period, dailyValues);
                 return Observable.just(
                         DualChartContainer.makeLine(period,
-                                chartsHelper.getLineData(period, dailyValues, false))
+                                chartsHelper.getLineData(period, dailyValues, true))
                 );
             default:
-                rebuildFormulaCharts(period, dailyValues, true);
+                rebuildFormulaCharts(period, dailyValues);
                 return Observable.just(
                         DualChartContainer.makeCandleAndLine(period,
                                 chartsHelper.getLineData(period, dailyValues, true),
@@ -219,12 +219,11 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
      */
     public void addNewFormula(final FormulaContainer formulaContainer) {
         formulaStorage.addFormula(currentProductId, formulaContainer);
-        requestPointForFormula(currentProductId, formulaContainer, currentChartMode);
+        requestPointForFormula(currentProductId, formulaContainer);
     }
 
     private void requestPointForFormula(final long productId,
-                                        final FormulaContainer formulaContainer,
-                                        final ChartMode currentChartMode) {
+                                        final FormulaContainer formulaContainer) {
         formulaArray.add(formulaContainer);
         repository.getDailyValues(productId, 0)
                 .flatMap(dailyValues -> {
@@ -235,7 +234,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                             chartsHelper.getFormulaDataForPeriod(period,
                                     dailyValues,
                                     formulaContainer,
-                                    currentChartMode == CANDLE_AND_LINE_MODE)
+                                    true)
                     );
                 })
                 .subscribe(response -> {

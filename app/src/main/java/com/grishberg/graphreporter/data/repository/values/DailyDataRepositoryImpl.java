@@ -64,14 +64,15 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                         refreshTokenAndRetry(Observable.defer(() ->
                                 api.getDailyData(authInfo.getAccessToken(), productId, offsetAtomic.get(), RestConst.PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
-                .flatMap(response -> {
+                .doOnNext(response -> {
                     if (offsetAtomic.get() == INITIAL_OFFSET) {
                         dataStorage.setDailyData(productId, response.getData());
                     } else {
                         dataStorage.appendDailyData(productId, response.getData());
                     }
-                    return dataStorage.getDailyValues(productId, INITIAL_OFFSET);
-                }).last();
+                })
+                .last()
+                .flatMap(response -> dataStorage.getDailyValues(productId, INITIAL_OFFSET));
 
         /**
          * соединить observables кэша и rest

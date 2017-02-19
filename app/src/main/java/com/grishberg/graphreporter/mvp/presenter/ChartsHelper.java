@@ -26,8 +26,7 @@ public class ChartsHelper {
     private static final int CLOSED = 1;
     private static final int HIGH = 2;
     private static final int LOW = 3;
-    private int previousGrowX;
-    private int previousFallX;
+    private double previousY;
 
     /**
      * Новая точка роста
@@ -178,8 +177,7 @@ public class ChartsHelper {
         final int periodPartitionCount = period.getPartion();
 
         final FormulaPointsContainer valueToCompare = getValueToCompare(dailyValues.get(0), formulaContainer);
-        previousGrowX = 0;
-        previousFallX = 0;
+        previousY = 0;
         int pos = 0;
         final int size = dailyValues.size();
         int periodCount = 0;
@@ -272,6 +270,7 @@ public class ChartsHelper {
                                               final List<Entry> entriesGrow,
                                               final List<Entry> entriesFall) {
         // ТР
+        int offset = 0;
         double currentValue;
         final double growPriceToCompare;
         final double fallPriceToCompare;
@@ -279,10 +278,12 @@ public class ChartsHelper {
             case OPEN:
                 currentValue = value.getPriceOpen();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
+                offset = -1;
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
+                offset = 1;
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
@@ -293,11 +294,14 @@ public class ChartsHelper {
                 currentValue = value.getPriceLow();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
         }
-        if (currentValue > growPriceToCompare) {
-            entriesFall.add(new Entry(x, (float) currentValue));
+        if (currentValue > growPriceToCompare || currentValue == previousY) {
+            if (previousY == currentValue) {
+                entriesFall.remove(entriesFall.size() - 1);
+            }
+            entriesFall.add(new Entry(x + offset, (float) currentValue));
+            previousY = currentValue;
             valueToCompare.valueGrow = value; // сдвиг точки
             valueToCompare.valueFall = makeDailyValue(getNewFallValue(currentValue, fc), fc);
-            this.previousGrowX = x;
             return PrevValueState.GROW;
         }
 
@@ -321,11 +325,14 @@ public class ChartsHelper {
                 fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
         }
 
-        if (currentValue < fallPriceToCompare) {
-            entriesGrow.add(new Entry(x, (float) currentValue));
+        if (currentValue < fallPriceToCompare || currentValue == previousY) {
+            if (previousY == currentValue) {
+                entriesGrow.remove(entriesGrow.size() - 1);
+            }
+            entriesGrow.add(new Entry(x + offset, (float) currentValue));
+            previousY = currentValue;
             valueToCompare.valueFall = value;
             valueToCompare.valueGrow = makeDailyValue(getNewGrowValue(currentValue, fc), fc);
-            this.previousFallX = x;
             return PrevValueState.FALL;
         }
 
