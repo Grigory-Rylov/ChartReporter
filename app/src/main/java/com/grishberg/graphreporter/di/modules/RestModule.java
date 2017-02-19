@@ -11,7 +11,7 @@ import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepositoryImpl;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepositoryImpl;
-import com.grishberg.graphreporter.data.repository.values.DailyDataStorage;
+import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.services.RefreshTokenService;

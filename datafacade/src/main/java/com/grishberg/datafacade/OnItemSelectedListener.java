@@ -5,5 +5,5 @@ package com.grishberg.datafacade;
  */
 
 public interface OnItemSelectedListener<T> {
-    void onItemSelected(T item, int position);
+    void onItemSelected(T item);
 }

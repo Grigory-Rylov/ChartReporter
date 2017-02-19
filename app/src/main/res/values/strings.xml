@@ -21,6 +21,8 @@
     <string name="about_text">Graph Analyser v.%s \nАвтор: Григорий Рылов</string>
     <string name="about_email_text">grishberg@ya.ru</string>
     <string name="main_screen_menu_about">О программе</string>
+    <string name="main_screen_menu_save">Сохранить настройки</string>
+    <string name="main_screen_menu_formula_settings">Настройка формул</string>
     <string name="candle_screen_menu_candle_chart_mode">Свечи</string>
     <string name="candle_screen_menu_line_chart_mode">Линейный график</string>
     <string name="candle_screen_menu_candle_and_line_mode">Свечи и линии</string>
@@ -56,5 +58,9 @@
     <string name="dialog_new_point_condition_item_less">&lt;</string>
     <string name="dialog_new_point_condition_item_greater">&gt;</string>
     <string name="dialog_new_point_color">цвет</string>
+    <string name="chart_saving_message">Сохранено.</string>
+    <string name="dialog_new_point_empty_name">Пустое имя формулы</string>
+    <string name="dialog_new_point_empty_grow">Пустое значение ТР</string>
+    <string name="dialog_new_point_empty_fall">Пустое значение ТП</string>
 
 </resources>

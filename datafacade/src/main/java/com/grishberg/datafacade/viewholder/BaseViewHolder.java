@@ -8,12 +8,11 @@ import com.grishberg.datafacade.OnItemSelectedListener;
 /**
  * Created by grishberg on 31.12.16.
  */
-public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-    private static final String TAG = BaseViewHolder.class.getSimpleName();
-    private final OnItemSelectedListener clickListener;
+public abstract class BaseViewHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
+    private final OnItemSelectedListener<T> clickListener;
     private int position;
 
-    public BaseViewHolder(final View itemView, final OnItemSelectedListener clickListener) {
+    public BaseViewHolder(final View itemView, final OnItemSelectedListener<T> clickListener) {
         super(itemView);
         this.clickListener = clickListener;
         if (clickListener != null) {
@@ -21,15 +20,16 @@ public abstract class BaseViewHolder extends RecyclerView.ViewHolder implements 
         }
     }
 
-    public void bind(final Object item, final int position) {
+    public void bind(final T item, final int position) {
         this.itemView.setTag(item);
         this.position = position;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onClick(final View view) {
         if (clickListener != null) {
-            clickListener.onItemSelected(view.getTag(), position);
+            clickListener.onItemSelected((T) view.getTag());
         }
     }
 }

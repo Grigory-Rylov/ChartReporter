@@ -26,11 +26,14 @@ public class ChartsHelperTest {
         final List<DailyValue> dailyValues = getDailyValues();
 
         final FormulaContainer formulaContainer = new FormulaContainer("test",
-                FormulaContainer.VertexType.CLOSED,
-                7D, true, 7D, true);
-        final FormulaChartContainer chart = ChartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
+                1,
+                7D, true, 0xff,
+                7D, true, 0xff);
+        final ChartsHelper chartsHelper = new ChartsHelper();
+        final FormulaChartContainer chart = chartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
                 dailyValues,
-                formulaContainer);
+                formulaContainer,
+                true);
         assertEquals(1, chart.getGrowPoints().size());
         assertEquals(1, chart.getFallPoints().size());
     }

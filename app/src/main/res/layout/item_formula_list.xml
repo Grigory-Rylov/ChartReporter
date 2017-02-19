@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/item_formula_list_margin"
+                android:orientation="vertical">
+    <!-- formula list item -->
+    <TextView
+        android:id="@+id/item_formula_list_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        tools:text="formula 1"/>
+
+    <ImageButton
+        android:id="@+id/item_formula_list_delete_button"
+        android:layout_width="@dimen/item_formula_list_delete_icon_size"
+        android:layout_height="@dimen/item_formula_list_delete_icon_size"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@android:drawable/ic_delete"
+        />
+</RelativeLayout>

@@ -85,15 +85,9 @@ public class ProductsFragment extends MvpAppCompatFragment implements ProductsVi
     }
 
     @Override
-    public void onItemSelected(final ProductItem item, final int position) {
+    public void onItemSelected(final ProductItem item) {
         getActivity().setTitle(item.getName());
         listener.onProductSelected(item);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        adapter.recycle();
     }
 
     @Override

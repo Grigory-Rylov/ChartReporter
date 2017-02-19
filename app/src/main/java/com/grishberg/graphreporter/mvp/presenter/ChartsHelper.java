@@ -22,6 +22,10 @@ public class ChartsHelper {
     public static final int CANDLE_PRIOD_OFFSET = -1;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
+    private static final int OPEN = 0;
+    private static final int CLOSED = 1;
+    private static final int HIGH = 2;
+    private static final int LOW = 3;
     private int previousGrowX;
     private int previousFallX;
 

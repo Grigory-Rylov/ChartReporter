@@ -1,9 +1,10 @@
-package com.grishberg.graphreporter.data.repository.values;
+package com.grishberg.graphreporter.data.storage;
 
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.db.GreenDaoListResult;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.DailyValueDao;
+import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
 
 import java.util.List;
 
@@ -45,8 +46,9 @@ public class GreenDaoDataStorage implements DailyDataStorage {
                                                                       final int offset) {
         if (cacheChecker.isCacheDataValid(productId)) {
             return Observable.just(
-                    new GreenDaoListResult<DailyValue>(dailyValueDao
+                    new GreenDaoListResult<>(dailyValueDao
                             .queryBuilder()
+                            .where(DailyValueDao.Properties.ProductId.eq(productId))
                             .orderAsc(DailyValueDao.Properties.Dt)
                             .build())
             );

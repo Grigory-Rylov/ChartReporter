@@ -1,6 +1,7 @@
-package com.grishberg.graphreporter.data.repository.values;
+package com.grishberg.graphreporter.data.storage;
 
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 
 import java.util.List;
 

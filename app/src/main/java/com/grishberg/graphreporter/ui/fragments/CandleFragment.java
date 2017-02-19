@@ -5,6 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,7 @@ import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
+import com.grishberg.graphreporter.ui.activities.FormulaSettingsActivity;
 import com.grishberg.graphreporter.ui.dialogs.NewPointDialog;
 import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
 import com.grishberg.graphreporter.ui.view.LineFormulaDataSet;
@@ -60,6 +64,8 @@ import static com.github.mikephil.charting.listener.ChartTouchListener.ChartGest
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener, View.OnClickListener {
     public static final float FORMULA_POINT_RADIUS = 3f;
+    public static final float LEFT_BOUNDS = 0.0001F;
+    public static final int FORMULA_SETTINGS_REQUEST_CODE = 1000;
     private static final String TAG = CandleFragment.class.getSimpleName();
     private static final String ARG_PRODUCT = "ARG_PRODUCT";
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy", Locale.US);
@@ -100,7 +106,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             productItem = (ProductItem) getArguments().getSerializable(ARG_PRODUCT);
         }
         if (productItem != null && savedInstanceState == null) {
-            presenter.onSelectedProduct(productItem.getId());
+            presenter.onInitChartScreen(productItem.getId());
         }
     }
 
@@ -147,7 +153,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
             @Override
             public void onChartGestureEnd(final MotionEvent me, final ChartGesture lastPerformedGesture) {
-                if (lastPerformedGesture == DRAG && chart.getLowestVisibleX() == 0) {
+                if (lastPerformedGesture == DRAG && chart.getLowestVisibleX() < LEFT_BOUNDS) {
                     presenter.onScrolledToStart();
                 }
             }
@@ -398,5 +404,37 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public void hidePointInfo() {
         pointInfoView.setVisibility(View.GONE);
+    }
+
+    //---- menu -----
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.candle_chart_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == R.id.action_save) {
+            presenter.onSaveClicked();
+        } else if (item.getItemId() == R.id.action_formula_settings) {
+            presenter.onShowFormulaSettings();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showSavingMessage() {
+        Toast.makeText(getContext(), R.string.chart_saving_message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showFormulaSettingsScreen(final long currentProductId) {
+        FormulaSettingsActivity.startForResult(getActivity(), currentProductId, FORMULA_SETTINGS_REQUEST_CODE);
+    }
+
+    public void onFormulaSettingsClosed() {
+        presenter.onFormulaSettingsClosed();
     }
 }

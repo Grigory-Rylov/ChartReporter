@@ -1,10 +1,16 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
+import android.support.annotation.Nullable;
+
 import com.arellomobile.mvp.InjectViewState;
+import com.grishberg.datafacade.ListResultCloseable;
+import com.grishberg.graphreporter.data.model.ProductItem;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.ProductsView;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -19,6 +25,9 @@ public class ProductsPresenter extends BasePresenter<ProductsView> {
     @Inject
     ProductsRepository repository;
 
+    @Nullable
+    private ListResultCloseable<ProductItem> productItems;
+
     public ProductsPresenter() {
         DiManager.getAppComponent().inject(this);
     }
@@ -28,10 +37,23 @@ public class ProductsPresenter extends BasePresenter<ProductsView> {
         repository.getProducts(CATEGORY_ID)
                 .subscribe(response -> {
                     getViewState().hideProgress();
+                    productItems = response;
                     getViewState().showProducts(response);
                 }, exception -> {
                     getViewState().hideProgress();
                     getViewState().showFail(exception.getMessage());
                 });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (productItems != null) {
+            try {
+                productItems.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

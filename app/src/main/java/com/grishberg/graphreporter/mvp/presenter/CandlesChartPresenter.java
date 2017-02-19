@@ -12,8 +12,10 @@ import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.DualChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.repository.settings.SettingsDataSource;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
+import com.grishberg.graphreporter.data.storage.FormulaDataSource;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
@@ -50,6 +52,11 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     DailyDataRepository repository;
     @Inject
     ChartsHelper chartsHelper;
+    @Inject
+    SettingsDataSource settings;
+    @Inject
+    FormulaDataSource formulaStorage;
+
     private ListResultCloseable<DailyValue> dailyListResult;
     private XAxisValueToDateFormatter dateFormatter;
     private int maxOffset;
@@ -59,23 +66,25 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private ChartPeriod period = ChartPeriod.DAY;
     private long currentProductId;
     private boolean hasMore;
+    private boolean isNeedShowFormula;
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
         formulaChartArray = new ArrayList<>(FORMULA_CAPACITY);
         formulaArray = new ArrayList<>(FORMULA_CAPACITY);
+        isNeedShowFormula = settings.isNeedShowFormula();
         //timer.setHandler(this);
     }
 
-    /**
-     * Пересчитать точки в зависимости от периода
-     *
-     * @param productId -  идентификатор продукта
-     */
-    public void onSelectedProduct(final long productId) {
+    public void onInitChartScreen(final long productId) {
         currentProductId = productId;
-        getViewState().showProgress();
-        getDataFromOffset(productId, INITIAL_OFFSET, currentChartMode, period);
+        currentChartMode = ChartMode.values()[settings.getChartType()];
+        formulaStorage.getFormulas(currentProductId)
+                .subscribe(formulas -> {
+                    formulaArray.clear();
+                    formulaArray.addAll(formulas);
+                    onSelectedProduct(currentProductId);
+                });
     }
 
     public void onCandlesModeClicked() {
@@ -91,6 +100,17 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     public void onCandlesAndLinesMode() {
         currentChartMode = CANDLE_AND_LINE_MODE;
         onSelectedProduct(currentProductId);
+    }
+
+    /**
+     * Пересчитать точки в зависимости от периода
+     *
+     * @param productId -  идентификатор продукта
+     */
+    private void onSelectedProduct(final long productId) {
+
+        getViewState().showProgress();
+        getDataFromOffset(productId, INITIAL_OFFSET, currentChartMode, period);
     }
 
     /**
@@ -198,6 +218,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
      * @param formulaContainer данные для построения точек формулы
      */
     public void addNewFormula(final FormulaContainer formulaContainer) {
+        formulaStorage.addFormula(currentProductId, formulaContainer);
         requestPointForFormula(currentProductId, formulaContainer, currentChartMode);
     }
 
@@ -270,5 +291,26 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 log.e(TAG, "onDestroy", e);
             }
         }
+    }
+
+    public void onToggleShowFormula(final boolean isNeedShowFormula) {
+        this.isNeedShowFormula = isNeedShowFormula;
+    }
+
+    /**
+     * Store settings
+     */
+    public void onSaveClicked() {
+        settings.storeChartType(currentChartMode.ordinal());
+        settings.storeShowFormulaState(isNeedShowFormula);
+        getViewState().showSavingMessage();
+    }
+
+    public void onShowFormulaSettings() {
+        getViewState().showFormulaSettingsScreen(currentProductId);
+    }
+
+    public void onFormulaSettingsClosed() {
+        onInitChartScreen(currentProductId);
     }
 }

@@ -3,17 +3,13 @@ package com.grishberg.graphreporter.data.repository.values;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.rest.RestConst;
+import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import rx.Observable;

@@ -1,11 +1,8 @@
 package com.grishberg.graphreporter;
 
 import android.app.Application;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.StrictMode;
 
-import com.grishberg.graphreporter.data.model.DaoMaster;
-import com.grishberg.graphreporter.data.model.DaoSession;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepositoryImpl;
 import com.grishberg.graphreporter.di.DiManager;
 

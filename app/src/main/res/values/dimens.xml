@@ -43,4 +43,8 @@
     <dimen name="dialog_new_point_color_size">250dp</dimen>
     <dimen name="dialog_new_point_color_padding">30dp</dimen>
 
+    <!-- formula list -->
+    <dimen name="item_formula_list_margin">8dp</dimen>
+    <dimen name="item_formula_list_delete_icon_size">20dp</dimen>
+
 </resources>

@@ -1,9 +1,16 @@
 package com.grishberg.graphreporter.di.modules;
 
+import android.content.Context;
+
+import com.grishberg.graphreporter.data.model.DaoSession;
+import com.grishberg.graphreporter.data.repository.settings.SettingsDataSource;
+import com.grishberg.graphreporter.data.repository.settings.SettingsPreferencesStorage;
 import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
 import com.grishberg.graphreporter.data.repository.values.CacheActualityCheckerImpl;
-import com.grishberg.graphreporter.data.repository.values.DailyDataStorage;
-import com.grishberg.graphreporter.data.repository.values.InMemoryDailyDataStorage;
+import com.grishberg.graphreporter.data.storage.DailyDataStorage;
+import com.grishberg.graphreporter.data.storage.FormulaDataSource;
+import com.grishberg.graphreporter.data.storage.FormulaDataSourceImpl;
+import com.grishberg.graphreporter.data.storage.GreenDaoDataStorage;
 
 import javax.inject.Singleton;
 
@@ -26,7 +33,19 @@ public class StorageModule {
 
     @Provides
     @Singleton
-    DailyDataStorage provideContext(final CacheActualityChecker cacheChecker) {
-        return new InMemoryDailyDataStorage(cacheChecker);
+    DailyDataStorage provideContext(final DaoSession daoSession, final CacheActualityChecker cacheChecker) {
+        return new GreenDaoDataStorage(cacheChecker, daoSession.getDailyValueDao());
+    }
+
+    @Provides
+    @Singleton
+    SettingsDataSource provideSettingsStorage(final Context context) {
+        return new SettingsPreferencesStorage(context);
+    }
+
+    @Provides
+    @Singleton
+    FormulaDataSource provideFormulasStorage(final DaoSession daoSession) {
+        return new FormulaDataSourceImpl(daoSession.getFormulaContainerDao());
     }
 }

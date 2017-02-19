@@ -133,4 +133,14 @@ public class ChartActivity extends MvpAppCompatActivity implements ProductsFragm
                     Log.e(TAG, "onClick: unknown item clicked");
             }
     }
+
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        if (requestCode == CandleFragment.FORMULA_SETTINGS_REQUEST_CODE) {
+            final Fragment fragment = getSupportFragmentManager().findFragmentByTag(CandleFragment.class.getSimpleName());
+            if (fragment instanceof CandleFragment) {
+                ((CandleFragment) fragment).onFormulaSettingsClosed();
+            }
+        }
+    }
 }

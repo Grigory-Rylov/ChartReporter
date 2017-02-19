@@ -1,10 +1,10 @@
-package com.grishberg.graphreporter.data.repository.values;
+package com.grishberg.graphreporter.data.storage;
 
 import com.grishberg.datafacade.ArrayListResult;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

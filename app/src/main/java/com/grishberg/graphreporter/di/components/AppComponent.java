@@ -9,6 +9,7 @@ import com.grishberg.graphreporter.di.modules.RestModule;
 import com.grishberg.graphreporter.di.modules.StorageModule;
 import com.grishberg.graphreporter.di.sub.modules.AuthModule;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
+import com.grishberg.graphreporter.mvp.presenter.FormulaListPresenter;
 import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
 import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
 import com.grishberg.graphreporter.ui.fragments.CandleFragment;
@@ -43,4 +44,6 @@ public interface AppComponent {
     void inject(ProductsPresenter productsPresenter);
 
     void inject(CandleFragment candleFragment);
+
+    void inject(FormulaListPresenter formulaListPresenter);
 }

@@ -3,6 +3,7 @@ package com.grishberg.graphreporter.ui.dialogs;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
@@ -34,6 +36,7 @@ import com.grishberg.graphreporter.utils.ColorUtil;
  */
 public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClickListener {
     public static final int NEW_POINT_RESULT_CODE = 1001;
+    public static final String ARG_FORMULA_CONTAINER = "ARG_FORMULA_CONTAINER";
     private static final String NEW_POINT_RESULT_EXTRA = NewPointDialog.class.getSimpleName();
     private EditText pointName;
     private EditText pointGrow;
@@ -50,12 +53,19 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
 
     private FrameLayout growColorPreview;
     private FrameLayout fallColorPreview;
+    @Nullable
+    private FormulaContainer formulaContainer;
 
     public static void showDialog(final FragmentManager fm,
                                   final Fragment targetFragment) {
+        showEditDialog(null, fm, targetFragment);
+    }
+
+    public static void showEditDialog(final FormulaContainer formulaContainer,
+                                      final FragmentManager fm,
+                                      final Fragment targetFragment) {
         final FragmentTransaction ft = fm.beginTransaction();
-        final Fragment prev = fm
-                .findFragmentByTag(NewPointDialog.class.getSimpleName());
+        final Fragment prev = fm.findFragmentByTag(NewPointDialog.class.getSimpleName());
         if (prev != null) {
             ft.remove(prev);
         }
@@ -63,6 +73,7 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
 
         final DialogFragment newFragment = new NewPointDialog();
         final Bundle args = new Bundle();
+        args.putSerializable(ARG_FORMULA_CONTAINER, formulaContainer);
         newFragment.setArguments(args);
         newFragment.setTargetFragment(targetFragment, NEW_POINT_RESULT_CODE);
         newFragment.show(ft, PeriodSelectDialog.class.getSimpleName());
@@ -74,6 +85,14 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
             return (FormulaContainer) intent.getSerializableExtra(NEW_POINT_RESULT_EXTRA);
         }
         return null;
+    }
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            this.formulaContainer = (FormulaContainer) getArguments().getSerializable(ARG_FORMULA_CONTAINER);
+        }
     }
 
     @Override
@@ -99,21 +118,38 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
 
         initSwitchers(view);
 
+        if (formulaContainer != null) {
+            populateFormula(formulaContainer);
+        }
         return view;
+    }
+
+    private void populateFormula(@NonNull final FormulaContainer formulaContainer) {
+        initColors(formulaContainer.getGrowColor(), formulaContainer.getFallColor());
+        pointName.setText(formulaContainer.getName());
+        pointGrow.setText(String.valueOf(formulaContainer.getGrowValue()));
+        pointFall.setText(String.valueOf(formulaContainer.getFallValue()));
+        isGrowPercent.setChecked(formulaContainer.getIsGrowPercent());
+        isFallPercent.setChecked(formulaContainer.getIsFallPercent());
     }
 
     private void initColorPickers(final View view) {
         growColorPicker = (HSVColorWheel) view.findViewById(R.id.dialog_new_point_grow_color_picker);
         fallColorPicker = (HSVColorWheel) view.findViewById(R.id.dialog_new_point_fall_color_picker);
 
-        growColorPicker.setColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
-        fallColorPicker.setColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
-
-        growColorPreview.setBackgroundColor(ColorUtil.getColor(getContext(), R.color.formula_grow_color));
-        fallColorPreview.setBackgroundColor(ColorUtil.getColor(getContext(), R.color.formula_fall_color));
-
         growColorPicker.setColorSelectedListener(color -> growColorPreview.setBackgroundColor(color));
         fallColorPicker.setColorSelectedListener(color -> fallColorPreview.setBackgroundColor(color));
+
+        initColors(ColorUtil.getColor(getContext(), R.color.formula_grow_color),
+                ColorUtil.getColor(getContext(), R.color.formula_fall_color));
+    }
+
+    private void initColors(final int growColor, final int fallColor) {
+        growColorPicker.setColor(growColor);
+        fallColorPicker.setColor(fallColor);
+
+        growColorPreview.setBackgroundColor(growColor);
+        fallColorPreview.setBackgroundColor(fallColor);
     }
 
     private void initSwitchers(final View view) {
@@ -163,25 +199,32 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
     @Override
     public void onClick(final View view) {
         if (TextUtils.isEmpty(pointName.getText())) {
+            Toast.makeText(getContext(), R.string.dialog_new_point_empty_name, Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(pointGrow.getText())) {
+            Toast.makeText(getContext(), R.string.dialog_new_point_empty_grow, Toast.LENGTH_SHORT).show();
             return;
         }
         if (TextUtils.isEmpty(pointFall.getText())) {
+            Toast.makeText(getContext(), R.string.dialog_new_point_empty_fall, Toast.LENGTH_SHORT).show();
             return;
         }
+        final FormulaContainer newFormula = new FormulaContainer(
+                pointName.getText().toString(),
+                vertexSpinner.getSelectedItemPosition(),
+                Double.valueOf(pointGrow.getText().toString()),
+                isGrowPercent.isChecked(),
+                growColorPicker.getSelectedColor(),
+                Double.valueOf(pointFall.getText().toString()),
+                isFallPercent.isChecked(),
+                fallColorPicker.getSelectedColor());
+        newFormula.setId(formulaContainer != null ? formulaContainer.getId() : null);
+        newFormula.setProductId(formulaContainer != null ? formulaContainer.getProductId() : 0);
+
         final Intent data = new Intent();
         data.putExtra(NEW_POINT_RESULT_EXTRA,
-                new FormulaContainer(
-                        pointName.getText().toString(),
-                        FormulaContainer.VertexType.values()[vertexSpinner.getSelectedItemPosition()],
-                        Double.valueOf(pointGrow.getText().toString()),
-                        isGrowPercent.isChecked(),
-                        growColorPicker.getSelectedColor(),
-                        Double.valueOf(pointFall.getText().toString()),
-                        isFallPercent.isChecked(),
-                        fallColorPicker.getSelectedColor()));
+                newFormula);
         getTargetFragment().onActivityResult(getTargetRequestCode(), 0, data);
         dismiss();
     }

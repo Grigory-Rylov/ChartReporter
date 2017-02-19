@@ -18,7 +18,7 @@ import dagger.Provides;
 public class DbModule {
     private final Context context;
 
-    public DbModule(Context context) {
+    public DbModule(final Context context) {
         this.context = context;
     }
 

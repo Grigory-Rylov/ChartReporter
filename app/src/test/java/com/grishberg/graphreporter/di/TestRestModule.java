@@ -1,11 +1,13 @@
 package com.grishberg.graphreporter.di;
 
-import com.grishberg.graphreporter.data.repository.auth.AuthRepository;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.settings.SettingsDataSource;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
+import com.grishberg.graphreporter.data.storage.FormulaDataSource;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.services.RefreshTokenService;
+import com.grishberg.graphreporter.mvp.presenter.ChartsHelper;
 import com.grishberg.graphreporter.utils.DebugLogger;
 import com.grishberg.graphreporter.utils.LogService;
 
@@ -71,5 +73,23 @@ public class TestRestModule {
     @Singleton
     RefreshTokenService provideRefreshTokenService() {
         return Mockito.mock(RefreshTokenService.class);
+    }
+
+    @Provides
+    @Singleton
+    ChartsHelper provideChartsHelper() {
+        return Mockito.mock(ChartsHelper.class);
+    }
+
+    @Provides
+    @Singleton
+    SettingsDataSource provideSettingsDataSource() {
+        return Mockito.mock(SettingsDataSource.class);
+    }
+
+    @Provides
+    @Singleton
+    FormulaDataSource provideFormulaDataSource() {
+        return Mockito.mock(FormulaDataSource.class);
     }
 }

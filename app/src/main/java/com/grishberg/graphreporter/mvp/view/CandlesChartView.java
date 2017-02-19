@@ -23,4 +23,8 @@ public interface CandlesChartView extends BaseViewWithProgress {
     void hidePointInfo();
 
     void showPointInfo(float y, String date);
+
+    void showSavingMessage();
+
+    void showFormulaSettingsScreen(long currentProductId);
 }
