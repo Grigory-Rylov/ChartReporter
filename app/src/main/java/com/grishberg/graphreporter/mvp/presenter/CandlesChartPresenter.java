@@ -73,10 +73,12 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         formulaChartArray = new ArrayList<>(FORMULA_CAPACITY);
         formulaArray = new ArrayList<>(FORMULA_CAPACITY);
         isNeedShowFormula = settings.isNeedShowFormula();
+        log.d(TAG, "CandlesChartPresenter");
         //timer.setHandler(this);
     }
 
     public void onInitChartScreen(final long productId) {
+        log.d(TAG, "onInitChartScreen");
         currentProductId = productId;
         currentChartMode = ChartMode.values()[settings.getChartType()];
         formulaStorage.getFormulas(currentProductId)
@@ -127,6 +129,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                                    final int initialOffset,
                                    final ChartMode chartMode,
                                    final ChartPeriod period) {
+        log.d(TAG, "getDataFromOffset");
         repository.getDailyValues(productId, initialOffset)
                 .flatMap(dailyValues -> {
                     if (dailyValues == null || dailyValues.isEmpty()) {
@@ -138,6 +141,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                     return getChartsPoints(chartMode, period, dailyValues);
                 })
                 .subscribe(response -> {
+                    log.d(TAG, "getDataFromOffset: success");
                     dateFormatter = new XAxisValueToDateFormatterImpl(response.getCandleResponse() != null
                             ? response.getCandleResponse().getDates()
                             : response.getEntryResponse().getDates());

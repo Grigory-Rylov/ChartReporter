@@ -46,13 +46,13 @@ public class ChartActivity extends BaseActivity implements ProductsFragment.Prod
         setSupportActionBar(toolbar);
         initDrawer();
 
-        final Button canlesButton = (Button) findViewById(R.id.drawer_candles_btn);
-        final Button canlesAndLinesButton = (Button) findViewById(R.id.drawer_candles_and_lines_btn);
-        final Button canlesLinesButton = (Button) findViewById(R.id.drawer_lines_btn);
+        final Button candlesButton = (Button) findViewById(R.id.drawer_candles_btn);
+        final Button candlesAndLinesButton = (Button) findViewById(R.id.drawer_candles_and_lines_btn);
+        final Button candlesLinesButton = (Button) findViewById(R.id.drawer_lines_btn);
 
-        canlesButton.setOnClickListener(this);
-        canlesAndLinesButton.setOnClickListener(this);
-        canlesLinesButton.setOnClickListener(this);
+        candlesButton.setOnClickListener(this);
+        candlesAndLinesButton.setOnClickListener(this);
+        candlesLinesButton.setOnClickListener(this);
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -104,8 +105,9 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         setHasOptionsMenu(true);
         if (getArguments() != null) {
             productItem = (ProductItem) getArguments().getSerializable(ARG_PRODUCT);
+            Log.d(TAG, "onCreate: productItem " + productItem);
         }
-        if (productItem != null && savedInstanceState == null) {
+        if (productItem != null) {
             presenter.onInitChartScreen(productItem.getId());
         }
     }
