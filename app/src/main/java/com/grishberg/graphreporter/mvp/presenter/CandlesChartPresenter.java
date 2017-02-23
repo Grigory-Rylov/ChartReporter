@@ -37,7 +37,7 @@ import static com.grishberg.graphreporter.data.enums.ChartMode.CANDLE_AND_LINE_M
  * Created by grishberg on 01.01.17.
  * Презентер для управления экраном отображения графика с японскими свечами
  */
-@InjectViewState
+@InjectViewState()
 public class CandlesChartPresenter extends BasePresenter<CandlesChartView> implements Runnable {
     private static final int DURATION = 30 * 60 * 1000;
     private static final int FORMULA_CAPACITY = 5;
@@ -279,19 +279,6 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         getDataFromOffset(currentProductId, dailyListResult.size(), currentChartMode, period);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (dailyListResult != null) {
-            try {
-                dailyListResult.close();
-            } catch (final IOException e) {
-                //not handled
-                log.e(TAG, "onDestroy", e);
-            }
-        }
-    }
-
     public void onToggleShowFormula(final boolean isNeedShowFormula) {
         this.isNeedShowFormula = isNeedShowFormula;
     }
@@ -311,5 +298,19 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
 
     public void onFormulaSettingsClosed() {
         onInitChartScreen(currentProductId);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dailyListResult != null) {
+            try {
+                dailyListResult.close();
+                dailyListResult = null;
+            } catch (final IOException e) {
+                //not handled
+                log.e(TAG, "onDestroy", e);
+            }
+        }
     }
 }

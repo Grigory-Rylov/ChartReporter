@@ -49,6 +49,10 @@
         </activity>
         <activity android:name=".ui.activities.FormulaSettingsActivity">
         </activity>
+
+        <activity
+            android:name=".ui.activities.common.DummyActivity"
+            android:theme="@style/AppTheme.Transparent"/>
     </application>
 
 </manifest>

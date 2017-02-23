@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class ChartsHelper {
 
-    public static final int CANDLE_PRIOD_OFFSET = -1;
+    private static final int CANDLE_PRIOD_OFFSET = -1;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
     private static final int OPEN = 0;
@@ -31,7 +31,7 @@ public class ChartsHelper {
     /**
      * Новая точка роста
      *
-     * @param firstValue
+     * @param firstValue       значение, от которого рассчитывается
      * @param formulaContainer
      * @return
      */
@@ -295,7 +295,7 @@ public class ChartsHelper {
                 growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
         }
         if (currentValue > growPriceToCompare || currentValue == previousY) {
-            if (previousY == currentValue) {
+            if (previousY == currentValue && !entriesFall.isEmpty()) {
                 entriesFall.remove(entriesFall.size() - 1);
             }
             entriesFall.add(new Entry(x + offset, (float) currentValue));
@@ -326,7 +326,7 @@ public class ChartsHelper {
         }
 
         if (currentValue < fallPriceToCompare || currentValue == previousY) {
-            if (previousY == currentValue) {
+            if (previousY == currentValue && !entriesGrow.isEmpty()) {
                 entriesGrow.remove(entriesGrow.size() - 1);
             }
             entriesGrow.add(new Entry(x + offset, (float) currentValue));

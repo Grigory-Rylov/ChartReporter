@@ -2,17 +2,17 @@ package com.grishberg.graphreporter.ui.activities;
 
 import android.os.Bundle;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.mvp.presenter.SplashScreenPresenter;
 import com.grishberg.graphreporter.mvp.view.SplashScreenView;
+import com.grishberg.graphreporter.ui.activities.common.BaseActivity;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class SplashScreenActivity extends MvpAppCompatActivity implements SplashScreenView {
+public class SplashScreenActivity extends BaseActivity implements SplashScreenView {
 
     @InjectPresenter
     SplashScreenPresenter presenter;

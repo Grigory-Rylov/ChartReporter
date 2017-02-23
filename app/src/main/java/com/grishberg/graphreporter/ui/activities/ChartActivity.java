@@ -16,14 +16,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.ui.activities.common.BaseActivity;
 import com.grishberg.graphreporter.ui.fragments.CandleFragment;
 import com.grishberg.graphreporter.ui.fragments.ProductsFragment;
 import com.grishberg.graphreporter.utils.MaterialDrawerHelper;
 
-public class ChartActivity extends MvpAppCompatActivity implements ProductsFragment.ProductsInteractionListener, View.OnClickListener {
+public class ChartActivity extends BaseActivity implements ProductsFragment.ProductsInteractionListener, View.OnClickListener {
 
     private static final String TAG = ChartActivity.class.getSimpleName();
     private DrawerLayout drawerLayout;
