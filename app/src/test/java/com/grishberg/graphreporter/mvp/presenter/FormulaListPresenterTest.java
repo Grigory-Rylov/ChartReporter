@@ -66,7 +66,7 @@ public class FormulaListPresenterTest extends BaseTestCase {
         final FormulaContainer container = mock(FormulaContainer.class);
         when(formulaStorage.getFormula(FORMULA_ID)).thenReturn(Observable.just(container));
         //when
-        presenter.onFormulaItemSelected(FORMULA_ID);
+        presenter.onFormulaItemSelected(container);
         //then
         verify(view, times(1)).showFormulaDescription(container);
     }

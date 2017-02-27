@@ -1,5 +1,7 @@
 package com.grishberg.graphreporter.data.model;
 
+import com.grishberg.graphreporter.data.model.stream.DateTimeHolder;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -13,7 +15,7 @@ import org.greenrobot.greendao.annotation.Property;
 @Entity(indexes = {
         @Index(value = "dt ASC", unique = false)
 })
-public class DailyValue {
+public class DailyValue implements DateTimeHolder {
 
     private long productId;
     @Id
@@ -102,6 +104,7 @@ public class DailyValue {
         this.id = id;
     }
 
+    @Override
     public long getDt() {
         return dt;
     }

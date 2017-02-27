@@ -33,7 +33,7 @@ android {
 }
 
 dependencies {
-    String support_version = "25.1.0"
+    String support_version = "25.2.0"
     String moxy_version = "1.4.4"
     String dagger_version = "2.4"
     String retrofit_version = "2.1.0"

@@ -4,8 +4,6 @@ package com.grishberg.graphreporter.data.model.common;
  * Created by grishberg on 12.01.17.
  */
 public class RestResponse<T> {
-    private static final String TAG = RestResponse.class.getSimpleName();
-
     private final boolean isCached;
 
     private final T data;

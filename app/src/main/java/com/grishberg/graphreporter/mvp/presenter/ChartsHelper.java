@@ -26,16 +26,10 @@ public class ChartsHelper {
     private static final int CLOSED = 1;
     private static final int HIGH = 2;
     private static final int LOW = 3;
+    private static final int OPEN_AND_CLOSED = 4;
     private double previousY;
 
-    /**
-     * Новая точка роста
-     *
-     * @param firstValue       значение, от которого рассчитывается
-     * @param formulaContainer
-     * @return
-     */
-    private static double getNewFallValue(@NonNull final double firstValue,
+    private static double getNewFallValue(final double firstValue,
                                           @NonNull final FormulaContainer formulaContainer) {
         return formulaContainer.isFallPercent() ?
                 firstValue -
@@ -43,14 +37,7 @@ public class ChartsHelper {
                 firstValue - formulaContainer.getFallValue();
     }
 
-    /**
-     * Новая точка падения
-     *
-     * @param firstValue
-     * @param formulaContainer
-     * @return
-     */
-    private static double getNewGrowValue(@NonNull final double firstValue,
+    private static double getNewGrowValue(final double firstValue,
                                           @NonNull final FormulaContainer formulaContainer) {
         return formulaContainer.isGrowPercent() ?
                 firstValue *
@@ -82,7 +69,7 @@ public class ChartsHelper {
         final List<Entry> entries = new ArrayList<>();
         final int periodPartionCount = period.getPartion();
         long endPeriod = 0;
-        long startPeriod = 0;
+        long startPeriod = !dailyValues.isEmpty() ? dailyValues.get(0).getDt() : 0;
         int pos = 0;
         final int size = dailyValues.size();
         int periodCount = isDualChartMode ? 0 : -1;
