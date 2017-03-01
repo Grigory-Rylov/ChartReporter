@@ -15,22 +15,27 @@ public class ChartResponseContainer<T extends Entry> {
 
     private final List<T> entries;
     private final ChartPeriod period;
-    @Nullable private FormulaContainer formulaContainer;
+    private final List<Long> dates;
+    @Nullable
+    private FormulaContainer formulaContainer;
 
     public ChartResponseContainer(final List<T> entries,
-                                  final ChartPeriod period) {
+                                  final ChartPeriod period,
+                                  final List<Long> dates) {
         this.entries = entries;
         this.period = period;
+        this.dates = dates;
     }
 
     public ChartResponseContainer(final List<T> entries,
                                   final ChartPeriod period,
-                                  final FormulaContainer formulaContainer) {
+                                  final FormulaContainer formulaContainer,
+                                  final List<Long> dates) {
         this.entries = entries;
         this.period = period;
         this.formulaContainer = formulaContainer;
+        this.dates = dates;
     }
-
 
     public List<T> getEntries() {
         return entries;
@@ -38,5 +43,9 @@ public class ChartResponseContainer<T extends Entry> {
 
     public ChartPeriod getPeriod() {
         return period;
+    }
+
+    public List<Long> getDates() {
+        return dates;
     }
 }

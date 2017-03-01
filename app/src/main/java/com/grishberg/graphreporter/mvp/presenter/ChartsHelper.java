@@ -24,10 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class ChartsHelper {
 
     public static final int MILLISECOND = 1000;
-    public static final float MILLISECOND_FRAKT = 1000f;
-    private static final int CANDLE_PRIOD_OFFSET = -1;
-    private static final int CANDLE_PERIOD_OFFSET = 1;
-    private static final int CANDLE_PERIOD_INCREMENT = 2;
     private static final int OPEN = 0;
     private static final int CLOSED = 1;
     private static final int HIGH = 2;
@@ -70,49 +66,71 @@ public class ChartsHelper {
 
     public ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
                                                      final List<DailyValue> dailyValues) {
+        final List<Long> dates = new ArrayList<>();
         final List<Entry> entries = new ArrayList<>();
         final ValuesStream<DualDateValue> valuesStream = new ValuesStreamImpl(dailyValues, period.getPeriod());
-
+        int position = -1;
         try {
             for (int i = 0; i < Integer.MAX_VALUE; i++) {
                 final DualDateValue nextValue = valuesStream.getNextElement();
+                position++;
                 if (nextValue == null) {
+                    dates.add(0L);
+                    dates.add(0L);
+                    dates.add(0L);
+                    position += 2;
                     continue;
                 }
-                entries.add(new Entry(getConvertedTime(nextValue.getDtStart()), (float) nextValue.getPriceOpen()));
-                entries.add(new Entry(getConvertedTime(nextValue.getDtEnd()), (float) nextValue.getPriceClose()));
+                dates.add(nextValue.getDtStart());
+                entries.add(new Entry(position++, (float) nextValue.getPriceOpen(), nextValue.getDtStart()));
+                dates.add(nextValue.getMidDt());
+                dates.add(nextValue.getDtEnd());
+                entries.add(new Entry(++position, (float) nextValue.getPriceClose()));
             }
         } catch (final ValuesStream.NoMoreItemException e) {
         }
-        return new ChartResponseContainer<>(entries, period);
+        return new ChartResponseContainer<>(entries, period, dates);
     }
 
     private float getConvertedTime(final long dt) {
-        return TimeUnit.MILLISECONDS.toMinutes(dt * MILLISECOND) / MILLISECOND_FRAKT;
+        return TimeUnit.MILLISECONDS.toHours(dt * MILLISECOND);
     }
 
     @NonNull
     public ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
                                                                       final List<DailyValue> dailyValues) {
+        final List<Long> dates = new ArrayList<>();
         final List<CandleEntry> entries = new ArrayList<>();
         final ValuesStream<DualDateValue> valuesStream = new ValuesStreamImpl(dailyValues, period.getPeriod());
+        int position = -1;
         try {
             for (int i = 0; i < Integer.MAX_VALUE; i++) {
                 final DualDateValue nextValue = valuesStream.getNextElement();
+                position++;
                 if (nextValue == null) {
+                    dates.add(0L);
+                    dates.add(0L);
+                    dates.add(0L);
+                    position += 2;
                     continue;
                 }
-                entries.add(new CandleEntry(getConvertedTime(nextValue.getMidDt()),
+                dates.add(nextValue.getDtStart());
+                position++;
+                dates.add(nextValue.getMidDt());
+                entries.add(new CandleEntry(position,
                         (float) nextValue.getPriceHigh(),
                         (float) nextValue.getPriceLow(),
                         (float) nextValue.getPriceOpen(),
-                        (float) nextValue.getPriceClose())
+                        (float) nextValue.getPriceClose(),
+                        nextValue.getMidDt())
                 );
+                position++;
+                dates.add(nextValue.getDtEnd());
             }
         } catch (final ValuesStream.NoMoreItemException e) {
         }
 
-        return new ChartResponseContainer<>(entries, period);
+        return new ChartResponseContainer<>(entries, period, dates);
     }
 
     /**

@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
  */
 
 public interface XAxisValueToDateFormatter {
+    String getDateAsString(long date);
+
     String getDateAsString(float x);
 
     String getDateAsString(float x, SimpleDateFormat dateFormat);

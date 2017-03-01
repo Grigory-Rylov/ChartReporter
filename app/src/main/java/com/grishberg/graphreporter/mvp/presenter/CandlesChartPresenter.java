@@ -81,6 +81,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         log.d(TAG, "onInitChartScreen");
         currentProductId = productId;
         currentChartMode = ChartMode.values()[settings.getChartType()];
+
         formulaStorage.getFormulas(currentProductId)
                 .subscribe(formulas -> {
                     formulaArray.clear();
@@ -142,7 +143,9 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 })
                 .subscribe(response -> {
                     log.d(TAG, "getDataFromOffset: success");
-                    dateFormatter = new XAxisValueToDateFormatterImpl();
+                    dateFormatter = new XAxisValueToDateFormatterImpl(response.getCandleResponse() != null
+                            ? response.getCandleResponse().getDates()
+                            : response.getEntryResponse().getDates());
                     getViewState().hideProgress();
                     getViewState().showChart(response, dateFormatter);
                     for (final FormulaChartContainer currentFormula : formulaChartArray) {
@@ -186,7 +189,9 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
 
                 final DualChartContainer value = DualChartContainer.makeCandle(period,
                         chartsHelper.getCandleDataForPeriod(period, dailyValues));
-                dateFormatter = new XAxisValueToDateFormatterImpl();
+                dateFormatter = new XAxisValueToDateFormatterImpl(
+                        value.getCandleResponse() != null ? value.getCandleResponse().getDates()
+                                : value.getEntryResponse().getDates());
                 return Observable.just(
                         value
                 );
@@ -254,11 +259,12 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
 
     public void onChartValueSelected(final Entry entry) {
         if (entry instanceof CandleEntry) {
-            getViewState().showPointInfo(((CandleEntry) entry).getOpen(),
+            getViewState().showPointInfo(
+                    ((CandleEntry) entry).getOpen(),
                     ((CandleEntry) entry).getHigh(),
                     ((CandleEntry) entry).getLow(),
                     ((CandleEntry) entry).getClose(),
-                    dateFormatter.getDateAsString(entry.getX()));
+                    dateFormatter.getDateAsString(entry.getDate()));
             return;
         }
 
