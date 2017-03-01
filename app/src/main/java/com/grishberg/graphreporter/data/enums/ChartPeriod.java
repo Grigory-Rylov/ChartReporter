@@ -9,7 +9,7 @@ public enum ChartPeriod {
     MINUTE_15(1, 15),
     HOUR(1, 60),
     HOUR_2(1, 60 * 2),
-    DAY(1, 60 * 24),
+    DAY(1, 60 * 60 * 24),
     WEEK(7, 60 * 24 * 7),
     MONTH(30, 60 * 24 * 7 * 4),
     YEAR(365, 60 * 24 * 365),

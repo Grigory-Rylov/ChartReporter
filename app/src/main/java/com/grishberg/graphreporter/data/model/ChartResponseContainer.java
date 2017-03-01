@@ -14,24 +14,19 @@ import java.util.List;
 public class ChartResponseContainer<T extends Entry> {
 
     private final List<T> entries;
-    private final List<Long> dates;
     private final ChartPeriod period;
     @Nullable private FormulaContainer formulaContainer;
 
     public ChartResponseContainer(final List<T> entries,
-                                  final List<Long> dates,
                                   final ChartPeriod period) {
         this.entries = entries;
-        this.dates = dates;
         this.period = period;
     }
 
     public ChartResponseContainer(final List<T> entries,
-                                  final List<Long> dates,
                                   final ChartPeriod period,
                                   final FormulaContainer formulaContainer) {
         this.entries = entries;
-        this.dates = dates;
         this.period = period;
         this.formulaContainer = formulaContainer;
     }
@@ -39,10 +34,6 @@ public class ChartResponseContainer<T extends Entry> {
 
     public List<T> getEntries() {
         return entries;
-    }
-
-    public List<Long> getDates() {
-        return dates;
     }
 
     public ChartPeriod getPeriod() {

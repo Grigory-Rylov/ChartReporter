@@ -1,7 +1,5 @@
 package com.grishberg.graphreporter.data.model;
 
-import com.grishberg.graphreporter.data.model.stream.DateTimeHolder;
-
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
@@ -15,7 +13,7 @@ import org.greenrobot.greendao.annotation.Property;
 @Entity(indexes = {
         @Index(value = "dt ASC", unique = false)
 })
-public class DailyValue implements DateTimeHolder {
+public class DailyValue {
 
     private long productId;
     @Id
@@ -60,30 +58,6 @@ public class DailyValue implements DateTimeHolder {
         this.volume = volume;
     }
 
-    public static DailyValue makeFromOpen(final double priceStart) {
-        final DailyValue value = new DailyValue();
-        value.priceOpen = priceStart;
-        return value;
-    }
-
-    public static DailyValue makeFromClosed(final double priceEnd) {
-        final DailyValue value = new DailyValue();
-        value.priceClose = priceEnd;
-        return value;
-    }
-
-    public static DailyValue makeFromHi(final double priceHi) {
-        final DailyValue value = new DailyValue();
-        value.priceHigh = priceHi;
-        return value;
-    }
-
-    public static DailyValue makeFromLo(final double priceLo) {
-        final DailyValue value = new DailyValue();
-        value.priceLow = priceLo;
-        return value;
-    }
-
     public static DailyValue makeFromCandle(final double priceOpen,
                                             final double priceHi,
                                             final double priceLo,
@@ -104,7 +78,6 @@ public class DailyValue implements DateTimeHolder {
         this.id = id;
     }
 
-    @Override
     public long getDt() {
         return dt;
     }

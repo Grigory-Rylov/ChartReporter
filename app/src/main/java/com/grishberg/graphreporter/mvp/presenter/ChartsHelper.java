@@ -9,9 +9,13 @@ import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.model.stream.ValuesStream;
+import com.grishberg.graphreporter.data.model.stream.ValuesStreamImpl;
+import com.grishberg.graphreporter.data.model.values.DualDateValue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by grishberg on 19.01.17.
@@ -19,6 +23,8 @@ import java.util.List;
  */
 public class ChartsHelper {
 
+    public static final int MILLISECOND = 1000;
+    public static final float MILLISECOND_FRAKT = 1000f;
     private static final int CANDLE_PRIOD_OFFSET = -1;
     private static final int CANDLE_PERIOD_OFFSET = 1;
     private static final int CANDLE_PERIOD_INCREMENT = 2;
@@ -45,106 +51,68 @@ public class ChartsHelper {
                 firstValue + formulaContainer.getGrowValue();
     }
 
-    private static DailyValue makeDailyValue(final double value, @NonNull final FormulaContainer fc) {
+    private static DualDateValue makeDualDailyValue(final double value, @NonNull final FormulaContainer fc) {
         switch (fc.getVertexType()) {
             case OPEN:
-                return DailyValue.makeFromOpen(value);
+                return DualDateValue.makeFromOpen(value);
 
             case CLOSED:
-                return DailyValue.makeFromClosed(value);
+                return DualDateValue.makeFromClosed(value);
 
             case HIGH:
-                return DailyValue.makeFromHi(value);
+                return DualDateValue.makeFromHi(value);
 
             case LOW:
             default:
-                return DailyValue.makeFromLo(value);
+                return DualDateValue.makeFromLo(value);
         }
     }
 
     public ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
-                                                     final List<DailyValue> dailyValues,
-                                                     final boolean isDualChartMode) {
-        final List<Long> dates = new ArrayList<>();
+                                                     final List<DailyValue> dailyValues) {
         final List<Entry> entries = new ArrayList<>();
-        final int periodPartionCount = period.getPartion();
-        long endPeriod = 0;
-        long startPeriod = !dailyValues.isEmpty() ? dailyValues.get(0).getDt() : 0;
-        int pos = 0;
-        final int size = dailyValues.size();
-        int periodCount = isDualChartMode ? 0 : -1;
-        while (pos < size) {
-            double start = 0;
-            double end = 0;
-            int i;
-            for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
-                final DailyValue element = dailyValues.get(pos);
-                if (i == 0) {
-                    start = element.getPriceOpen();
-                    startPeriod = element.getDt() * 1000L;
-                }
-                if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceClose();
-                    endPeriod = element.getDt() * 1000L;
-                }
-            }
-            // start
-            dates.add(startPeriod);
-            entries.add(new Entry(periodCount, (float) start));
-            if (isDualChartMode) {
-                //end
-                dates.add((long) ((startPeriod + endPeriod) / 2.d));
-                periodCount += 1;
-            }
-            entries.add(new Entry(++periodCount, (float) end));
-        }
+        final ValuesStream<DualDateValue> valuesStream = new ValuesStreamImpl(dailyValues, period.getPeriod());
 
-        return new ChartResponseContainer<>(entries, dates, period);
+        try {
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                final DualDateValue nextValue = valuesStream.getNextElement();
+                if (nextValue == null) {
+                    continue;
+                }
+                entries.add(new Entry(getConvertedTime(nextValue.getDtStart()), (float) nextValue.getPriceOpen()));
+                entries.add(new Entry(getConvertedTime(nextValue.getDtEnd()), (float) nextValue.getPriceClose()));
+            }
+        } catch (final ValuesStream.NoMoreItemException e) {
+        }
+        return new ChartResponseContainer<>(entries, period);
+    }
+
+    private float getConvertedTime(final long dt) {
+        return TimeUnit.MILLISECONDS.toMinutes(dt * MILLISECOND) / MILLISECOND_FRAKT;
     }
 
     @NonNull
     public ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
-                                                                      final List<DailyValue> dailyValues,
-                                                                      final boolean isDualChartMode) {
-        final List<Long> dates = new ArrayList<>();
+                                                                      final List<DailyValue> dailyValues) {
         final List<CandleEntry> entries = new ArrayList<>();
-        final int periodPartionCount = period.getPartion();
-        final int candlePeriodOffset = isDualChartMode ? CANDLE_PERIOD_OFFSET : 0;
-        final int candlePeriodIncrement = isDualChartMode ? CANDLE_PERIOD_INCREMENT : 1;
-        int periodCount = isDualChartMode ? 0 : CANDLE_PRIOD_OFFSET;
-        long currentDt = 0;
-        int pos = 0;
-        final int size = dailyValues.size();
-        while (pos < size) {
-            double hi = 0;
-            double lo = Float.MAX_VALUE;
-            double start = 0;
-            double end = 0;
-            int i;
-            for (i = 0; i < periodPartionCount && pos < size; i++, pos++) {
-                final DailyValue element = dailyValues.get(pos);
-                hi = Math.max(element.getPriceHigh(), hi);
-                lo = Math.min(element.getPriceLow(), lo);
-                if (i == 0) {
-                    start = element.getPriceOpen();
+        final ValuesStream<DualDateValue> valuesStream = new ValuesStreamImpl(dailyValues, period.getPeriod());
+        try {
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                final DualDateValue nextValue = valuesStream.getNextElement();
+                if (nextValue == null) {
+                    continue;
                 }
-                if ((i == periodPartionCount - 1) || (pos == size - 1)) {
-                    end = element.getPriceClose();
-                }
-                currentDt = element.getDt() * 1000L;
+                entries.add(new CandleEntry(getConvertedTime(nextValue.getMidDt()),
+                        (float) nextValue.getPriceHigh(),
+                        (float) nextValue.getPriceLow(),
+                        (float) nextValue.getPriceOpen(),
+                        (float) nextValue.getPriceClose())
+                );
             }
-            dates.add(currentDt);
-            if (isDualChartMode) {
-                dates.add(currentDt);
-            }
-            periodCount += candlePeriodIncrement;
-            entries.add(new CandleEntry(periodCount - candlePeriodOffset,
-                    (float) hi,
-                    (float) lo,
-                    (float) start, (float) end));
+        } catch (final ValuesStream.NoMoreItemException e) {
         }
 
-        return new ChartResponseContainer<>(entries, dates, period);
+        return new ChartResponseContainer<>(entries, period);
     }
 
     /**
@@ -157,47 +125,29 @@ public class ChartsHelper {
     @NonNull
     public FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
                                                          final List<DailyValue> dailyValues,
-                                                         final FormulaContainer formulaContainer,
-                                                         final boolean isDualChartMode) {
+                                                         final FormulaContainer formulaContainer) {
         final List<Entry> entriesGrow = new ArrayList<>();
         final List<Entry> entriesFall = new ArrayList<>();
-        final int periodPartitionCount = period.getPartion();
 
-        final FormulaPointsContainer valueToCompare = getValueToCompare(dailyValues.get(0), formulaContainer);
+        FormulaPointsContainer valueToCompare = null;
         previousY = 0;
-        int pos = 0;
-        final int size = dailyValues.size();
-        int periodCount = 0;
-
-        while (pos < size) {
-            double open = 0;
-            double close = 0;
-            double hi = 0;
-            double lo = Float.MAX_VALUE;
-            int i;
-            // пропуск какого то количества точек, которые входят в период
-            for (i = 0; i < periodPartitionCount && pos < size; i++, pos++) {
-                final DailyValue element = dailyValues.get(pos);
-                if (i == 0) {
-                    open = element.getPriceOpen();
+        final ValuesStream<DualDateValue> valuesStream = new ValuesStreamImpl(dailyValues, period.getPeriod());
+        try {
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                final DualDateValue nextValue = valuesStream.getNextElement();
+                if (nextValue == null) {
+                    continue;
                 }
-                if ((i == periodPartitionCount - 1) || (pos == size - 1)) {
-                    close = element.getPriceClose();
+                if (valueToCompare == null) {
+                    valueToCompare = getValueToCompare(nextValue, formulaContainer);
                 }
-                hi = Math.max(element.getPriceHigh(), hi);
-                lo = Math.min(element.getPriceLow(), lo);
+                addIfConditionTrue(valueToCompare,
+                        nextValue, //TODO: create class to compare
+                        formulaContainer,
+                        entriesGrow,
+                        entriesFall);
             }
-            if (isDualChartMode) {
-                periodCount++;
-            }
-
-            addIfConditionTrue(valueToCompare,
-                    DailyValue.makeFromCandle(open, hi, lo, close),
-                    formulaContainer,
-                    periodCount,
-                    entriesGrow,
-                    entriesFall);
-            periodCount++;
+        } catch (final ValuesStream.NoMoreItemException e) {
         }
         return new FormulaChartContainer(entriesGrow, entriesFall, formulaContainer);
     }
@@ -209,33 +159,33 @@ public class ChartsHelper {
      * @param formulaContainer
      * @return
      */
-    private FormulaPointsContainer getValueToCompare(@NonNull final DailyValue dailyValue,
+    private FormulaPointsContainer getValueToCompare(@NonNull final DualDateValue dailyValue,
                                                      @NonNull final FormulaContainer formulaContainer) {
         switch (formulaContainer.getVertexType()) {
             case OPEN:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromOpen(getNewGrowValue(dailyValue.getPriceOpen(), formulaContainer)),
+                        DualDateValue.makeFromOpen(getNewGrowValue(dailyValue.getPriceOpen(), formulaContainer)),
 
-                        DailyValue.makeFromOpen(getNewFallValue(dailyValue.getPriceOpen(), formulaContainer))
+                        DualDateValue.makeFromOpen(getNewFallValue(dailyValue.getPriceOpen(), formulaContainer))
                 );
             case CLOSED:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromClosed(getNewGrowValue(dailyValue.getPriceClose(), formulaContainer)),
+                        DualDateValue.makeFromClosed(getNewGrowValue(dailyValue.getPriceClose(), formulaContainer)),
 
-                        DailyValue.makeFromClosed(getNewFallValue(dailyValue.getPriceClose(), formulaContainer))
+                        DualDateValue.makeFromClosed(getNewFallValue(dailyValue.getPriceClose(), formulaContainer))
                 );
             case HIGH:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromHi(getNewGrowValue(dailyValue.getPriceHigh(), formulaContainer)),
+                        DualDateValue.makeFromHi(getNewGrowValue(dailyValue.getPriceHigh(), formulaContainer)),
 
-                        DailyValue.makeFromHi(getNewFallValue(dailyValue.getPriceHigh(), formulaContainer))
+                        DualDateValue.makeFromHi(getNewFallValue(dailyValue.getPriceHigh(), formulaContainer))
                 );
             case LOW:
             default:
                 return new FormulaPointsContainer(
-                        DailyValue.makeFromLo(getNewGrowValue(dailyValue.getPriceLow(), formulaContainer)),
+                        DualDateValue.makeFromLo(getNewGrowValue(dailyValue.getPriceLow(), formulaContainer)),
 
-                        DailyValue.makeFromLo(getNewFallValue(dailyValue.getPriceLow(), formulaContainer))
+                        DualDateValue.makeFromLo(getNewFallValue(dailyValue.getPriceLow(), formulaContainer))
                 );
         }
     }
@@ -246,49 +196,49 @@ public class ChartsHelper {
      * @param valueToCompare
      * @param value
      * @param fc
-     * @param x
      * @param entriesGrow
      * @param entriesFall
      */
     private PrevValueState addIfConditionTrue(final FormulaPointsContainer valueToCompare,
-                                              final DailyValue value,
+                                              final DualDateValue value,
                                               final FormulaContainer fc,
-                                              final int x,
                                               final List<Entry> entriesGrow,
                                               final List<Entry> entriesFall) {
         // ТР
-        int offset = 0;
         double currentValue;
         final double growPriceToCompare;
         final double fallPriceToCompare;
+        float x;
         switch (fc.getVertexType()) {
             case OPEN:
                 currentValue = value.getPriceOpen();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
-                offset = -1;
+                x = getConvertedTime(value.getDtStart());
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
-                offset = 1;
+                x = getConvertedTime(value.getDtEnd());
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceHigh();
+                x = getConvertedTime(value.getMidDt());
                 break;
             case LOW:
             default:
                 currentValue = value.getPriceLow();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
+                x = getConvertedTime(value.getMidDt());
         }
         if (currentValue > growPriceToCompare || currentValue == previousY) {
             if (previousY == currentValue && !entriesFall.isEmpty()) {
                 entriesFall.remove(entriesFall.size() - 1);
             }
-            entriesFall.add(new Entry(x + offset, (float) currentValue));
+            entriesFall.add(new Entry(x, (float) currentValue));
             previousY = currentValue;
             valueToCompare.valueGrow = value; // сдвиг точки
-            valueToCompare.valueFall = makeDailyValue(getNewFallValue(currentValue, fc), fc);
+            valueToCompare.valueFall = makeDualDailyValue(getNewFallValue(currentValue, fc), fc);
             return PrevValueState.GROW;
         }
 
@@ -297,29 +247,33 @@ public class ChartsHelper {
             case OPEN:
                 currentValue = value.getPriceOpen();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
+                x = getConvertedTime(value.getDtStart());
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceClose();
+                x = getConvertedTime(value.getDtEnd());
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceHigh();
+                x = getConvertedTime(value.getMidDt());
                 break;
             case LOW:
             default:
                 currentValue = value.getPriceLow();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
+                x = getConvertedTime(value.getMidDt());
         }
 
         if (currentValue < fallPriceToCompare || currentValue == previousY) {
             if (previousY == currentValue && !entriesGrow.isEmpty()) {
                 entriesGrow.remove(entriesGrow.size() - 1);
             }
-            entriesGrow.add(new Entry(x + offset, (float) currentValue));
+            entriesGrow.add(new Entry(x, (float) currentValue));
             previousY = currentValue;
             valueToCompare.valueFall = value;
-            valueToCompare.valueGrow = makeDailyValue(getNewGrowValue(currentValue, fc), fc);
+            valueToCompare.valueGrow = makeDualDailyValue(getNewGrowValue(currentValue, fc), fc);
             return PrevValueState.FALL;
         }
 
@@ -333,10 +287,10 @@ public class ChartsHelper {
     }
 
     private static class FormulaPointsContainer {
-        DailyValue valueGrow;
-        DailyValue valueFall;
+        DualDateValue valueGrow;
+        DualDateValue valueFall;
 
-        FormulaPointsContainer(final DailyValue valueGrow, final DailyValue valueFall) {
+        FormulaPointsContainer(final DualDateValue valueGrow, final DualDateValue valueFall) {
             this.valueGrow = valueGrow;
             this.valueFall = valueFall;
         }

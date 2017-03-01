@@ -142,9 +142,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 })
                 .subscribe(response -> {
                     log.d(TAG, "getDataFromOffset: success");
-                    dateFormatter = new XAxisValueToDateFormatterImpl(response.getCandleResponse() != null
-                            ? response.getCandleResponse().getDates()
-                            : response.getEntryResponse().getDates());
+                    dateFormatter = new XAxisValueToDateFormatterImpl();
                     getViewState().hideProgress();
                     getViewState().showChart(response, dateFormatter);
                     for (final FormulaChartContainer currentFormula : formulaChartArray) {
@@ -173,8 +171,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         for (final FormulaContainer formulaContainer : formulaArray) {
             formulaChartArray.add(chartsHelper.getFormulaDataForPeriod(period,
                     dailyValues,
-                    formulaContainer,
-                    true
+                    formulaContainer
             ));
         }
     }
@@ -188,10 +185,8 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 rebuildFormulaCharts(period, dailyValues);
 
                 final DualChartContainer value = DualChartContainer.makeCandle(period,
-                        chartsHelper.getCandleDataForPeriod(period, dailyValues, true));
-                dateFormatter = new XAxisValueToDateFormatterImpl(
-                        value.getCandleResponse() != null ? value.getCandleResponse().getDates()
-                                : value.getEntryResponse().getDates());
+                        chartsHelper.getCandleDataForPeriod(period, dailyValues));
+                dateFormatter = new XAxisValueToDateFormatterImpl();
                 return Observable.just(
                         value
                 );
@@ -199,14 +194,14 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 rebuildFormulaCharts(period, dailyValues);
                 return Observable.just(
                         DualChartContainer.makeLine(period,
-                                chartsHelper.getLineData(period, dailyValues, true))
+                                chartsHelper.getLineData(period, dailyValues))
                 );
             default:
                 rebuildFormulaCharts(period, dailyValues);
                 return Observable.just(
                         DualChartContainer.makeCandleAndLine(period,
-                                chartsHelper.getLineData(period, dailyValues, true),
-                                chartsHelper.getCandleDataForPeriod(period, dailyValues, true))
+                                chartsHelper.getLineData(period, dailyValues),
+                                chartsHelper.getCandleDataForPeriod(period, dailyValues))
                 );
         }
     }
@@ -237,8 +232,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                     return Observable.just(
                             chartsHelper.getFormulaDataForPeriod(period,
                                     dailyValues,
-                                    formulaContainer,
-                                    true)
+                                    formulaContainer)
                     );
                 })
                 .subscribe(response -> {

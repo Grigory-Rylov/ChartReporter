@@ -1,21 +1,14 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import android.support.annotation.NonNull;
-
-import com.github.mikephil.charting.data.Entry;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
-import com.grishberg.graphreporter.data.model.ChartResponseContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.FormulaChartContainer;
 import com.grishberg.graphreporter.data.model.FormulaContainer;
-import com.grishberg.graphreporter.utils.DateTimeUtils;
-import com.grishberg.graphreporter.utils.ValuesRepository;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static com.grishberg.graphreporter.utils.DateTimeUtils.getDate;
 import static com.grishberg.graphreporter.utils.ValuesRepository.getDailyValues;
@@ -42,4 +35,11 @@ public class ChartsHelperTest {
         assertEquals(1, chart.getFallPoints().size());
     }
 
+    @Test
+    public void testTimePacking() {
+        final long now = 1452211200L;
+        final float value = TimeUnit.MILLISECONDS.toMinutes(now * 1000);
+        final long convertedTime = TimeUnit.MINUTES.toMillis((long) (value)) / 1000;
+        assertEquals(now, convertedTime);
+    }
 }

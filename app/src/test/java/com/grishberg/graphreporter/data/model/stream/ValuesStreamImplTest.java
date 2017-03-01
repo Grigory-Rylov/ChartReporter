@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class ValuesStreamImplTest {
 
     @Test
-    public void testGet3MinutesCandle() {
+    public void testGet3MinutesCandle() throws ValuesStream.NoMoreItemException {
         final ValuesStream<DailyValue> stream = new ValuesStreamImpl(getMinutesValues(), 60 * 3 * 1000);
         DailyValue value = stream.getNextElement();
         assertEquals(MINUTE * (1 + 3) / 2, value.getDt());

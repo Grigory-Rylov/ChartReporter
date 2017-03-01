@@ -3,8 +3,6 @@ package com.grishberg.graphreporter.data.repository.values;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.DailyValue;
 
-import java.util.List;
-
 import rx.Observable;
 
 /**
