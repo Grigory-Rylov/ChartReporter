@@ -162,12 +162,14 @@ public class ChartsHelper {
                 if (valueToCompare == null) {
                     valueToCompare = getValueToCompare(nextValue, formulaContainer);
                 }
+                position++;
                 addIfConditionTrue(valueToCompare,
                         nextValue, //TODO: create class to compare
                         formulaContainer,
                         position,
                         entriesGrow,
                         entriesFall);
+                position++;
             }
         } catch (final ValuesStream.NoMoreItemException e) {
         }

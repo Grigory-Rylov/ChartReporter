@@ -264,7 +264,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                     ((CandleEntry) entry).getHigh(),
                     ((CandleEntry) entry).getLow(),
                     ((CandleEntry) entry).getClose(),
-                    dateFormatter.getDateAsString(entry.getDate()));
+                    dateFormatter.getDateAsString(entry.getX()));
             return;
         }
 

@@ -77,7 +77,8 @@ dependencies {
         transitive = true;
     }
     compile project(':datafacade')
-    compile project(':MPChartLib')
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
+
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'io.reactivex:rxandroid:1.2.1'
 

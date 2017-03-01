@@ -23,11 +23,6 @@ public class XAxisValueToDateFormatterImpl implements XAxisValueToDateFormatter 
     }
 
     @Override
-    public String getDateAsString(long date) {
-        return dateFormat.format(date * MILLISECOND);
-    }
-
-    @Override
     public String getDateAsString(final float x) {
         final long millis = datesList.get((int) x) * MILLISECOND;
         return dateFormat.format(millis);
