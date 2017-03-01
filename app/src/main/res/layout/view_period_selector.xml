@@ -15,30 +15,25 @@
 
 
         <Button
-            android:id="@+id/view_period_selector_1m"
+            android:id="@+id/view_period_selector_3m"
             style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_1m"
-            tools:visibility="gone"/>
+            android:text="@string/view_period_selector_3m"/>
 
         <Button
             android:id="@+id/view_period_selector_15m"
             style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_15m"
-            tools:visibility="gone"/>
+            android:text="@string/view_period_selector_15m"/>
+
+        <Button
+            android:id="@+id/view_period_selector_30m"
+            style="@style/PeriodSelectorButton"
+            android:text="@string/view_period_selector_30m"/>
 
         <Button
             android:id="@+id/view_period_selector_1h"
             style="@style/PeriodSelectorButton"
 
-            android:text="@string/view_period_selector_1h"
-            tools:visibility="gone"/>
-
-        <Button
-            android:id="@+id/view_period_selector_2h"
-            style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_2h"
-
-            tools:visibility="gone"/>
+            android:text="@string/view_period_selector_1h"/>
 
         <Button
             android:id="@+id/view_period_selector_1D"
@@ -48,7 +43,6 @@
         <Button
             android:id="@+id/view_period_selector_1W"
             style="@style/PeriodSelectorButton"
-
             android:text="@string/view_period_selector_1W"/>
 
         <Button
@@ -60,11 +54,6 @@
             android:id="@+id/view_period_selector_1Y"
             style="@style/PeriodSelectorButton"
             android:text="@string/view_period_selector_1Y"/>
-
-        <Button
-            android:id="@+id/view_period_selector_max"
-            style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_max"/>
 
     </LinearLayout>
 </HorizontalScrollView>

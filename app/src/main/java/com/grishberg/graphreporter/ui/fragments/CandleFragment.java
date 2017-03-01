@@ -130,7 +130,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     private void initPeriodSelector(final View view) {
         final PeriodSelectorView periodSelector = (PeriodSelectorView) view.findViewById(R.id.fragment_candle_period_selector);
         periodSelector.setOnPeriodChangeListener(this);
-        periodSelector.setMode(PeriodSelectorView.Mode.DAY);
     }
 
     private void initProgressBar(final View view) {
@@ -240,7 +239,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         rightAxis.setLabelCount(10, false);
         rightAxis.setDrawGridLines(true);
         rightAxis.setDrawAxisLine(true);
-        rightAxis.setGranularity(1.0f);
+        rightAxis.setGranularity(period.getPartion());
         rightAxis.setDrawTopYLabelEntry(true);
 
         final YAxis leftAxis = chart.getAxisLeft();

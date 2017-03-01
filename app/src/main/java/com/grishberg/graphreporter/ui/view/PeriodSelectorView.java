@@ -15,13 +15,6 @@ import com.grishberg.graphreporter.data.enums.ChartPeriod;
  * Created by grishberg on 28.01.17.
  */
 public class PeriodSelectorView extends LinearLayout implements View.OnClickListener {
-    private static final String TAG = PeriodSelectorView.class.getSimpleName();
-    public static final int PERIOD_COUNT = 9;
-
-    public enum Mode {
-        DAY,
-        DETAIL
-    }
 
     private final SparseArray<ButtonPeriodHolder> buttons = new SparseArray<>();
     private int triggeredButtonId = -1;
@@ -40,14 +33,14 @@ public class PeriodSelectorView extends LinearLayout implements View.OnClickList
         super(context, attrs, defStyleAttr);
         final View rootView = inflate(context, R.layout.view_period_selector, this);
 
-        buttons.put(R.id.view_period_selector_1m, new
-                ButtonPeriodHolder(ChartPeriod.MINUTE, (Button) rootView.findViewById(R.id.view_period_selector_1m)));
+        buttons.put(R.id.view_period_selector_3m, new
+                ButtonPeriodHolder(ChartPeriod.MINUTE_3, (Button) rootView.findViewById(R.id.view_period_selector_3m)));
         buttons.put(R.id.view_period_selector_15m, new
                 ButtonPeriodHolder(ChartPeriod.MINUTE_15, (Button) rootView.findViewById(R.id.view_period_selector_15m)));
+        buttons.put(R.id.view_period_selector_30m, new
+                ButtonPeriodHolder(ChartPeriod.MINUTE_30, (Button) rootView.findViewById(R.id.view_period_selector_30m)));
         buttons.put(R.id.view_period_selector_1h, new
                 ButtonPeriodHolder(ChartPeriod.HOUR, (Button) rootView.findViewById(R.id.view_period_selector_1h)));
-        buttons.put(R.id.view_period_selector_2h, new
-                ButtonPeriodHolder(ChartPeriod.HOUR_2, (Button) rootView.findViewById(R.id.view_period_selector_2h)));
         buttons.put(R.id.view_period_selector_1D, new
                 ButtonPeriodHolder(ChartPeriod.DAY, (Button) rootView.findViewById(R.id.view_period_selector_1D)));
         buttons.put(R.id.view_period_selector_1W, new
@@ -56,28 +49,17 @@ public class PeriodSelectorView extends LinearLayout implements View.OnClickList
                 ButtonPeriodHolder(ChartPeriod.MONTH, (Button) rootView.findViewById(R.id.view_period_selector_1M)));
         buttons.put(R.id.view_period_selector_1Y, new
                 ButtonPeriodHolder(ChartPeriod.YEAR, (Button) rootView.findViewById(R.id.view_period_selector_1Y)));
-        buttons.put(R.id.view_period_selector_max, new
-                ButtonPeriodHolder(ChartPeriod.MAX, (Button) rootView.findViewById(R.id.view_period_selector_max)));
 
         for (int i = 0, len = buttons.size(); i < len; i++) {
             final ButtonPeriodHolder button = buttons.get(buttons.keyAt(i));
             button.button.setOnClickListener(this);
         }
 
-        setMode(Mode.DAY);
         onClick(buttons.get(R.id.view_period_selector_1D).button);
     }
 
     public void setOnPeriodChangeListener(final OnPeriodChangeListener onPeriodChangeListener) {
         this.onPeriodChangeListener = onPeriodChangeListener;
-    }
-
-    public void setMode(final Mode mode) {
-        final int visibility = mode == Mode.DAY ? GONE : VISIBLE;
-        buttons.get(R.id.view_period_selector_1m).button.setVisibility(visibility);
-        buttons.get(R.id.view_period_selector_15m).button.setVisibility(visibility);
-        buttons.get(R.id.view_period_selector_1h).button.setVisibility(visibility);
-        buttons.get(R.id.view_period_selector_2h).button.setVisibility(visibility);
     }
 
     @Override
@@ -99,6 +81,11 @@ public class PeriodSelectorView extends LinearLayout implements View.OnClickList
         return ChartPeriod.DAY;
     }
 
+    @FunctionalInterface
+    public interface OnPeriodChangeListener {
+        void onPeriodChanged(ChartPeriod selectedPeriod);
+    }
+
     private static class ButtonPeriodHolder {
         ChartPeriod period;
         Button button;
@@ -107,10 +94,5 @@ public class PeriodSelectorView extends LinearLayout implements View.OnClickList
             this.period = period;
             this.button = button;
         }
-    }
-
-    @FunctionalInterface
-    public interface OnPeriodChangeListener {
-        void onPeriodChanged(ChartPeriod selectedPeriod);
     }
 }
