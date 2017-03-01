@@ -10,9 +10,9 @@ public enum ChartPeriod {
     MINUTE_30(30, 60 * 30),
     HOUR(60, 60 * 60),
     DAY(1, 60 * 60 * 24),
-    WEEK(7, 60 * 24 * 7),
-    MONTH(30, 60 * 24 * 7 * 4),
-    YEAR(1, 60 * 24 * 365);
+    WEEK(7, 60 * 60 * 24 * 7),
+    MONTH(30, 60 * 60 * 24 * 7 * 4),
+    YEAR(1, 60 * 60 * 24 * 365);
 
     private final float partion;
     private final int period;

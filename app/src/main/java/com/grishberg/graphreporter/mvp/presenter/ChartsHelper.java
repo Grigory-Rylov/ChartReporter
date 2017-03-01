@@ -149,11 +149,14 @@ public class ChartsHelper {
 
         FormulaPointsContainer valueToCompare = null;
         previousY = 0;
+        int position = -1;
         final ValuesStream<DualDateValue> valuesStream = new ValuesStreamImpl(dailyValues, period.getPeriod());
         try {
             for (int i = 0; i < Integer.MAX_VALUE; i++) {
                 final DualDateValue nextValue = valuesStream.getNextElement();
+                position++;
                 if (nextValue == null) {
+                    position += 2;
                     continue;
                 }
                 if (valueToCompare == null) {
@@ -162,6 +165,7 @@ public class ChartsHelper {
                 addIfConditionTrue(valueToCompare,
                         nextValue, //TODO: create class to compare
                         formulaContainer,
+                        position,
                         entriesGrow,
                         entriesFall);
             }
@@ -220,40 +224,39 @@ public class ChartsHelper {
     private PrevValueState addIfConditionTrue(final FormulaPointsContainer valueToCompare,
                                               final DualDateValue value,
                                               final FormulaContainer fc,
+                                              final int x,
                                               final List<Entry> entriesGrow,
                                               final List<Entry> entriesFall) {
         // ТР
         double currentValue;
         final double growPriceToCompare;
         final double fallPriceToCompare;
-        float x;
+        int offset = 0;
         switch (fc.getVertexType()) {
             case OPEN:
                 currentValue = value.getPriceOpen();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceOpen();
-                x = getConvertedTime(value.getDtStart());
+                offset = -1;
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceClose();
-                x = getConvertedTime(value.getDtEnd());
+                offset = 1;
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceHigh();
-                x = getConvertedTime(value.getMidDt());
                 break;
             case LOW:
             default:
                 currentValue = value.getPriceLow();
                 growPriceToCompare = valueToCompare.valueGrow.getPriceLow();
-                x = getConvertedTime(value.getMidDt());
         }
         if (currentValue > growPriceToCompare || currentValue == previousY) {
             if (previousY == currentValue && !entriesFall.isEmpty()) {
                 entriesFall.remove(entriesFall.size() - 1);
             }
-            entriesFall.add(new Entry(x, (float) currentValue));
+            entriesFall.add(new Entry(x + offset, (float) currentValue));
             previousY = currentValue;
             valueToCompare.valueGrow = value; // сдвиг точки
             valueToCompare.valueFall = makeDualDailyValue(getNewFallValue(currentValue, fc), fc);
@@ -265,30 +268,26 @@ public class ChartsHelper {
             case OPEN:
                 currentValue = value.getPriceOpen();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceOpen();
-                x = getConvertedTime(value.getDtStart());
                 break;
             case CLOSED:
                 currentValue = value.getPriceClose();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceClose();
-                x = getConvertedTime(value.getDtEnd());
                 break;
             case HIGH:
                 currentValue = value.getPriceHigh();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceHigh();
-                x = getConvertedTime(value.getMidDt());
                 break;
             case LOW:
             default:
                 currentValue = value.getPriceLow();
                 fallPriceToCompare = valueToCompare.valueFall.getPriceLow();
-                x = getConvertedTime(value.getMidDt());
         }
 
         if (currentValue < fallPriceToCompare || currentValue == previousY) {
             if (previousY == currentValue && !entriesGrow.isEmpty()) {
                 entriesGrow.remove(entriesGrow.size() - 1);
             }
-            entriesGrow.add(new Entry(x, (float) currentValue));
+            entriesGrow.add(new Entry(x + offset, (float) currentValue));
             previousY = currentValue;
             valueToCompare.valueFall = value;
             valueToCompare.valueGrow = makeDualDailyValue(getNewGrowValue(currentValue, fc), fc);
