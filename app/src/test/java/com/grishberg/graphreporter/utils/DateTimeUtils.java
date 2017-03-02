@@ -10,7 +10,7 @@ public class DateTimeUtils {
     public static long getDate(final int dd, final int mm, final int yyyy) {
         final Calendar c = Calendar.getInstance();
         c.set(yyyy, mm, dd, 0, 0);
-        return c.getTimeInMillis();
+        return c.getTimeInMillis() / 1000;
     }
 
     public static long getDate(final int dd,
@@ -19,6 +19,6 @@ public class DateTimeUtils {
                                final int hours, final int minutes) {
         final Calendar c = Calendar.getInstance();
         c.set(yyyy, mm, dd, hours, minutes);
-        return c.getTimeInMillis();
+        return c.getTimeInMillis() / 1000;
     }
 }

@@ -29,8 +29,7 @@ public class ChartsHelperTest {
         final ChartsHelper chartsHelper = new ChartsHelper();
         final FormulaChartContainer chart = chartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
                 dailyValues,
-                formulaContainer,
-                true);
+                formulaContainer);
         assertEquals(1, chart.getGrowPoints().size());
         assertEquals(1, chart.getFallPoints().size());
     }

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.values.DualDateValue;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -13,16 +14,30 @@ import java.util.List;
  */
 
 public class ValuesStreamImpl implements ValuesStream<DualDateValue> {
+    public static final long MILLISECONDS = 1000L;
     private final List<DailyValue> elements;
-    private final int periodSizeInMilliseconds;
+    private final int periodSizeInSeconds;
     private int previouseElementIndex;
     private long timePeriodUpperBound = 0;
 
     public ValuesStreamImpl(@NonNull final List<DailyValue> elements,
                             final int periodSizeInMilliseconds) {
         this.elements = elements;
-        this.periodSizeInMilliseconds = periodSizeInMilliseconds;
-        timePeriodUpperBound = !elements.isEmpty() ? elements.get(0).getDt() : 0;
+        this.periodSizeInSeconds = periodSizeInMilliseconds;
+        timePeriodUpperBound = getInitialDate(elements);
+    }
+
+    private long getInitialDate(@NonNull final List<DailyValue> elements) {
+        if (!elements.isEmpty()) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(elements.get(0).getDt());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            return calendar.getTimeInMillis() / 1000;
+        }
+        return 0;
     }
 
     @Override
@@ -45,7 +60,7 @@ public class ValuesStreamImpl implements ValuesStream<DualDateValue> {
         long currentDt;
         double volume = 0;
 
-        timePeriodUpperBound += periodSizeInMilliseconds;
+        timePeriodUpperBound += periodSizeInSeconds;
         int iterationsCount = 0;
         while (hasMoreValuesInCollection()) {
             final DailyValue currentValue = elements.get(previouseElementIndex);
@@ -63,7 +78,7 @@ public class ValuesStreamImpl implements ValuesStream<DualDateValue> {
             close = currentValue.getPriceClose();
         }
         if (iterationsCount > 0) {
-            return new DualDateValue(startDt - periodSizeInMilliseconds / 2, endDt + periodSizeInMilliseconds / 2,
+            return new DualDateValue(startDt - periodSizeInSeconds / 2, endDt + periodSizeInSeconds / 2,
                     open, close, hi, lo, volume);
         }
         return null;

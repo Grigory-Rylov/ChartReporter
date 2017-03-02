@@ -15,7 +15,7 @@ import static com.grishberg.graphreporter.utils.DateTimeUtils.getDate;
 
 public class ValuesRepository {
 
-    public static final int MINUTE = 1000 * 60;
+    public static final int MINUTE = 60;
 
     @NonNull
     public static List<DailyValue> getDailyValues() {
