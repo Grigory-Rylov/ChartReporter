@@ -5,26 +5,15 @@
                 android:layout_height="match_parent"
                 android:background="@android:color/darker_gray">
 
-    <ImageButton
-        android:id="@+id/fragment_candle_add_formula_button"
-        android:layout_width="@dimen/view_period_height"
-        android:layout_height="@dimen/view_period_height"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:src="@android:drawable/ic_input_add"/>
-
     <com.grishberg.graphreporter.ui.view.PeriodSelectorView
         android:id="@+id/fragment_candle_period_selector"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignEnd="@id/fragment_candle_add_formula_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignRight="@id/fragment_candle_add_formula_button"
-        android:layout_toEndOf="@id/fragment_candle_add_formula_button"
-        android:layout_toRightOf="@id/fragment_candle_add_formula_button"/>
+        android:layout_alignParentStart="true"/>
 
     <com.grishberg.graphreporter.ui.view.CombinedChartInitiable
         android:id="@+id/fragment_candle_chart"

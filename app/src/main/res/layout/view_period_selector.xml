@@ -53,7 +53,8 @@
         <Button
             android:id="@+id/view_period_selector_1Y"
             style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_1Y"/>
+            android:text="@string/view_period_selector_1Y"
+            android:visibility="gone"/>
 
     </LinearLayout>
 </HorizontalScrollView>

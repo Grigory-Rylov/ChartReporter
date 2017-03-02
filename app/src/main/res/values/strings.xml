@@ -33,6 +33,7 @@
     <!-- view_period_selector -->
     <string name="view_period_selector_3m">3 min</string>
     <string name="view_period_selector_15m">15 min</string>
+    <string name="view_period_selector_30m">30 min</string>
     <string name="view_period_selector_1h">1 H</string>
     <string name="view_period_selector_1D">1 D</string>
     <string name="view_period_selector_1W">1 W</string>
@@ -60,6 +61,6 @@
     <string name="dialog_new_point_empty_name">Пустое имя формулы</string>
     <string name="dialog_new_point_empty_grow">Пустое значение ТР</string>
     <string name="dialog_new_point_empty_fall">Пустое значение ТП</string>
-    <string name="view_period_selector_30m">30min</string>
+    <string name="candle_screen_menu_add_formula">Добавить формулу</string>
 
 </resources>

@@ -63,7 +63,7 @@ import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
 import static com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture.DRAG;
 
-public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener, View.OnClickListener {
+public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener {
     public static final float FORMULA_POINT_RADIUS = 3f;
     public static final float LEFT_BOUNDS = 0.0001F;
     public static final int FORMULA_SETTINGS_REQUEST_CODE = 1000;
@@ -121,8 +121,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         initProgressBar(view);
         initChart(view);
         initPeriodSelector(view);
-        final ImageButton addFormulaButton = (ImageButton) view.findViewById(R.id.fragment_candle_add_formula_button);
-        addFormulaButton.setOnClickListener(this);
         pointInfoView = (PointInfoView) view.findViewById(R.id.fragment_candle_point_info);
         return view;
     }
@@ -369,14 +367,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
         presenter.onPeriodChanged(selectedPeriod);
     }
 
-    /**
-     * Клик по кнопке добавления точки
-     */
-    @Override
-    public void onClick(final View view) {
-        NewPointDialog.showDialog(getFragmentManager(), this);
-    }
-
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -421,6 +411,8 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             presenter.onSaveClicked();
         } else if (item.getItemId() == R.id.action_formula_settings) {
             presenter.onShowFormulaSettings();
+        } else if (item.getItemId() == R.id.action_add_formula) {
+            NewPointDialog.showDialog(getFragmentManager(), this);
         }
         return super.onOptionsItemSelected(item);
     }
