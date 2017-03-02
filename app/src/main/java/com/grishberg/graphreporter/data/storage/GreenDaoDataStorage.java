@@ -44,15 +44,12 @@ public class GreenDaoDataStorage implements DailyDataStorage {
     @Override
     public Observable<ListResultCloseable<DailyValue>> getDailyValues(final long productId,
                                                                       final int offset) {
-        if (cacheChecker.isCacheDataValid(productId)) {
-            return Observable.just(
-                    new GreenDaoListResult<>(dailyValueDao
-                            .queryBuilder()
-                            .where(DailyValueDao.Properties.ProductId.eq(productId))
-                            .orderAsc(DailyValueDao.Properties.Dt)
-                            .build())
-            );
-        }
-        return Observable.just(null);
+        return Observable.just(
+                new GreenDaoListResult<>(dailyValueDao
+                        .queryBuilder()
+                        .where(DailyValueDao.Properties.ProductId.eq(productId))
+                        .orderAsc(DailyValueDao.Properties.Dt)
+                        .build())
+        );
     }
 }

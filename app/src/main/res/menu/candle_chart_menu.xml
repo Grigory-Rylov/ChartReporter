@@ -3,12 +3,6 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_add_formula"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="@string/candle_screen_menu_add_formula"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_save"
         android:icon="@android:drawable/ic_menu_save"
         android:title="@string/main_screen_menu_save"

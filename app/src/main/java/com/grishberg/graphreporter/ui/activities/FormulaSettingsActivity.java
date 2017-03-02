@@ -5,8 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.grishberg.graphreporter.R;
+import com.grishberg.graphreporter.ui.dialogs.NewPointDialog;
 import com.grishberg.graphreporter.ui.fragments.FormulasListFragment;
 
 public class FormulaSettingsActivity extends AppCompatActivity {
@@ -23,6 +29,7 @@ public class FormulaSettingsActivity extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formula_settings);
+
         final long productId = getIntent().getLongExtra(EXTRA_PRODUCT_ID, 0);
         if (savedInstanceState == null) {
             getSupportFragmentManager()

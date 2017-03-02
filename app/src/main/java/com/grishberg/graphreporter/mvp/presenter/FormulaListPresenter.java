@@ -47,4 +47,8 @@ public class FormulaListPresenter extends BasePresenter<FormulasListView> {
         formulaStorage.deleteFormula(formulaContainer);
         onInitScreen(this.productId);
     }
+
+    public void addNewFormula(final FormulaContainer formulaContainer) {
+        formulaStorage.addFormula(productId, formulaContainer);
+    }
 }

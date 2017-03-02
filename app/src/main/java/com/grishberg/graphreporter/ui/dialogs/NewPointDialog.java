@@ -35,7 +35,8 @@ import com.grishberg.graphreporter.utils.ColorUtil;
  * Диалог добавления формулы
  */
 public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClickListener {
-    public static final int NEW_POINT_RESULT_CODE = 1001;
+    public static final int POINT_UPDATE_RESULT_CODE = 1001;
+    public static final int POINT_NEW_RESULT_CODE = 1002;
     public static final String ARG_FORMULA_CONTAINER = "ARG_FORMULA_CONTAINER";
     private static final String NEW_POINT_RESULT_EXTRA = NewPointDialog.class.getSimpleName();
     private EditText pointName;
@@ -75,7 +76,8 @@ public class NewPointDialog extends BaseMvpDialogFragment implements View.OnClic
         final Bundle args = new Bundle();
         args.putSerializable(ARG_FORMULA_CONTAINER, formulaContainer);
         newFragment.setArguments(args);
-        newFragment.setTargetFragment(targetFragment, NEW_POINT_RESULT_CODE);
+        newFragment.setTargetFragment(targetFragment,
+                formulaContainer == null ? POINT_NEW_RESULT_CODE : POINT_UPDATE_RESULT_CODE);
         newFragment.show(ft, PeriodSelectDialog.class.getSimpleName());
     }
 

@@ -6,6 +6,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -44,6 +47,7 @@ public class FormulasListFragment extends MvpAppCompatFragment implements Formul
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             productId = getArguments().getLong(ARG_PRODUCT_ID);
         }
@@ -94,9 +98,29 @@ public class FormulasListFragment extends MvpAppCompatFragment implements Formul
     @Override
     public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == NewPointDialog.NEW_POINT_RESULT_CODE) {
+        if (requestCode == NewPointDialog.POINT_UPDATE_RESULT_CODE) {
             final FormulaContainer formulaContainer = NewPointDialog.getResult(data);
             presenter.saveFormula(formulaContainer);
+        } else if (requestCode == NewPointDialog.POINT_NEW_RESULT_CODE) {
+            final FormulaContainer formulaContainer = NewPointDialog.getResult(data);
+            presenter.addNewFormula(formulaContainer);
+            presenter.onInitScreen(productId);
         }
+    }
+
+    //---- menu -----
+
+    @Override
+    public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.formula_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (item.getItemId() == R.id.action_add_formula) {
+            NewPointDialog.showDialog(getFragmentManager(), this);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

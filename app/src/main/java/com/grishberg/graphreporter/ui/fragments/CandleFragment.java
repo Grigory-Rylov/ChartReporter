@@ -1,6 +1,5 @@
 package com.grishberg.graphreporter.ui.fragments;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -12,7 +11,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -43,7 +41,6 @@ import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.ui.activities.FormulaSettingsActivity;
-import com.grishberg.graphreporter.ui.dialogs.NewPointDialog;
 import com.grishberg.graphreporter.ui.view.CombinedChartInitiable;
 import com.grishberg.graphreporter.ui.view.LineFormulaDataSet;
 import com.grishberg.graphreporter.ui.view.PeriodSelectorView;
@@ -368,15 +365,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     }
 
     @Override
-    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == NewPointDialog.NEW_POINT_RESULT_CODE) {
-            final FormulaContainer formulaContainer = NewPointDialog.getResult(data);
-            presenter.addNewFormula(formulaContainer);
-        }
-    }
-
-    @Override
     public void showPointInfo(final float open,
                               final float high,
                               final float low,
@@ -411,8 +399,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             presenter.onSaveClicked();
         } else if (item.getItemId() == R.id.action_formula_settings) {
             presenter.onShowFormulaSettings();
-        } else if (item.getItemId() == R.id.action_add_formula) {
-            NewPointDialog.showDialog(getFragmentManager(), this);
         }
         return super.onOptionsItemSelected(item);
     }

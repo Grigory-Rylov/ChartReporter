@@ -47,7 +47,10 @@
             android:label="@string/title_activity_products_list"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".ui.activities.FormulaSettingsActivity">
+
+        <activity
+            android:name=".ui.activities.FormulaSettingsActivity"
+            android:label="@string/title_activity_formula">
         </activity>
 
         <activity

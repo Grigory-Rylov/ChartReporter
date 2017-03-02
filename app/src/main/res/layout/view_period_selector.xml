@@ -43,12 +43,14 @@
         <Button
             android:id="@+id/view_period_selector_1W"
             style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_1W"/>
+            android:text="@string/view_period_selector_1W"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/view_period_selector_1M"
             style="@style/PeriodSelectorButton"
-            android:text="@string/view_period_selector_1M"/>
+            android:text="@string/view_period_selector_1M"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/view_period_selector_1Y"
