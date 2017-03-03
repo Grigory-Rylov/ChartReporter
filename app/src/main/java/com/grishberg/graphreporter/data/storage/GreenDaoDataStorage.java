@@ -14,12 +14,9 @@ import rx.Observable;
  * Created by grishberg on 12.02.17.
  */
 public class GreenDaoDataStorage implements DailyDataStorage {
-    private final CacheActualityChecker cacheChecker;
     private final DailyValueDao dailyValueDao;
 
-    public GreenDaoDataStorage(final CacheActualityChecker cacheChecker,
-                               final DailyValueDao dailyValueDao) {
-        this.cacheChecker = cacheChecker;
+    public GreenDaoDataStorage(final DailyValueDao dailyValueDao) {
         this.dailyValueDao = dailyValueDao;
     }
 
@@ -29,7 +26,6 @@ public class GreenDaoDataStorage implements DailyDataStorage {
             value.setProductId(productId);
             dailyValueDao.insertOrReplaceInTx(value);
         }
-        cacheChecker.updateNewData(productId);
     }
 
     @Override
@@ -38,7 +34,6 @@ public class GreenDaoDataStorage implements DailyDataStorage {
             value.setProductId(productId);
             dailyValueDao.insertOrReplaceInTx(value);
         }
-        cacheChecker.updateNewData(productId);
     }
 
     @Override

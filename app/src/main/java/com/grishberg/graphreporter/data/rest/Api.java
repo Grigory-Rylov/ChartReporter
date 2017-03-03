@@ -27,11 +27,18 @@ public interface Api {
 
     //data
 
-    @GET("dailyValues")
-    Observable<RestResponse<List<DailyValue>>> getDailyData(@Query("accessToken") String accessToken,
-                                                            @Query("productId") long productId,
-                                                            @Query("offset") long offset,
-                                                            @Query("limit") long limit);
+    @GET("values")
+    Observable<RestResponse<List<DailyValue>>> getValues(@Query("accessToken") String accessToken,
+                                                         @Query("productId") long productId,
+                                                         @Query("offset") long offset,
+                                                         @Query("limit") long limit);
+
+    @GET("valuesFromDate")
+    Observable<RestResponse<List<DailyValue>>> getValuesFromDate(@Query("accessToken") String accessToken,
+                                                                 @Query("productId") long productId,
+                                                                 @Query("startDt") long startDt,
+                                                                 @Query("offset") long offset,
+                                                                 @Query("limit") long limit);
 
     @GET("products")
     Observable<RestResponse<List<ProductItem>>> getProducts(@Query("accessToken") String accessToken,

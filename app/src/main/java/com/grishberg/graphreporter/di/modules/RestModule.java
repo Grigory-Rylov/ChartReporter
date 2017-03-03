@@ -7,6 +7,7 @@ import com.grishberg.graphreporter.common.data.rest.RxErrorHandlingCallAdapterFa
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
 import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
+import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepositoryImpl;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
@@ -98,8 +99,9 @@ public class RestModule {
     @Singleton
     DailyDataRepository provideDataRepository(final Api api,
                                               final AuthTokenRepository tokenRepository,
-                                              final DailyDataStorage storage) {
-        return new DailyDataRepositoryImpl(tokenRepository, api, storage);
+                                              final DailyDataStorage storage,
+                                              final CacheActualityChecker cacheActualityChecker) {
+        return new DailyDataRepositoryImpl(tokenRepository, api, storage, cacheActualityChecker);
     }
 
     @Provides

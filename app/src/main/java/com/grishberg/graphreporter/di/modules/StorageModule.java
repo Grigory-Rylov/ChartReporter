@@ -33,8 +33,8 @@ public class StorageModule {
 
     @Provides
     @Singleton
-    DailyDataStorage provideContext(final DaoSession daoSession, final CacheActualityChecker cacheChecker) {
-        return new GreenDaoDataStorage(cacheChecker, daoSession.getDailyValueDao());
+    DailyDataStorage provideContext(final DaoSession daoSession) {
+        return new GreenDaoDataStorage(daoSession.getDailyValueDao());
     }
 
     @Provides
