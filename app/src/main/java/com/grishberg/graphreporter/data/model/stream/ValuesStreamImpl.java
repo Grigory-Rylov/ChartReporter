@@ -8,6 +8,7 @@ import com.grishberg.graphreporter.data.model.values.DualDateValue;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * Created by grishberg on 27.02.17.
@@ -29,7 +30,7 @@ public class ValuesStreamImpl implements ValuesStream<DualDateValue> {
 
     private long getInitialDate(@NonNull final List<DailyValue> elements) {
         if (!elements.isEmpty()) {
-            final Calendar calendar = Calendar.getInstance();
+            final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
             calendar.setTimeInMillis(elements.get(0).getDt());
             calendar.set(Calendar.HOUR_OF_DAY, 0);
             calendar.set(Calendar.MINUTE, 0);
@@ -62,8 +63,9 @@ public class ValuesStreamImpl implements ValuesStream<DualDateValue> {
 
         timePeriodUpperBound += periodSizeInSeconds;
         int iterationsCount = 0;
+        DailyValue currentValue;
         while (hasMoreValuesInCollection()) {
-            final DailyValue currentValue = elements.get(previouseElementIndex);
+            currentValue = elements.get(previouseElementIndex);
             currentDt = currentValue.getDt();
             if (currentDt >= timePeriodUpperBound) {
                 break;
