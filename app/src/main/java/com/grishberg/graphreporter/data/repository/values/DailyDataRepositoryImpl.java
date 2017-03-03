@@ -94,21 +94,20 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                             offsetAtomic.get(),
                             RestConst.PAGE_LIMIT);
                 })
-                .takeWhile(response -> !response.getData().isEmpty())
                 .onErrorResumeNext(
                         refreshTokenAndRetry(Observable.defer(() ->
                                 api.getValues(authInfo.getAccessToken(), productId, offsetAtomic.get(), RestConst.PAGE_LIMIT))))
-                .subscribeOn(Schedulers.io())
-                .doOnNext(response -> {
-                    cacheChecker.updateNewData(productId);
-                    dataStorage.appendDailyData(productId, response.getData());
-                })
-                .last()
-                .onErrorReturn(e -> {
-                    if (e instanceof NoSuchElementException) {
-                        return EMPTY_RESPONSE;
+
+                .takeWhile(response -> {
+                    if (!response.getData().isEmpty()) {
+                        cacheChecker.updateNewData(productId);
+                        dataStorage.appendDailyData(productId, response.getData());
+                        return true;
                     }
+                    return false;
                 })
+                .subscribeOn(Schedulers.io())
+                .last()
                 .flatMap(response -> {
                     return dataStorage.getDailyValues(productId, INITIAL_OFFSET);
                 });
