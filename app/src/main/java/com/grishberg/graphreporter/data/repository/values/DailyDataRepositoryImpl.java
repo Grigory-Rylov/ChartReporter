@@ -83,6 +83,6 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
     }
 
     private boolean checkCacheValid(final ListResultCloseable<DailyValue> response) {
-        return response != null;
+        return response != null && !response.isEmpty();
     }
 }
