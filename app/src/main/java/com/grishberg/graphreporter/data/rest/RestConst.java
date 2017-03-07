@@ -5,7 +5,7 @@ package com.grishberg.graphreporter.data.rest;
  * Rest parameters for receiving data from server
  */
 public final class RestConst {
-    public static final int PAGE_LIMIT = 2000;
+    public static final long PAGE_LIMIT = 2000;
     public static final int MAX_POINTS_PER_SCREEN = 500;
 
     private RestConst() {

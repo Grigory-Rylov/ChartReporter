@@ -3,7 +3,6 @@ package com.grishberg.graphreporter.data.repository.values;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.model.AuthContainer;
 import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.model.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
@@ -11,9 +10,6 @@ import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import rx.Observable;
@@ -24,9 +20,7 @@ import rx.schedulers.Schedulers;
  * Created by grishberg on 15.01.17.
  */
 public class DailyDataRepositoryImpl extends BaseRestRepository implements DailyDataRepository {
-
-    public static final int INITIAL_OFFSET = 0;
-    private static final RestResponse<List<DailyValue>> EMPTY_RESPONSE = new RestResponse<>(null);
+    private static final int INITIAL_OFFSET = 0;
     private final AuthTokenRepository authTokenRepository;
     private final Api api;
     private final CacheActualityChecker cacheChecker;
@@ -58,16 +52,14 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
 
         // извлечь данные из сети
         return dailyValuesFromCache.concatMap(cachedResult -> {
-            //if(cacheChecker.isCacheDataValid(productId)){
-            //    return Observable.just(cachedResult);
-            //}
+            if (cacheChecker.isCacheDataValid(cachedResult)) {
+                return Observable.just(cachedResult);
+            }
             if (hasDataInCache(cachedResult)) {
                 final DailyValue lastItem = cachedResult.get(cachedResult.size() - 1);
                 final Observable<ListResultCloseable<DailyValue>> appendedRemoteData = getAndAppendRemoteData(productId, authInfo, lastItem.getDt());
                 return Observable.concat(appendedRemoteData, Observable.just(cachedResult))
-                        .filter(dataList -> {
-                            return !dataList.isEmpty();
-                        })
+                        .filter(dataList -> !dataList.isEmpty())
                         .first();
             } else {
                 return getAllDataObservable(productId, authInfo);
@@ -100,17 +92,14 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
 
                 .takeWhile(response -> {
                     if (!response.getData().isEmpty()) {
-                        cacheChecker.updateNewData(productId);
-                        dataStorage.appendDailyData(productId, response.getData());
+                        dataStorage.appendDailyData(productId, response.getData() );
                         return true;
                     }
                     return false;
                 })
                 .subscribeOn(Schedulers.io())
-                .last()
-                .flatMap(response -> {
-                    return dataStorage.getDailyValues(productId, INITIAL_OFFSET);
-                });
+                .takeLast(1)
+                .flatMap(response -> dataStorage.getDailyValues(productId, INITIAL_OFFSET));
     }
 
     private Observable<ListResultCloseable<DailyValue>> getAllDataObservable(final long productId, final AuthContainer authInfo) {
@@ -130,19 +119,12 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                         refreshTokenAndRetry(Observable.defer(() ->
                                 api.getValues(authInfo.getAccessToken(), productId, offsetAtomic.get(), RestConst.PAGE_LIMIT))))
                 .subscribeOn(Schedulers.io())
-                .doOnNext(response -> {
-                    cacheChecker.updateNewData(productId);
-                    if (offsetAtomic.get() == INITIAL_OFFSET) {
-                        dataStorage.setDailyData(productId, response.getData());
-                    } else {
-                        dataStorage.appendDailyData(productId, response.getData());
-                    }
-                })
+                .doOnNext(response -> dataStorage.appendDailyData(productId, response.getData()))
                 .last()
                 .flatMap(response -> dataStorage.getDailyValues(productId, INITIAL_OFFSET));
     }
 
     private boolean checkCacheValid(final ListResultCloseable<DailyValue> response) {
-        return response != null && !response.isEmpty();
+        return response != null;
     }
 }

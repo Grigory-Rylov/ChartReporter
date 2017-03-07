@@ -1,36 +1,35 @@
 package com.grishberg.graphreporter.data.repository.values;
 
-import android.support.annotation.Nullable;
-import android.util.SparseArray;
+import com.grishberg.datafacade.ListResultCloseable;
+import com.grishberg.graphreporter.data.model.DailyValue;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Created by grishberg on 21.01.17.
  */
 public class CacheActualityCheckerImpl implements CacheActualityChecker {
-    public static final int INITIAL_CAPACITY = 16;
+    private static final int MILLISECONDS = 1000;
+    private static final String TIMEZONE_GMT = "GMT";
     private final long timeout;
-
-    private final Map<Long, Date> lastDate;
 
     public CacheActualityCheckerImpl(final long timeout) {
         this.timeout = timeout;
-        lastDate = new ConcurrentHashMap<>(INITIAL_CAPACITY);
     }
 
     @Override
-    public void updateNewData(final long id) {
-        lastDate.put(id, new Date());
-    }
-
-    @Override
-    public boolean isCacheDataValid(final long id) {
-        if (lastDate.get(id) == null || new Date().getTime() - lastDate.get(id).getTime() > timeout) {
+    public boolean isCacheDataValid(final ListResultCloseable<DailyValue> cachedResult) {
+        if (cachedResult == null || cachedResult.isEmpty() || cachedResult.isClosed()) {
             return false;
         }
-        return true;
+        final long cachedDate = cachedResult.get(cachedResult.size() - 1).getDt();
+
+        return isLastItemDateActual(cachedDate);
+    }
+
+    private boolean isLastItemDateActual(long cachedDate) {
+        final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+        return calendar.getTimeInMillis() - cachedDate * MILLISECONDS > timeout;
     }
 }

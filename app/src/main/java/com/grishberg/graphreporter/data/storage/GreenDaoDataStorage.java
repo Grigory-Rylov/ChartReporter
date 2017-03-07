@@ -4,8 +4,6 @@ import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.db.GreenDaoListResult;
 import com.grishberg.graphreporter.data.model.DailyValue;
 import com.grishberg.graphreporter.data.model.DailyValueDao;
-import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
-
 import java.util.List;
 
 import rx.Observable;
@@ -18,14 +16,6 @@ public class GreenDaoDataStorage implements DailyDataStorage {
 
     public GreenDaoDataStorage(final DailyValueDao dailyValueDao) {
         this.dailyValueDao = dailyValueDao;
-    }
-
-    @Override
-    public void setDailyData(final long productId, final List<DailyValue> values) {
-        for (final DailyValue value : values) {
-            value.setProductId(productId);
-            dailyValueDao.insertOrReplaceInTx(value);
-        }
     }
 
     @Override

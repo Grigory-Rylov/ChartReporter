@@ -10,7 +10,5 @@ import java.util.List;
  */
 
 public interface DailyDataStorage extends DailyDataRepository {
-    void setDailyData(long productId, List<DailyValue> values);
-
     void appendDailyData(long productId, List<DailyValue> values);
 }
