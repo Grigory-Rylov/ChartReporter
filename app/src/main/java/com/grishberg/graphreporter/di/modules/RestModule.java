@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.grishberg.graphreporter.common.data.rest.RxErrorHandlingCallAdapterFactory;
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
-import com.grishberg.graphreporter.data.model.common.RestResponse;
+import com.grishberg.graphreporter.data.beans.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;

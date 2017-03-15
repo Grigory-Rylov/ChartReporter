@@ -1,10 +1,10 @@
 package com.grishberg.graphreporter.data.rest;
 
-import com.grishberg.graphreporter.data.model.AuthContainer;
-import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.model.ProductItem;
-import com.grishberg.graphreporter.data.model.RefreshTokenContainer;
-import com.grishberg.graphreporter.data.model.common.RestResponse;
+import com.grishberg.graphreporter.data.beans.AuthContainer;
+import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.ProductItem;
+import com.grishberg.graphreporter.data.beans.RefreshTokenContainer;
+import com.grishberg.graphreporter.data.beans.common.RestResponse;
 
 import java.util.List;
 

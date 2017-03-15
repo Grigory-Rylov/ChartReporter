@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import com.grishberg.graphreporter.data.model.common.RestError;
+import com.grishberg.graphreporter.data.beans.common.RestError;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.NetworkException;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;

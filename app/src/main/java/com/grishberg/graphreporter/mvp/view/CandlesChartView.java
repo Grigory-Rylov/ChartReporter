@@ -3,8 +3,8 @@ package com.grishberg.graphreporter.mvp.view;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
-import com.grishberg.graphreporter.data.model.DualChartContainer;
-import com.grishberg.graphreporter.data.model.FormulaChartContainer;
+import com.grishberg.graphreporter.data.beans.DualChartContainer;
+import com.grishberg.graphreporter.data.beans.FormulaChartContainer;
 import com.grishberg.graphreporter.mvp.common.BaseViewWithProgress;
 import com.grishberg.graphreporter.utils.XAxisValueToDateFormatter;
 

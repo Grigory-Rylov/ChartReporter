@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.data.repository.values;
 
 import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValue;
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -30,6 +30,6 @@ public class CacheActualityCheckerImpl implements CacheActualityChecker {
 
     private boolean isLastItemDateActual(long cachedDate) {
         final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
-        return calendar.getTimeInMillis() - cachedDate * MILLISECONDS > timeout;
+        return calendar.getTime().getTime() - cachedDate * MILLISECONDS < timeout;
     }
 }

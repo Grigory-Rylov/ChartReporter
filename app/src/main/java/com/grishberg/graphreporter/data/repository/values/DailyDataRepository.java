@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.data.repository.values;
 
 import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValue;
 
 import rx.Observable;
 
@@ -11,5 +11,5 @@ import rx.Observable;
  */
 
 public interface DailyDataRepository {
-    Observable<ListResultCloseable<DailyValue>> getDailyValues(long productId, int offset);
+    Observable<ListResultCloseable<DailyValue>> getValues(long productId, long startDate);
 }

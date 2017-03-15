@@ -3,7 +3,7 @@ package com.grishberg.graphreporter.data.rest;
 import android.support.annotation.NonNull;
 
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
-import com.grishberg.graphreporter.data.model.common.RestResponse;
+import com.grishberg.graphreporter.data.beans.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.exceptions.TokenExpiredException;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 

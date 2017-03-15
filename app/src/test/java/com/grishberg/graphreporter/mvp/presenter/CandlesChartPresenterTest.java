@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import com.grishberg.graphreporter.data.model.ChartResponseContainer;
-import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.beans.ChartResponseContainer;
+import com.grishberg.graphreporter.data.beans.DailyValue;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.mvp.view.CandlesChartView;
 import com.grishberg.graphreporter.utils.BaseTestCase;
@@ -51,7 +51,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
     @Test
     public void testRequestDailyValuesSuccess() {
         //given
-        //when(dailyDataRepository.getDailyValues(PRODUCT_ID)).thenReturn(Observable.just(result));
+        //when(dailyDataRepository.getValues(PRODUCT_ID)).thenReturn(Observable.just(result));
         //when
         //presenter.requestDailyValues(PRODUCT_ID);
         //then
@@ -63,7 +63,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
     @Test
     public void testRequestDailyValuesNotSuccess() {
         //given
-        //when(dailyDataRepository.getDailyValues(PRODUCT_ID))
+        //when(dailyDataRepository.getValues(PRODUCT_ID))
         //        .thenReturn(Observable.error(new NetworkException()));
         //when
         //presenter.requestDailyValues(PRODUCT_ID);
@@ -88,7 +88,7 @@ public class CandlesChartPresenterTest extends BaseTestCase {
             values.add(value);
         }
 /*
-        when(dailyDataRepository.getDailyValues(PRODUCT_ID))
+        when(dailyDataRepository.getValues(PRODUCT_ID))
                 .thenReturn(Observable.just(values));
 
         doAnswer(new Answer<ChartResponseContainer>() {

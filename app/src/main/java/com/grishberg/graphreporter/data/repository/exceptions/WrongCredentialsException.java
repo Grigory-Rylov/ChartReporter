@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.data.repository.exceptions;
 
-import com.grishberg.graphreporter.data.model.common.RestError;
+import com.grishberg.graphreporter.data.beans.common.RestError;
 
 /**
  * Created by grishberg on 13.11.16.

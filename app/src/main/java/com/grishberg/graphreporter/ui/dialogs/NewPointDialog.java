@@ -25,7 +25,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
 import com.grishberg.graphreporter.mvp.common.BaseMvpDialogFragment;
 import com.grishberg.graphreporter.ui.view.color.HSVColorWheel;
 import com.grishberg.graphreporter.utils.ColorUtil;

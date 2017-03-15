@@ -13,11 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.ui.activities.common.BaseActivity;
 import com.grishberg.graphreporter.ui.fragments.CandleFragment;
 import com.grishberg.graphreporter.ui.fragments.ProductsFragment;

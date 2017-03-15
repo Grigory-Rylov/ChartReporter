@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.data.storage;
 
-import com.grishberg.graphreporter.data.model.FormulaContainer;
-import com.grishberg.graphreporter.data.model.FormulaContainerDao;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainerDao;
 
 import java.util.List;
 

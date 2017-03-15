@@ -1,8 +1,8 @@
 package com.grishberg.graphreporter.data.services;
 
-import com.grishberg.graphreporter.data.model.CategoryItem;
-import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.CategoryItem;
+import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 
 import rx.Observable;
 

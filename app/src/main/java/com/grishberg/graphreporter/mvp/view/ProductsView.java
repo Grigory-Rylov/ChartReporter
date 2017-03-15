@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.mvp.view;
 
 import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.mvp.common.BaseViewWithProgress;
 
 /**

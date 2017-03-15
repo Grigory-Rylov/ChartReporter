@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
 import com.grishberg.graphreporter.data.storage.FormulaDataSource;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;

@@ -6,16 +6,16 @@ import android.os.StrictMode;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepositoryImpl;
 import com.grishberg.graphreporter.di.DiManager;
 
-import com.crashlytics.android.Crashlytics;
+//import com.crashlytics.android.Crashlytics;
 import com.grishberg.graphreporter.di.components.DaggerAppComponent;
 import com.grishberg.graphreporter.di.modules.AppModule;
 import com.grishberg.graphreporter.di.modules.DbModule;
 import com.grishberg.graphreporter.di.modules.ProfileModule;
 import com.grishberg.graphreporter.di.modules.RestModule;
 import com.grishberg.graphreporter.di.modules.StorageModule;
-import com.squareup.leakcanary.LeakCanary;
+//import com.squareup.leakcanary.LeakCanary;
 
-import io.fabric.sdk.android.Fabric;
+//import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by grishberg on 12.01.17.
@@ -26,16 +26,16 @@ public final class App extends Application {
     public void onCreate() {
         super.onCreate();
         if (BuildConfig.DEBUG) {
-            if (LeakCanary.isInAnalyzerProcess(this)) {
+            //if (LeakCanary.isInAnalyzerProcess(this)) {
                 // This process is dedicated to LeakCanary for heap analysis.
                 // You should not init your app in this process.
-                return;
-            }
-            LeakCanary.install(this);
+                //return;
+            //}
+            //LeakCanary.install(this);
             // Normal app init code..
             initStrictMode();
         } else {
-            Fabric.with(this, new Crashlytics());
+            //Fabric.with(this, new Crashlytics());
         }
         DiManager.initComponents(DaggerAppComponent
                 .builder()

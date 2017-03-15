@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
  */
 public class SettingsPreferencesStorage implements SettingsDataSource {
     private static final String PREF_CURRENT_CHART = "pref_current_chart";
+    private static final String PREF_CURRENT_PERIOD = "pref_current_period";
     private static final String PREF_SHOW_FORMULA_STATE = "pref_show_formula_state";
     private static final int DEF_INT_VALUE = 0;
     private static final boolean DEF_BOOLEAN_VALUE = false;
@@ -36,6 +37,16 @@ public class SettingsPreferencesStorage implements SettingsDataSource {
     @Override
     public boolean isNeedShowFormula() {
         return getBoolean(PREF_SHOW_FORMULA_STATE);
+    }
+
+    @Override
+    public void storeChartRange(int rangeIndex) {
+        putInt(PREF_CURRENT_PERIOD, rangeIndex);
+    }
+
+    @Override
+    public int getChartRange() {
+        return getInt(PREF_CURRENT_PERIOD);
     }
 
     private void putInt(final String name, final int val) {

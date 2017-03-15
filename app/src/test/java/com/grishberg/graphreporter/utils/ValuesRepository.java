@@ -2,7 +2,7 @@ package com.grishberg.graphreporter.utils;
 
 import android.support.annotation.NonNull;
 
-import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValue;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,7 +3,7 @@ package com.grishberg.graphreporter.data.repository.auth;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.grishberg.graphreporter.data.model.AuthContainer;
+import com.grishberg.graphreporter.data.beans.AuthContainer;
 import com.grishberg.graphreporter.utils.StringUtils;
 
 /**

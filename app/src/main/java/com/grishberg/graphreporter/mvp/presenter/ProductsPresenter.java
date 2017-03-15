@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;

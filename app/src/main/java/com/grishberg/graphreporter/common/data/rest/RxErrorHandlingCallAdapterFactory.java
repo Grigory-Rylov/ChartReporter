@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.common.data.rest;
 
-import com.grishberg.graphreporter.data.model.common.RestResponse;
+import com.grishberg.graphreporter.data.beans.common.RestResponse;
 import com.grishberg.graphreporter.common.data.rest.exceptions.RetrofitException;
 
 import java.io.IOException;

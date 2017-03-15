@@ -10,7 +10,11 @@ public interface SettingsDataSource {
 
     void storeShowFormulaState(boolean showFormula);
 
+    void storeChartRange(int rangeIndex);
+
     boolean isNeedShowFormula();
 
     int getChartType();
+
+    int getChartRange();
 }

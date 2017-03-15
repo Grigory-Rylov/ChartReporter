@@ -8,13 +8,14 @@ import com.github.mikephil.charting.data.Entry;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.enums.ChartMode;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
-import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.model.DualChartContainer;
-import com.grishberg.graphreporter.data.model.FormulaChartContainer;
-import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.enums.ChartRange;
+import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.DualChartContainer;
+import com.grishberg.graphreporter.data.beans.FormulaChartContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
+import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
 import com.grishberg.graphreporter.data.repository.settings.SettingsDataSource;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
-import com.grishberg.graphreporter.data.repository.exceptions.EmptyDataException;
 import com.grishberg.graphreporter.data.storage.FormulaDataSource;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.common.BasePresenter;
@@ -42,7 +43,6 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private static final int DURATION = 30 * 60 * 1000;
     private static final int FORMULA_CAPACITY = 5;
     private static final String TAG = CandlesChartPresenter.class.getSimpleName();
-    private static final int INITIAL_OFFSET = 0;
     private static final boolean PAGING_ENABLED = false;
     private final List<FormulaChartContainer> formulaChartArray;
     private final List<FormulaContainer> formulaArray;
@@ -56,16 +56,14 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     SettingsDataSource settings;
     @Inject
     FormulaDataSource formulaStorage;
-
-    private ListResultCloseable<DailyValue> dailyListResult;
+    private ListResultCloseable<DailyValue> dailyListResultForClose;
     private XAxisValueToDateFormatter dateFormatter;
-    private int maxOffset;
     //@Inject
     //TimerUtil timer;
     private ChartMode currentChartMode = ChartMode.CANDLE_MODE;
+    private ChartRange currentChartRange = ChartRange.YEAR;
     private ChartPeriod period = ChartPeriod.DAY;
     private long currentProductId;
-    private boolean hasMore;
     private boolean isNeedShowFormula;
 
     public CandlesChartPresenter() {
@@ -81,71 +79,68 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         log.d(TAG, "onInitChartScreen");
         currentProductId = productId;
         currentChartMode = ChartMode.values()[settings.getChartType()];
+        currentChartRange = ChartRange.values()[settings.getChartRange()];
 
         formulaStorage.getFormulas(currentProductId)
                 .subscribe(formulas -> {
                     formulaArray.clear();
                     formulaArray.addAll(formulas);
-                    onSelectedProduct(currentProductId);
+                    requestDataFromRepositoryAndShow(currentProductId,
+                            currentChartRange.getStartDate(),
+                            currentChartMode,
+                            period);
                 });
     }
 
     public void onCandlesModeClicked() {
         currentChartMode = ChartMode.CANDLE_MODE;
-        onSelectedProduct(currentProductId);
+        requestDataFromRepositoryAndShow(currentProductId,
+                currentChartRange.getStartDate(),
+                currentChartMode,
+                period);
     }
 
     public void onLinesModeClicked() {
         currentChartMode = ChartMode.LINE_MODE;
-        onSelectedProduct(currentProductId);
+        requestDataFromRepositoryAndShow(currentProductId,
+                currentChartRange.getStartDate(),
+                currentChartMode,
+                period);
     }
 
     public void onCandlesAndLinesMode() {
         currentChartMode = CANDLE_AND_LINE_MODE;
-        onSelectedProduct(currentProductId);
+        requestDataFromRepositoryAndShow(currentProductId,
+                currentChartRange.getStartDate(),
+                currentChartMode,
+                period);
     }
 
-    /**
-     * Пересчитать точки в зависимости от периода
-     *
-     * @param productId -  идентификатор продукта
-     */
-    private void onSelectedProduct(final long productId) {
-
-        getViewState().showProgress();
-        getDataFromOffset(productId, INITIAL_OFFSET, currentChartMode, period);
-    }
-
-    /**
-     * Смена периода
-     *
-     * @param period новый период
-     */
     public void onPeriodChanged(final ChartPeriod period) {
         this.period = period;
-        onSelectedProduct(currentProductId);
+        requestDataFromRepositoryAndShow(currentProductId,
+                currentChartRange.getStartDate(),
+                currentChartMode,
+                period);
     }
 
-    private void getDataFromOffset(final long productId,
-                                   final int initialOffset,
-                                   final ChartMode chartMode,
-                                   final ChartPeriod period) {
-        log.d(TAG, "getDataFromOffset");
-        repository.getDailyValues(productId, initialOffset)
+    private void requestDataFromRepositoryAndShow(final long productId,
+                                                  final long startDate,
+                                                  final ChartMode chartMode,
+                                                  final ChartPeriod period) {
+        log.d(TAG, "requestDataFromRepositoryAndShow");
+        getViewState().showProgress();
+        repository.getValues(productId, startDate)
                 .flatMap(dailyValues -> {
                     if (dailyValues == null || dailyValues.isEmpty()) {
                         return Observable.error(new EmptyDataException());
                     }
-                    hasMore = dailyValues.size() > maxOffset;
-                    maxOffset = dailyValues.size();
-                    dailyListResult = dailyValues;
+                    holdAndCloseListResult(dailyValues);
                     return getChartsPoints(chartMode, period, dailyValues);
                 })
                 .subscribe(response -> {
-                    log.d(TAG, "getDataFromOffset: success");
-                    dateFormatter = new XAxisValueToDateFormatterImpl(response.getCandleResponse() != null
-                            ? response.getCandleResponse().getDates()
-                            : response.getEntryResponse().getDates());
+                    log.d(TAG, "requestDataFromRepositoryAndShow: success");
+                    dateFormatter = new XAxisValueToDateFormatterImpl(extractDatesArray(response));
                     getViewState().hideProgress();
                     getViewState().showChart(response, dateFormatter);
                     for (final FormulaChartContainer currentFormula : formulaChartArray) {
@@ -162,20 +157,26 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                 });
     }
 
-    /**
-     * перестроить формулы для нового периода
-     *
-     * @param period
-     * @param dailyValues
-     */
+    private void holdAndCloseListResult(ListResultCloseable<DailyValue> dailyValues) {
+        if (dailyListResultForClose != null && !dailyListResultForClose.isClosed()) {
+            try {
+                dailyListResultForClose.close();
+            } catch (final IOException e) {
+                log.e(TAG, "holdAndCloseListResult", e);
+            }
+        }
+        dailyListResultForClose = dailyValues;
+    }
+
     private void rebuildFormulaCharts(final ChartPeriod period,
                                       final ListResultCloseable<DailyValue> dailyValues) {
         formulaChartArray.clear();
         for (final FormulaContainer formulaContainer : formulaArray) {
-            formulaChartArray.add(chartsHelper.getFormulaDataForPeriod(period,
-                    dailyValues,
-                    formulaContainer
-            ));
+            formulaChartArray.add(
+                    chartsHelper.getFormulaDataForPeriod(period,
+                            dailyValues,
+                            formulaContainer
+                    ));
         }
     }
 
@@ -183,26 +184,21 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private Observable<? extends DualChartContainer> getChartsPoints(final ChartMode chartMode,
                                                                      final ChartPeriod period,
                                                                      final ListResultCloseable<DailyValue> dailyValues) {
+        rebuildFormulaCharts(period, dailyValues);
         switch (chartMode) {
             case CANDLE_MODE:
-                rebuildFormulaCharts(period, dailyValues);
 
                 final DualChartContainer value = DualChartContainer.makeCandle(period,
                         chartsHelper.getCandleDataForPeriod(period, dailyValues));
                 dateFormatter = new XAxisValueToDateFormatterImpl(
-                        value.getCandleResponse() != null ? value.getCandleResponse().getDates()
-                                : value.getEntryResponse().getDates());
-                return Observable.just(
-                        value
-                );
+                        extractDatesArray(value));
+                return Observable.just(value);
             case LINE_MODE:
-                rebuildFormulaCharts(period, dailyValues);
                 return Observable.just(
                         DualChartContainer.makeLine(period,
                                 chartsHelper.getLineData(period, dailyValues))
                 );
             default:
-                rebuildFormulaCharts(period, dailyValues);
                 return Observable.just(
                         DualChartContainer.makeCandleAndLine(period,
                                 chartsHelper.getLineData(period, dailyValues),
@@ -211,50 +207,14 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         }
     }
 
+    private List<Long> extractDatesArray(DualChartContainer value) {
+        return value.getCandleResponse() != null ? value.getCandleResponse().getDates()
+                : value.getEntryResponse().getDates();
+    }
+
     @Override
     public void run() {
         //TODO: update from server
-    }
-
-    /**
-     * Применить формулу
-     *
-     * @param formulaContainer данные для построения точек формулы
-     */
-    public void addNewFormula(final FormulaContainer formulaContainer) {
-        formulaStorage.addFormula(currentProductId, formulaContainer);
-        requestPointForFormula(currentProductId, formulaContainer);
-    }
-
-    private void requestPointForFormula(final long productId,
-                                        final FormulaContainer formulaContainer) {
-        formulaArray.add(formulaContainer);
-        repository.getDailyValues(productId, 0)
-                .flatMap(dailyValues -> {
-                    if (dailyValues.isEmpty()) {
-                        return Observable.error(new EmptyDataException());
-                    }
-                    return Observable.just(
-                            chartsHelper.getFormulaDataForPeriod(period,
-                                    dailyValues,
-                                    formulaContainer)
-                    );
-                })
-                .subscribe(response -> {
-                    getViewState().hideProgress();
-                    if (!(response.getFallPoints().isEmpty() && response.getGrowPoints().isEmpty())) {
-                        formulaChartArray.add(response);
-                        getViewState().formulaPoints(response);
-                    }
-                }, exception -> {
-                    getViewState().hideProgress();
-                    if (exception instanceof EmptyDataException) {
-                        getViewState().showEmptyDataError();
-                        return;
-                    }
-                    getViewState().showFail(exception.getMessage());
-                    log.e(TAG, "requestDailyValues: ", exception);
-                });
     }
 
     public void onChartValueSelected(final Entry entry) {
@@ -275,24 +235,10 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         getViewState().hidePointInfo();
     }
 
-    public void onScrolledToStart() {
-        if (!hasMore || !PAGING_ENABLED) {
-            return;
-        }
-        getViewState().showProgress();
-        getDataFromOffset(currentProductId, dailyListResult.size(), currentChartMode, period);
-    }
-
-    public void onToggleShowFormula(final boolean isNeedShowFormula) {
-        this.isNeedShowFormula = isNeedShowFormula;
-    }
-
-    /**
-     * Store settings
-     */
-    public void onSaveClicked() {
+    public void onSaveSettingsClicked() {
         settings.storeChartType(currentChartMode.ordinal());
         settings.storeShowFormulaState(isNeedShowFormula);
+        settings.storeChartRange(currentChartRange.ordinal());
         getViewState().showSavingMessage();
     }
 
@@ -307,10 +253,10 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (dailyListResult != null) {
+        if (dailyListResultForClose != null) {
             try {
-                dailyListResult.close();
-                dailyListResult = null;
+                dailyListResultForClose.close();
+                dailyListResultForClose = null;
             } catch (final IOException e) {
                 //not handled
                 log.e(TAG, "onDestroy", e);

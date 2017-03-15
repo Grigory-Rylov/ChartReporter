@@ -3,8 +3,8 @@ package com.grishberg.graphreporter.di.modules;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.grishberg.graphreporter.data.model.DaoMaster;
-import com.grishberg.graphreporter.data.model.DaoSession;
+import com.grishberg.graphreporter.data.beans.DaoMaster;
+import com.grishberg.graphreporter.data.beans.DaoSession;
 
 import javax.inject.Singleton;
 

@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.data.repository.values;
 
 import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.graphreporter.data.model.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValue;
 
 /**
  * Created by grishberg on 20.01.17.

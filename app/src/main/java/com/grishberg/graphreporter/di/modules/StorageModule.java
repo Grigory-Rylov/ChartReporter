@@ -2,7 +2,7 @@ package com.grishberg.graphreporter.di.modules;
 
 import android.content.Context;
 
-import com.grishberg.graphreporter.data.model.DaoSession;
+import com.grishberg.graphreporter.data.beans.DaoSession;
 import com.grishberg.graphreporter.data.repository.settings.SettingsDataSource;
 import com.grishberg.graphreporter.data.repository.settings.SettingsPreferencesStorage;
 import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;

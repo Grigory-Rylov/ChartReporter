@@ -16,7 +16,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.grishberg.datafacade.OnItemSelectedListener;
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
 import com.grishberg.graphreporter.mvp.presenter.FormulaListPresenter;
 import com.grishberg.graphreporter.mvp.view.FormulasListView;
 import com.grishberg.graphreporter.ui.adapters.FormulasListAdapter;

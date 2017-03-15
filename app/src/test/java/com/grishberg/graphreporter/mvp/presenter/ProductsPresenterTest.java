@@ -1,7 +1,7 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.grishberg.datafacade.ListResultCloseable;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.mvp.view.ProductsView;
 import com.grishberg.graphreporter.utils.BaseTestCase;
@@ -10,14 +10,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-
-import java.util.List;
 
 import rx.Observable;
 
-import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;

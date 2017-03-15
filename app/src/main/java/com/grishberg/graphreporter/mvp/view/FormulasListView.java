@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.mvp.view;
 
-import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
 import com.grishberg.graphreporter.mvp.common.BaseView;
 
 import java.util.List;

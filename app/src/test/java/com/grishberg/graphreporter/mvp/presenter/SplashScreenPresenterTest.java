@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
-import com.grishberg.graphreporter.data.model.AuthContainer;
+import com.grishberg.graphreporter.data.beans.AuthContainer;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.mvp.view.SplashScreenView;
 

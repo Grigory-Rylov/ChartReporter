@@ -15,7 +15,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.datafacade.OnItemSelectedListener;
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.mvp.presenter.ProductsPresenter;
 import com.grishberg.graphreporter.mvp.view.ProductsView;
 import com.grishberg.graphreporter.ui.adapters.ProductsListAdapter;

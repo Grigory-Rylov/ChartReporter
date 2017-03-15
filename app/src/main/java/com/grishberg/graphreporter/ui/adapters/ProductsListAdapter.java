@@ -9,7 +9,7 @@ import com.grishberg.datafacade.OnItemSelectedListener;
 import com.grishberg.datafacade.adapters.BaseRecyclerViewAdapter;
 import com.grishberg.datafacade.viewholder.BaseViewHolder;
 import com.grishberg.graphreporter.R;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 
 /**
  * Created by grishberg on 15.01.17.

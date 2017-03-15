@@ -32,10 +32,10 @@ import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
-import com.grishberg.graphreporter.data.model.DualChartContainer;
-import com.grishberg.graphreporter.data.model.FormulaChartContainer;
-import com.grishberg.graphreporter.data.model.FormulaContainer;
-import com.grishberg.graphreporter.data.model.ProductItem;
+import com.grishberg.graphreporter.data.beans.DualChartContainer;
+import com.grishberg.graphreporter.data.beans.FormulaChartContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.di.DiManager;
 import com.grishberg.graphreporter.mvp.presenter.CandlesChartPresenter;
@@ -143,15 +143,6 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             @Override
             public void onNothingSelected() {
                 presenter.onNothingSelected();
-            }
-        });
-        chart.setOnChartGestureListener(new OnSimpleChartGestureListener() {
-
-            @Override
-            public void onChartGestureEnd(final MotionEvent me, final ChartGesture lastPerformedGesture) {
-                if (lastPerformedGesture == DRAG && chart.getLowestVisibleX() < LEFT_BOUNDS) {
-                    presenter.onScrolledToStart();
-                }
             }
         });
 
@@ -396,7 +387,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         if (item.getItemId() == R.id.action_save) {
-            presenter.onSaveClicked();
+            presenter.onSaveSettingsClicked();
         } else if (item.getItemId() == R.id.action_formula_settings) {
             presenter.onShowFormulaSettings();
         }

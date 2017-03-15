@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.neenbedankt.android-apt'
-apply plugin: 'io.fabric'
+//apply plugin: 'io.fabric'
 apply plugin: 'org.greenrobot.greendao'
 
 android {
@@ -73,16 +73,16 @@ dependencies {
     //leakcanary
 
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
-        transitive = true;
-    }
+    //compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+    //    transitive = true;
+    //}
     compile project(':datafacade')
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'io.reactivex:rxandroid:1.2.1'
 
-    testCompile 'org.mockito:mockito-core:2.+'
+    testCompile 'org.mockito:mockito-core:2.2.0'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'

@@ -1,9 +1,9 @@
 package com.grishberg.graphreporter.mvp.presenter;
 
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
-import com.grishberg.graphreporter.data.model.DailyValue;
-import com.grishberg.graphreporter.data.model.FormulaChartContainer;
-import com.grishberg.graphreporter.data.model.FormulaContainer;
+import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.FormulaChartContainer;
+import com.grishberg.graphreporter.data.beans.FormulaContainer;
 
 import org.junit.Test;
 
