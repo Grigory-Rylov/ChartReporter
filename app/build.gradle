@@ -73,9 +73,9 @@ dependencies {
     //leakcanary
 
 
-    //compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
-    //    transitive = true;
-    //}
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+        transitive = true;
+    }
     compile project(':datafacade')
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
 
