@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -28,7 +27,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.grishberg.graphreporter.R;
 import com.grishberg.graphreporter.data.enums.ChartPeriod;
@@ -47,7 +45,6 @@ import com.grishberg.graphreporter.ui.view.PeriodSelectorView;
 import com.grishberg.graphreporter.ui.view.PointInfoView;
 import com.grishberg.graphreporter.utils.ColorUtil;
 import com.grishberg.graphreporter.utils.LogService;
-import com.grishberg.graphreporter.utils.OnSimpleChartGestureListener;
 import com.grishberg.graphreporter.utils.XAxisValueToDateFormatter;
 
 import java.text.SimpleDateFormat;
@@ -58,7 +55,6 @@ import javax.inject.Inject;
 
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.CANDLE;
 import static com.github.mikephil.charting.charts.CombinedChart.DrawOrder.LINE;
-import static com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture.DRAG;
 
 public class CandleFragment extends MvpAppCompatFragment implements CandlesChartView, PeriodSelectorView.OnPeriodChangeListener {
     public static final float FORMULA_POINT_RADIUS = 3f;
