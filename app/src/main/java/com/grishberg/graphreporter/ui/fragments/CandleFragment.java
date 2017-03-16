@@ -407,10 +407,4 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
     public void onFormulaSettingsClosed() {
         presenter.onFormulaSettingsClosed();
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.onCancelRequest();
-    }
 }

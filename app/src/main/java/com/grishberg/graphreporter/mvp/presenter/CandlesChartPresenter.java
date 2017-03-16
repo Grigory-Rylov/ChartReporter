@@ -259,6 +259,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     @Override
     public void onDestroy() {
         super.onDestroy();
+        onCancelRequest();
         if (dailyListResultForClose != null) {
             dailyListResultForClose.silentClose();
             dailyListResultForClose = null;
