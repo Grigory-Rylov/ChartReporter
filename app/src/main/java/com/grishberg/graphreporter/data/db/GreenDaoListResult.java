@@ -35,6 +35,15 @@ public class GreenDaoListResult<T> implements ListResultCloseable<T> {
     }
 
     @Override
+    public void silentClose() {
+        try {
+            close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public int size() {
         return list.size();
     }

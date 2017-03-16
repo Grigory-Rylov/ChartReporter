@@ -25,6 +25,11 @@ public class ArrayListResult<T> extends ArrayList<T> implements ListResultClosea
     }
 
     @Override
+    public void silentClose() {
+        isClosed = true;
+    }
+
+    @Override
     public boolean isClosed() {
         return isClosed;
     }

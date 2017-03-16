@@ -104,7 +104,7 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
             productItem = (ProductItem) getArguments().getSerializable(ARG_PRODUCT);
             Log.d(TAG, "onCreate: productItem " + productItem);
         }
-        if (productItem != null) {
+        if (productItem != null && savedInstanceState == null) {
             presenter.onInitChartScreen(productItem.getId());
         }
     }
@@ -406,5 +406,11 @@ public class CandleFragment extends MvpAppCompatFragment implements CandlesChart
 
     public void onFormulaSettingsClosed() {
         presenter.onFormulaSettingsClosed();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onCancelRequest();
     }
 }

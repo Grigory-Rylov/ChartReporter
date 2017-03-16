@@ -4,7 +4,7 @@ import com.grishberg.graphreporter.data.beans.values.DualDateValue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static com.grishberg.graphreporter.utils.ValuesRepository.MINUTE;
 import static com.grishberg.graphreporter.utils.ValuesRepository.getMinutesValues;

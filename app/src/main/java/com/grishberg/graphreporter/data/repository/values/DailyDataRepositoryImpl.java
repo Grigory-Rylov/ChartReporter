@@ -11,6 +11,7 @@ import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -71,7 +72,9 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                 final Observable<ListResultCloseable<DailyValue>> appendedRemoteData = getRemotePageData(productId, remoteFromDateDataObservable);
                 return Observable.concat(appendedRemoteData, Observable.just(cachedResult))
                         .filter(dataList -> !dataList.isEmpty())
-                        .first();
+                        .first()
+                        .doOnUnsubscribe(cachedResult::silentClose);
+
             }
             return getRemotePageData(productId, remoteAllDataObservable);
         }).observeOn(AndroidSchedulers.mainThread());

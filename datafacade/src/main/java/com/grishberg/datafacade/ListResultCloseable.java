@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface ListResultCloseable<T> extends List<T>, Closeable {
     boolean isClosed();
+
+    void silentClose();
 }

@@ -11,6 +11,7 @@ import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 import com.grishberg.graphreporter.data.storage.FormulaDataSource;
 import com.grishberg.graphreporter.data.storage.FormulaDataSourceImpl;
 import com.grishberg.graphreporter.data.storage.GreenDaoDataStorage;
+import com.grishberg.graphreporter.utils.LogService;
 
 import javax.inject.Singleton;
 
@@ -33,8 +34,8 @@ public class StorageModule {
 
     @Provides
     @Singleton
-    DailyDataStorage provideContext(final DaoSession daoSession) {
-        return new GreenDaoDataStorage(daoSession.getDailyValueDao());
+    DailyDataStorage provideContext(final DaoSession daoSession, final LogService logger) {
+        return new GreenDaoDataStorage(daoSession.getDailyValueDao(), logger);
     }
 
     @Provides

@@ -24,13 +24,13 @@ import com.grishberg.graphreporter.utils.LogService;
 import com.grishberg.graphreporter.utils.XAxisValueToDateFormatter;
 import com.grishberg.graphreporter.utils.XAxisValueToDateFormatterImpl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscription;
 
 import static com.grishberg.graphreporter.data.enums.ChartMode.CANDLE_AND_LINE_MODE;
 
@@ -65,6 +65,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     private ChartPeriod period = ChartPeriod.DAY;
     private long currentProductId;
     private boolean isNeedShowFormula;
+    private Subscription subscription;
 
     public CandlesChartPresenter() {
         DiManager.getAppComponent().inject(this);
@@ -130,7 +131,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                                                   final ChartPeriod period) {
         log.d(TAG, "requestDataFromRepositoryAndShow");
         getViewState().showProgress();
-        repository.getValues(productId, startDate)
+        subscription = repository.getValues(productId, startDate)
                 .flatMap(dailyValues -> {
                     if (dailyValues == null || dailyValues.isEmpty()) {
                         return Observable.error(new EmptyDataException());
@@ -138,32 +139,29 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
                     holdAndCloseListResult(dailyValues);
                     return getChartsPoints(chartMode, period, dailyValues);
                 })
-                .subscribe(response -> {
-                    log.d(TAG, "requestDataFromRepositoryAndShow: success");
-                    dateFormatter = new XAxisValueToDateFormatterImpl(extractDatesArray(response));
-                    getViewState().hideProgress();
-                    getViewState().showChart(response, dateFormatter);
-                    for (final FormulaChartContainer currentFormula : formulaChartArray) {
-                        getViewState().formulaPoints(currentFormula);
-                    }
-                }, exception -> {
-                    getViewState().hideProgress();
-                    if (exception instanceof EmptyDataException) {
-                        getViewState().showEmptyDataError();
-                        return;
-                    }
-                    getViewState().showFail(exception.getMessage());
-                    log.e(TAG, "requestDailyValues: ", exception);
-                });
+                .subscribe(dualChartContainer -> {
+                            log.d(TAG, "requestDataFromRepositoryAndShow: success");
+                            dateFormatter = new XAxisValueToDateFormatterImpl(extractDatesArray(dualChartContainer));
+                            getViewState().hideProgress();
+                            getViewState().showChart(dualChartContainer, dateFormatter);
+                            for (final FormulaChartContainer currentFormula : formulaChartArray) {
+                                getViewState().formulaPoints(currentFormula);
+                            }
+                        }, exception -> {
+                            getViewState().hideProgress();
+                            if (exception instanceof EmptyDataException) {
+                                getViewState().showEmptyDataError();
+                                return;
+                            }
+                            getViewState().showFail(exception.getMessage());
+                            log.e(TAG, "requestDailyValues: ", exception);
+                        }
+                );
     }
 
     private void holdAndCloseListResult(ListResultCloseable<DailyValue> dailyValues) {
         if (dailyListResultForClose != null && !dailyListResultForClose.isClosed()) {
-            try {
-                dailyListResultForClose.close();
-            } catch (final IOException e) {
-                log.e(TAG, "holdAndCloseListResult", e);
-            }
+            dailyListResultForClose.silentClose();
         }
         dailyListResultForClose = dailyValues;
     }
@@ -250,17 +248,20 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         onInitChartScreen(currentProductId);
     }
 
+    public void onCancelRequest() {
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            log.d(TAG, "unsubscribe");
+            subscription.unsubscribe();
+            subscription = null;
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (dailyListResultForClose != null) {
-            try {
-                dailyListResultForClose.close();
-                dailyListResultForClose = null;
-            } catch (final IOException e) {
-                //not handled
-                log.e(TAG, "onDestroy", e);
-            }
+            dailyListResultForClose.silentClose();
+            dailyListResultForClose = null;
         }
     }
 }
