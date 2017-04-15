@@ -1,7 +1,10 @@
 package com.grishberg.graphreporter.common.data.rest;
 
-import com.grishberg.graphreporter.data.beans.common.RestResponse;
+import android.app.IntentService;
+import android.app.Service;
+
 import com.grishberg.graphreporter.common.data.rest.exceptions.RetrofitException;
+import com.grishberg.graphreporter.data.beans.common.RestResponse;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -17,36 +20,33 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by grishberg on 27.11.16.
+ * Created by grishberg on 26.03.17.
  */
-public class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory {
-    private final RxJavaCallAdapterFactory original;
-    private final SoftErrorDelegate<RestResponse> softErrorDelegate;
 
-    private RxErrorHandlingCallAdapterFactory(final SoftErrorDelegate<RestResponse> softErrorDelegate) {
+public class RxProtobufCallAdapterFactory<T> extends CallAdapter.Factory {
+    private final RxJavaCallAdapterFactory original;
+    private final SoftErrorDelegate<T> softErrorDelegate;
+
+    public RxProtobufCallAdapterFactory(SoftErrorDelegate<T> softErrorDelegate) {
         this.softErrorDelegate = softErrorDelegate;
         original = RxJavaCallAdapterFactory.create();
     }
 
-    public static CallAdapter.Factory create(final SoftErrorDelegate<RestResponse> softErrorDelegate) {
-        return new RxErrorHandlingCallAdapterFactory(softErrorDelegate);
-    }
-
     @Override
-    public CallAdapter<?, ?> get(final Type returnType, final Annotation[] annotations, final Retrofit retrofit) {
-        return new RxCallAdapterWrapper(retrofit,
+    public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
+        return new RxCallAdapterWrapper<?, T>(retrofit,
                 original.get(returnType, annotations, retrofit),
                 softErrorDelegate);
     }
 
-    private static class RxCallAdapterWrapper<R> implements CallAdapter<R, Observable<?>> {
+    private static class RxCallAdapterWrapper<R, T> implements CallAdapter<R, Observable<?>> {
         private final Retrofit retrofit;
         private final CallAdapter<R, ?> wrapped;
-        private final SoftErrorDelegate<RestResponse> softErrorDelegate;
+        private final SoftErrorDelegate<T> softErrorDelegate;
 
         public RxCallAdapterWrapper(final Retrofit retrofit,
                                     final CallAdapter<R, ?> wrapped,
-                                    final SoftErrorDelegate<RestResponse> softErrorDelegate) {
+                                    final SoftErrorDelegate<T> softErrorDelegate) {
             this.retrofit = retrofit;
             this.wrapped = wrapped;
             this.softErrorDelegate = softErrorDelegate;
@@ -61,6 +61,7 @@ public class RxErrorHandlingCallAdapterFactory extends CallAdapter.Factory {
         @SuppressWarnings("unchecked")
         @Override
         public Observable<?> adapt(final Call<R> call) {
+            IntentService service
             return ((Observable<RestResponse<?>>) wrapped.adapt(call))
                     .flatMap(new Func1<RestResponse<?>, Observable<RestResponse<?>>>() {
                         @Override

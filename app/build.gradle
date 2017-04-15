@@ -36,58 +36,48 @@ dependencies {
     String support_version = "25.2.0"
     String moxy_version = "1.4.4"
     String dagger_version = "2.4"
-    String retrofit_version = "2.1.0"
+    String retrofit_version = "2.2.0"
     String okhttp_version = "3.4.1"
     String butteknife_version = "8.5.1"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:support-v4:$support_version"
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:design:$support_version"
-
-
     compile "com.arello-mobile:moxy:$moxy_version"
     provided "com.arello-mobile:moxy-compiler:$moxy_version"
     compile "com.arello-mobile:moxy-android:$moxy_version"
     compile "com.arello-mobile:moxy-app-compat:$moxy_version"
-
-
     compile "com.squareup.retrofit2:retrofit:$retrofit_version"
     compile "com.squareup.retrofit2:converter-gson:$retrofit_version"
+    compile "com.squareup.retrofit2:converter-protobuf:$retrofit_version"
     compile "com.squareup.retrofit2:adapter-rxjava:$retrofit_version"
-
     //okhttp
     compile "com.squareup.okhttp3:okhttp:$okhttp_version"
     compile "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
-
     //dagger
     testCompile "com.google.dagger:dagger:$dagger_version"
     compile "com.google.dagger:dagger:$dagger_version"
     apt "com.google.dagger:dagger-compiler:$dagger_version"
     testApt "com.google.dagger:dagger-compiler:$dagger_version"
-
     //leakcanary
-
-
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
     compile project(':datafacade')
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.1'
-
     compile 'com.google.code.gson:gson:2.7'
     compile 'io.reactivex:rxandroid:1.2.1'
-
     testCompile 'org.mockito:mockito-core:2.2.0'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'junit:junit:4.12'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.google.protobuf:protobuf-java:3.2.0'
 }
 greendao {
     schemaVersion 1

@@ -2,6 +2,8 @@ package com.grishberg.graphreporter.data.rest;
 
 import com.grishberg.graphreporter.data.beans.AuthContainer;
 import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer;
 import com.grishberg.graphreporter.data.beans.ProductItem;
 import com.grishberg.graphreporter.data.beans.RefreshTokenContainer;
 import com.grishberg.graphreporter.data.beans.common.RestResponse;
@@ -32,13 +34,6 @@ public interface Api {
                                                          @Query("productId") long productId,
                                                          @Query("offset") long offset,
                                                          @Query("limit") long limit);
-
-    @GET("valuesFromDate")
-    Observable<RestResponse<List<DailyValue>>> getValuesFromDate(@Query("accessToken") String accessToken,
-                                                                 @Query("productId") long productId,
-                                                                 @Query("startDt") long startDt,
-                                                                 @Query("offset") long offset,
-                                                                 @Query("limit") long limit);
 
     @GET("products")
     Observable<RestResponse<List<ProductItem>>> getProducts(@Query("accessToken") String accessToken,

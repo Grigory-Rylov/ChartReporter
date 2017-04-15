@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.data.storage;
 
-import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 
 import java.util.List;
@@ -10,5 +10,5 @@ import java.util.List;
  */
 
 public interface DailyDataStorage extends DailyDataRepository {
-    void appendData(long productId, List<DailyValue> values);
+    void appendData(long productId, List<DailyValueProtos.DailyValue> values);
 }

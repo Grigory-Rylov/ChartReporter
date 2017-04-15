@@ -3,15 +3,17 @@ package com.grishberg.graphreporter.data.repository.values;
 import com.grishberg.datafacade.ListResultCloseable;
 import com.grishberg.graphreporter.data.beans.AuthContainer;
 import com.grishberg.graphreporter.data.beans.DailyValue;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer;
 import com.grishberg.graphreporter.data.beans.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.BaseRestRepository;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.exceptions.WrongCredentialsException;
 import com.grishberg.graphreporter.data.rest.Api;
+import com.grishberg.graphreporter.data.rest.ProtocApi;
 import com.grishberg.graphreporter.data.rest.RestConst;
 import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -26,16 +28,19 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
     private static final int INITIAL_OFFSET = 0;
     private final AuthTokenRepository authTokenRepository;
     private final Api api;
+    private final ProtocApi protocApi;
     private final CacheActualityChecker cacheChecker;
     private final AtomicLong offsetAtomic = new AtomicLong(INITIAL_OFFSET);
     DailyDataStorage dataStorage;
 
     public DailyDataRepositoryImpl(final AuthTokenRepository authTokenRepository,
                                    final Api api,
+                                   final ProtocApi protocApi,
                                    final DailyDataStorage dataStorage,
                                    final CacheActualityChecker cacheChecker) {
         this.authTokenRepository = authTokenRepository;
         this.api = api;
+        this.protocApi = protocApi;
         this.dataStorage = dataStorage;
         this.cacheChecker = cacheChecker;
     }
@@ -49,8 +54,8 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
         }
 
         final Observable<ListResultCloseable<DailyValue>> dailyValuesFromCache = getDataFromCache(productId, startDate);
-        final Observable<RestResponse<List<DailyValue>>> remoteAllDataObservable = Observable.defer(() ->
-                api.getValuesFromDate(authInfo.getAccessToken(),
+        final Observable<DailyValueContainer> remoteAllDataObservable = Observable.defer(() ->
+                protocApi.getValuesFromDate(authInfo.getAccessToken(),
                         productId,
                         startDate,
                         offsetAtomic.get(),
@@ -62,8 +67,8 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
             }
             if (hasDataInCache(cachedResult)) {
                 final DailyValue lastItemFromCache = cachedResult.get(cachedResult.size() - 1);
-                final Observable<RestResponse<List<DailyValue>>> remoteFromDateDataObservable = Observable.defer(() ->
-                        api.getValuesFromDate(authInfo.getAccessToken(),
+                final Observable<DailyValueContainer> remoteFromDateDataObservable = Observable.defer(() ->
+                        protocApi.getValuesFromDate(authInfo.getAccessToken(),
                                 productId,
                                 lastItemFromCache.getDt(),
                                 offsetAtomic.get(),
@@ -74,7 +79,6 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                         .filter(dataList -> !dataList.isEmpty())
                         .first()
                         .doOnUnsubscribe(cachedResult::silentClose);
-
             }
             return getRemotePageData(productId, remoteAllDataObservable);
         }).observeOn(AndroidSchedulers.mainThread());
@@ -92,20 +96,27 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
     }
 
     private Observable<ListResultCloseable<DailyValue>> getRemotePageData(final long productId,
-                                                                          final Observable<RestResponse<List<DailyValue>>> remoteDataObservable) {
+                                                                          final Observable<DailyValueContainer> remoteDataObservable) {
         return Observable
                 .range(0, Integer.MAX_VALUE)
                 .concatMap(pageIndex -> {
                     offsetAtomic.set(pageIndex.longValue() * RestConst.PAGE_LIMIT);
                     return remoteDataObservable;
                 })
-                .takeWhile(response -> !response.getData().isEmpty())
+                .takeWhile(response -> isDailyValuesExists(response))
                 .onErrorResumeNext(
                         refreshTokenAndRetry(remoteDataObservable))
                 .subscribeOn(Schedulers.io())
-                .doOnNext(response -> dataStorage.appendData(productId, response.getData()))
+                .doOnNext(response -> {
+                    //dataStorage.appendData(productId, response.getData().getDailyValueList());
+                })
                 .takeLast(1)
                 .flatMap(response -> dataStorage.getValues(productId, INITIAL_OFFSET));
+    }
+
+    private boolean isDailyValuesExists(DailyValueContainer response) {
+        return false;
+        //return response.getData() != null && response.getData().getDailyValueCount() > 0;
     }
 
     private boolean checkCacheValid(final ListResultCloseable<DailyValue> response) {

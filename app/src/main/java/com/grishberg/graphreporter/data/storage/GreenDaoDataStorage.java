@@ -1,6 +1,8 @@
 package com.grishberg.graphreporter.data.storage;
 
 import com.grishberg.datafacade.ListResultCloseable;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer;
 import com.grishberg.graphreporter.data.db.GreenDaoListResult;
 import com.grishberg.graphreporter.data.beans.DailyValue;
 import com.grishberg.graphreporter.data.beans.DailyValueDao;
@@ -25,10 +27,16 @@ public class GreenDaoDataStorage implements DailyDataStorage {
     }
 
     @Override
-    public void appendData(final long productId, final List<DailyValue> values) {
-        for (final DailyValue value : values) {
-            value.setProductId(productId);
-            dailyValueDao.insertOrReplaceInTx(value);
+    public void appendData(final long productId, final List<DailyValueProtos.DailyValue> values) {
+        for (final DailyValueProtos.DailyValue value : values) {
+            final DailyValue newValue = new DailyValue();
+            newValue.setProductId(productId);
+            newValue.setDt(value.getDate());
+            newValue.setPriceOpen(value.getOpen());
+            newValue.setPriceHigh(value.getHight());
+            newValue.setPriceLow(value.getLow());
+            newValue.setPriceClose(value.getClose());
+            dailyValueDao.insertOrReplaceInTx(newValue);
         }
     }
 

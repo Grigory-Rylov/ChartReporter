@@ -12,6 +12,7 @@ import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepositoryImpl;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepositoryImpl;
+import com.grishberg.graphreporter.data.rest.ProtocApi;
 import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
 import com.grishberg.graphreporter.data.rest.Api;
@@ -29,6 +30,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.protobuf.ProtoConverterFactory;
 
 /**
  * Created by grishberg on 12.01.17.
@@ -83,6 +85,7 @@ public class RestModule {
                              final SoftErrorDelegate<RestResponse> softErrorDelegate) {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(ProtoConverterFactory.create())
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
                 .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(softErrorDelegate))
@@ -97,11 +100,26 @@ public class RestModule {
 
     @Provides
     @Singleton
+    ProtocApi provideRetrofitProtocService(final OkHttpClient okHttpClient,
+                                           final SoftErrorDelegate<RestResponse> softErrorDelegate) {
+        final Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(ProtoConverterFactory.create())
+                .baseUrl(baseUrl)
+                .client(okHttpClient)
+                //TODO: добавить CallAdapter для протобафа
+                .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(softErrorDelegate))
+                .build();
+        return retrofit.create(ProtocApi.class);
+    }
+
+    @Provides
+    @Singleton
     DailyDataRepository provideDataRepository(final Api api,
+                                              final ProtocApi protocApi,
                                               final AuthTokenRepository tokenRepository,
                                               final DailyDataStorage storage,
                                               final CacheActualityChecker cacheActualityChecker) {
-        return new DailyDataRepositoryImpl(tokenRepository, api, storage, cacheActualityChecker);
+        return new DailyDataRepositoryImpl(tokenRepository, api, protocApi, storage, cacheActualityChecker);
     }
 
     @Provides
