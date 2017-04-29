@@ -21,9 +21,9 @@ import java.util.concurrent.TimeUnit;
  * Created by grishberg on 19.01.17.
  * Формирование точек графика и формулы
  */
-public class ChartsHelper {
+public class DailyValueToGraphEntryConverter {
 
-    public static final int MILLISECOND = 1000;
+    private static final int MILLISECOND = 1000;
     private static final int OPEN = 0;
     private static final int CLOSED = 1;
     private static final int HIGH = 2;
@@ -64,7 +64,7 @@ public class ChartsHelper {
         }
     }
 
-    public ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
+    ChartResponseContainer<Entry> getLineData(final ChartPeriod period,
                                                      final List<DailyValue> dailyValues) {
         final List<Long> dates = new ArrayList<>();
         final List<Entry> entries = new ArrayList<>();
@@ -97,7 +97,7 @@ public class ChartsHelper {
     }
 
     @NonNull
-    public ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
+    ChartResponseContainer<CandleEntry> getCandleDataForPeriod(final ChartPeriod period,
                                                                       final List<DailyValue> dailyValues) {
         final List<Long> dates = new ArrayList<>();
         final List<CandleEntry> entries = new ArrayList<>();
@@ -141,7 +141,7 @@ public class ChartsHelper {
      * @return возвращается объект, содержащий данные для отображения 2х типов точек ТР и ТП
      */
     @NonNull
-    public FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
+    FormulaChartContainer getFormulaDataForPeriod(final ChartPeriod period,
                                                          final List<DailyValue> dailyValues,
                                                          final FormulaContainer formulaContainer) {
         final List<Entry> entriesGrow = new ArrayList<>();

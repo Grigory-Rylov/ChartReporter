@@ -7,7 +7,7 @@ import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.storage.FormulaDataSource;
 import com.grishberg.graphreporter.data.rest.Api;
 import com.grishberg.graphreporter.data.services.RefreshTokenService;
-import com.grishberg.graphreporter.mvp.presenter.ChartsHelper;
+import com.grishberg.graphreporter.mvp.presenter.DailyValueToGraphEntryConverter;
 import com.grishberg.graphreporter.utils.DebugLogger;
 import com.grishberg.graphreporter.utils.LogService;
 
@@ -77,8 +77,8 @@ public class TestRestModule {
 
     @Provides
     @Singleton
-    ChartsHelper provideChartsHelper() {
-        return Mockito.mock(ChartsHelper.class);
+    DailyValueToGraphEntryConverter provideChartsHelper() {
+        return Mockito.mock(DailyValueToGraphEntryConverter.class);
     }
 
     @Provides

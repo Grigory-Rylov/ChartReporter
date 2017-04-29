@@ -16,6 +16,7 @@ import static org.junit.Assert.*;
 
 /**
  * Created by grishberg on 31.01.17.
+ * chart data converter test
  */
 public class ChartsHelperTest {
     @Test
@@ -26,7 +27,7 @@ public class ChartsHelperTest {
                 1,
                 7D, true, 0xff,
                 7D, true, 0xff);
-        final ChartsHelper chartsHelper = new ChartsHelper();
+        final DailyValueToGraphEntryConverter chartsHelper = new DailyValueToGraphEntryConverter();
         final FormulaChartContainer chart = chartsHelper.getFormulaDataForPeriod(ChartPeriod.DAY,
                 dailyValues,
                 formulaContainer);

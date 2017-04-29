@@ -51,7 +51,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
     @Inject
     DailyDataRepository repository;
     @Inject
-    ChartsHelper chartsHelper;
+    DailyValueToGraphEntryConverter chartsHelper;
     @Inject
     SettingsDataSource settings;
     @Inject

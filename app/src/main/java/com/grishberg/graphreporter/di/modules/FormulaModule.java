@@ -1,6 +1,6 @@
 package com.grishberg.graphreporter.di.modules;
 
-import com.grishberg.graphreporter.mvp.presenter.ChartsHelper;
+import com.grishberg.graphreporter.mvp.presenter.DailyValueToGraphEntryConverter;
 
 import javax.inject.Singleton;
 
@@ -15,7 +15,7 @@ import dagger.Provides;
 public class FormulaModule {
     @Provides
     @Singleton
-    ChartsHelper provideChartHelper() {
-        return new ChartsHelper();
+    DailyValueToGraphEntryConverter provideChartHelper() {
+        return new DailyValueToGraphEntryConverter();
     }
 }
