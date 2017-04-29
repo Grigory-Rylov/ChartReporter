@@ -15,51 +15,57 @@ public final class DailyValueProtos {
                 (com.google.protobuf.ExtensionRegistryLite) registry);
     }
     public interface DailyValueOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:threadingtest.DailyValue)
+            // @@protoc_insertion_point(interface_extends:beans.DailyValue)
             com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>optional int64 date = 1;</code>
+         * <code>optional int64 id = 1;</code>
+         */
+        long getId();
+
+        /**
+         * <code>optional int64 date = 2;</code>
          */
         long getDate();
 
         /**
-         * <code>optional float open = 2;</code>
+         * <code>optional float open = 3;</code>
          */
         float getOpen();
 
         /**
-         * <code>optional float hight = 3;</code>
+         * <code>optional float hight = 4;</code>
          */
         float getHight();
 
         /**
-         * <code>optional float low = 4;</code>
+         * <code>optional float low = 5;</code>
          */
         float getLow();
 
         /**
-         * <code>optional float close = 5;</code>
+         * <code>optional float close = 6;</code>
          */
         float getClose();
 
         /**
-         * <code>optional int64 volume = 6;</code>
+         * <code>optional int64 volume = 7;</code>
          */
         long getVolume();
     }
     /**
-     * Protobuf type {@code threadingtest.DailyValue}
+     * Protobuf type {@code beans.DailyValue}
      */
     public  static final class DailyValue extends
             com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:threadingtest.DailyValue)
+            // @@protoc_insertion_point(message_implements:beans.DailyValue)
             DailyValueOrBuilder {
         // Use DailyValue.newBuilder() to construct.
         private DailyValue(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
             super(builder);
         }
         private DailyValue() {
+            id_ = 0L;
             date_ = 0L;
             open_ = 0F;
             hight_ = 0F;
@@ -95,30 +101,35 @@ public final class DailyValueProtos {
                         }
                         case 8: {
 
-                            date_ = input.readInt64();
+                            id_ = input.readInt64();
                             break;
                         }
-                        case 21: {
+                        case 16: {
 
-                            open_ = input.readFloat();
+                            date_ = input.readInt64();
                             break;
                         }
                         case 29: {
 
-                            hight_ = input.readFloat();
+                            open_ = input.readFloat();
                             break;
                         }
                         case 37: {
 
-                            low_ = input.readFloat();
+                            hight_ = input.readFloat();
                             break;
                         }
                         case 45: {
 
+                            low_ = input.readFloat();
+                            break;
+                        }
+                        case 53: {
+
                             close_ = input.readFloat();
                             break;
                         }
-                        case 48: {
+                        case 56: {
 
                             volume_ = input.readInt64();
                             break;
@@ -136,65 +147,74 @@ public final class DailyValueProtos {
         }
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValue_descriptor;
+            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValue_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValue_fieldAccessorTable
+            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValue_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
                             com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.class, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder.class);
         }
 
-        public static final int DATE_FIELD_NUMBER = 1;
+        public static final int ID_FIELD_NUMBER = 1;
+        private long id_;
+        /**
+         * <code>optional int64 id = 1;</code>
+         */
+        public long getId() {
+            return id_;
+        }
+
+        public static final int DATE_FIELD_NUMBER = 2;
         private long date_;
         /**
-         * <code>optional int64 date = 1;</code>
+         * <code>optional int64 date = 2;</code>
          */
         public long getDate() {
             return date_;
         }
 
-        public static final int OPEN_FIELD_NUMBER = 2;
+        public static final int OPEN_FIELD_NUMBER = 3;
         private float open_;
         /**
-         * <code>optional float open = 2;</code>
+         * <code>optional float open = 3;</code>
          */
         public float getOpen() {
             return open_;
         }
 
-        public static final int HIGHT_FIELD_NUMBER = 3;
+        public static final int HIGHT_FIELD_NUMBER = 4;
         private float hight_;
         /**
-         * <code>optional float hight = 3;</code>
+         * <code>optional float hight = 4;</code>
          */
         public float getHight() {
             return hight_;
         }
 
-        public static final int LOW_FIELD_NUMBER = 4;
+        public static final int LOW_FIELD_NUMBER = 5;
         private float low_;
         /**
-         * <code>optional float low = 4;</code>
+         * <code>optional float low = 5;</code>
          */
         public float getLow() {
             return low_;
         }
 
-        public static final int CLOSE_FIELD_NUMBER = 5;
+        public static final int CLOSE_FIELD_NUMBER = 6;
         private float close_;
         /**
-         * <code>optional float close = 5;</code>
+         * <code>optional float close = 6;</code>
          */
         public float getClose() {
             return close_;
         }
 
-        public static final int VOLUME_FIELD_NUMBER = 6;
+        public static final int VOLUME_FIELD_NUMBER = 7;
         private long volume_;
         /**
-         * <code>optional int64 volume = 6;</code>
+         * <code>optional int64 volume = 7;</code>
          */
         public long getVolume() {
             return volume_;
@@ -212,23 +232,26 @@ public final class DailyValueProtos {
 
         public void writeTo(com.google.protobuf.CodedOutputStream output)
                 throws java.io.IOException {
+            if (id_ != 0L) {
+                output.writeInt64(1, id_);
+            }
             if (date_ != 0L) {
-                output.writeInt64(1, date_);
+                output.writeInt64(2, date_);
             }
             if (open_ != 0F) {
-                output.writeFloat(2, open_);
+                output.writeFloat(3, open_);
             }
             if (hight_ != 0F) {
-                output.writeFloat(3, hight_);
+                output.writeFloat(4, hight_);
             }
             if (low_ != 0F) {
-                output.writeFloat(4, low_);
+                output.writeFloat(5, low_);
             }
             if (close_ != 0F) {
-                output.writeFloat(5, close_);
+                output.writeFloat(6, close_);
             }
             if (volume_ != 0L) {
-                output.writeInt64(6, volume_);
+                output.writeInt64(7, volume_);
             }
         }
 
@@ -237,29 +260,33 @@ public final class DailyValueProtos {
             if (size != -1) return size;
 
             size = 0;
+            if (id_ != 0L) {
+                size += com.google.protobuf.CodedOutputStream
+                        .computeInt64Size(1, id_);
+            }
             if (date_ != 0L) {
                 size += com.google.protobuf.CodedOutputStream
-                        .computeInt64Size(1, date_);
+                        .computeInt64Size(2, date_);
             }
             if (open_ != 0F) {
                 size += com.google.protobuf.CodedOutputStream
-                        .computeFloatSize(2, open_);
+                        .computeFloatSize(3, open_);
             }
             if (hight_ != 0F) {
                 size += com.google.protobuf.CodedOutputStream
-                        .computeFloatSize(3, hight_);
+                        .computeFloatSize(4, hight_);
             }
             if (low_ != 0F) {
                 size += com.google.protobuf.CodedOutputStream
-                        .computeFloatSize(4, low_);
+                        .computeFloatSize(5, low_);
             }
             if (close_ != 0F) {
                 size += com.google.protobuf.CodedOutputStream
-                        .computeFloatSize(5, close_);
+                        .computeFloatSize(6, close_);
             }
             if (volume_ != 0L) {
                 size += com.google.protobuf.CodedOutputStream
-                        .computeInt64Size(6, volume_);
+                        .computeInt64Size(7, volume_);
             }
             memoizedSize = size;
             return size;
@@ -277,6 +304,8 @@ public final class DailyValueProtos {
             com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue other = (com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue) obj;
 
             boolean result = true;
+            result = result && (getId()
+                    == other.getId());
             result = result && (getDate()
                     == other.getDate());
             result = result && (
@@ -307,6 +336,9 @@ public final class DailyValueProtos {
             }
             int hash = 41;
             hash = (19 * hash) + getDescriptorForType().hashCode();
+            hash = (37 * hash) + ID_FIELD_NUMBER;
+            hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+                    getId());
             hash = (37 * hash) + DATE_FIELD_NUMBER;
             hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
                     getDate());
@@ -408,20 +440,20 @@ public final class DailyValueProtos {
             return builder;
         }
         /**
-         * Protobuf type {@code threadingtest.DailyValue}
+         * Protobuf type {@code beans.DailyValue}
          */
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:threadingtest.DailyValue)
+                // @@protoc_insertion_point(builder_implements:beans.DailyValue)
                 com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValue_descriptor;
+                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValue_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValue_fieldAccessorTable
+                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValue_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
                                 com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.class, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder.class);
             }
@@ -443,6 +475,8 @@ public final class DailyValueProtos {
             }
             public Builder clear() {
                 super.clear();
+                id_ = 0L;
+
                 date_ = 0L;
 
                 open_ = 0F;
@@ -460,7 +494,7 @@ public final class DailyValueProtos {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValue_descriptor;
+                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValue_descriptor;
             }
 
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue getDefaultInstanceForType() {
@@ -477,6 +511,7 @@ public final class DailyValueProtos {
 
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue buildPartial() {
                 com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue result = new com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue(this);
+                result.id_ = id_;
                 result.date_ = date_;
                 result.open_ = open_;
                 result.hight_ = hight_;
@@ -524,6 +559,9 @@ public final class DailyValueProtos {
 
             public Builder mergeFrom(com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue other) {
                 if (other == com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.getDefaultInstance()) return this;
+                if (other.getId() != 0L) {
+                    setId(other.getId());
+                }
                 if (other.getDate() != 0L) {
                     setDate(other.getDate());
                 }
@@ -568,15 +606,41 @@ public final class DailyValueProtos {
                 return this;
             }
 
+            private long id_ ;
+            /**
+             * <code>optional int64 id = 1;</code>
+             */
+            public long getId() {
+                return id_;
+            }
+            /**
+             * <code>optional int64 id = 1;</code>
+             */
+            public Builder setId(long value) {
+
+                id_ = value;
+                onChanged();
+                return this;
+            }
+            /**
+             * <code>optional int64 id = 1;</code>
+             */
+            public Builder clearId() {
+
+                id_ = 0L;
+                onChanged();
+                return this;
+            }
+
             private long date_ ;
             /**
-             * <code>optional int64 date = 1;</code>
+             * <code>optional int64 date = 2;</code>
              */
             public long getDate() {
                 return date_;
             }
             /**
-             * <code>optional int64 date = 1;</code>
+             * <code>optional int64 date = 2;</code>
              */
             public Builder setDate(long value) {
 
@@ -585,7 +649,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>optional int64 date = 1;</code>
+             * <code>optional int64 date = 2;</code>
              */
             public Builder clearDate() {
 
@@ -596,13 +660,13 @@ public final class DailyValueProtos {
 
             private float open_ ;
             /**
-             * <code>optional float open = 2;</code>
+             * <code>optional float open = 3;</code>
              */
             public float getOpen() {
                 return open_;
             }
             /**
-             * <code>optional float open = 2;</code>
+             * <code>optional float open = 3;</code>
              */
             public Builder setOpen(float value) {
 
@@ -611,7 +675,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>optional float open = 2;</code>
+             * <code>optional float open = 3;</code>
              */
             public Builder clearOpen() {
 
@@ -622,13 +686,13 @@ public final class DailyValueProtos {
 
             private float hight_ ;
             /**
-             * <code>optional float hight = 3;</code>
+             * <code>optional float hight = 4;</code>
              */
             public float getHight() {
                 return hight_;
             }
             /**
-             * <code>optional float hight = 3;</code>
+             * <code>optional float hight = 4;</code>
              */
             public Builder setHight(float value) {
 
@@ -637,7 +701,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>optional float hight = 3;</code>
+             * <code>optional float hight = 4;</code>
              */
             public Builder clearHight() {
 
@@ -648,13 +712,13 @@ public final class DailyValueProtos {
 
             private float low_ ;
             /**
-             * <code>optional float low = 4;</code>
+             * <code>optional float low = 5;</code>
              */
             public float getLow() {
                 return low_;
             }
             /**
-             * <code>optional float low = 4;</code>
+             * <code>optional float low = 5;</code>
              */
             public Builder setLow(float value) {
 
@@ -663,7 +727,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>optional float low = 4;</code>
+             * <code>optional float low = 5;</code>
              */
             public Builder clearLow() {
 
@@ -674,13 +738,13 @@ public final class DailyValueProtos {
 
             private float close_ ;
             /**
-             * <code>optional float close = 5;</code>
+             * <code>optional float close = 6;</code>
              */
             public float getClose() {
                 return close_;
             }
             /**
-             * <code>optional float close = 5;</code>
+             * <code>optional float close = 6;</code>
              */
             public Builder setClose(float value) {
 
@@ -689,7 +753,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>optional float close = 5;</code>
+             * <code>optional float close = 6;</code>
              */
             public Builder clearClose() {
 
@@ -700,13 +764,13 @@ public final class DailyValueProtos {
 
             private long volume_ ;
             /**
-             * <code>optional int64 volume = 6;</code>
+             * <code>optional int64 volume = 7;</code>
              */
             public long getVolume() {
                 return volume_;
             }
             /**
-             * <code>optional int64 volume = 6;</code>
+             * <code>optional int64 volume = 7;</code>
              */
             public Builder setVolume(long value) {
 
@@ -715,7 +779,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>optional int64 volume = 6;</code>
+             * <code>optional int64 volume = 7;</code>
              */
             public Builder clearVolume() {
 
@@ -734,10 +798,10 @@ public final class DailyValueProtos {
             }
 
 
-            // @@protoc_insertion_point(builder_scope:threadingtest.DailyValue)
+            // @@protoc_insertion_point(builder_scope:beans.DailyValue)
         }
 
-        // @@protoc_insertion_point(class_scope:threadingtest.DailyValue)
+        // @@protoc_insertion_point(class_scope:beans.DailyValue)
         private static final com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue DEFAULT_INSTANCE;
         static {
             DEFAULT_INSTANCE = new com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue();
@@ -773,29 +837,29 @@ public final class DailyValueProtos {
     }
 
     public interface DailyValueContainerOrBuilder extends
-            // @@protoc_insertion_point(interface_extends:threadingtest.DailyValueContainer)
+            // @@protoc_insertion_point(interface_extends:beans.DailyValueContainer)
             com.google.protobuf.MessageOrBuilder {
 
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         java.util.List<com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue>
         getDailyValueList();
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue getDailyValue(int index);
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         int getDailyValueCount();
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         java.util.List<? extends com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder>
         getDailyValueOrBuilderList();
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder getDailyValueOrBuilder(
                 int index);
@@ -816,11 +880,11 @@ public final class DailyValueProtos {
         int getCount();
     }
     /**
-     * Protobuf type {@code threadingtest.DailyValueContainer}
+     * Protobuf type {@code beans.DailyValueContainer}
      */
     public  static final class DailyValueContainer extends
             com.google.protobuf.GeneratedMessageV3 implements
-            // @@protoc_insertion_point(message_implements:threadingtest.DailyValueContainer)
+            // @@protoc_insertion_point(message_implements:beans.DailyValueContainer)
             DailyValueContainerOrBuilder {
         // Use DailyValueContainer.newBuilder() to construct.
         private DailyValueContainer(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
@@ -898,12 +962,12 @@ public final class DailyValueProtos {
         }
         public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValueContainer_descriptor;
+            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValueContainer_descriptor;
         }
 
         protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValueContainer_fieldAccessorTable
+            return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValueContainer_fieldAccessorTable
                     .ensureFieldAccessorsInitialized(
                             com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer.class, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer.Builder.class);
         }
@@ -912,32 +976,32 @@ public final class DailyValueProtos {
         public static final int DAILYVALUE_FIELD_NUMBER = 1;
         private java.util.List<com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue> dailyValue_;
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         public java.util.List<com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue> getDailyValueList() {
             return dailyValue_;
         }
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         public java.util.List<? extends com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder>
         getDailyValueOrBuilderList() {
             return dailyValue_;
         }
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         public int getDailyValueCount() {
             return dailyValue_.size();
         }
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue getDailyValue(int index) {
             return dailyValue_.get(index);
         }
         /**
-         * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+         * <code>repeated .beans.DailyValue dailyValue = 1;</code>
          */
         public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder getDailyValueOrBuilder(
                 int index) {
@@ -1145,20 +1209,20 @@ public final class DailyValueProtos {
             return builder;
         }
         /**
-         * Protobuf type {@code threadingtest.DailyValueContainer}
+         * Protobuf type {@code beans.DailyValueContainer}
          */
         public static final class Builder extends
                 com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-                // @@protoc_insertion_point(builder_implements:threadingtest.DailyValueContainer)
+                // @@protoc_insertion_point(builder_implements:beans.DailyValueContainer)
                 com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainerOrBuilder {
             public static final com.google.protobuf.Descriptors.Descriptor
             getDescriptor() {
-                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValueContainer_descriptor;
+                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValueContainer_descriptor;
             }
 
             protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValueContainer_fieldAccessorTable
+                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValueContainer_fieldAccessorTable
                         .ensureFieldAccessorsInitialized(
                                 com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer.class, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer.Builder.class);
             }
@@ -1198,7 +1262,7 @@ public final class DailyValueProtos {
 
             public com.google.protobuf.Descriptors.Descriptor
             getDescriptorForType() {
-                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_threadingtest_DailyValueContainer_descriptor;
+                return com.grishberg.graphreporter.data.beans.DailyValueProtos.internal_static_beans_DailyValueContainer_descriptor;
             }
 
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer getDefaultInstanceForType() {
@@ -1346,7 +1410,7 @@ public final class DailyValueProtos {
                     com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder> dailyValueBuilder_;
 
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public java.util.List<com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue> getDailyValueList() {
                 if (dailyValueBuilder_ == null) {
@@ -1356,7 +1420,7 @@ public final class DailyValueProtos {
                 }
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public int getDailyValueCount() {
                 if (dailyValueBuilder_ == null) {
@@ -1366,7 +1430,7 @@ public final class DailyValueProtos {
                 }
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue getDailyValue(int index) {
                 if (dailyValueBuilder_ == null) {
@@ -1376,7 +1440,7 @@ public final class DailyValueProtos {
                 }
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder setDailyValue(
                     int index, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue value) {
@@ -1393,7 +1457,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder setDailyValue(
                     int index, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder builderForValue) {
@@ -1407,7 +1471,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder addDailyValue(com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue value) {
                 if (dailyValueBuilder_ == null) {
@@ -1423,7 +1487,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder addDailyValue(
                     int index, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue value) {
@@ -1440,7 +1504,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder addDailyValue(
                     com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder builderForValue) {
@@ -1454,7 +1518,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder addDailyValue(
                     int index, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder builderForValue) {
@@ -1468,7 +1532,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder addAllDailyValue(
                     java.lang.Iterable<? extends com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue> values) {
@@ -1483,7 +1547,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder clearDailyValue() {
                 if (dailyValueBuilder_ == null) {
@@ -1496,7 +1560,7 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public Builder removeDailyValue(int index) {
                 if (dailyValueBuilder_ == null) {
@@ -1509,14 +1573,14 @@ public final class DailyValueProtos {
                 return this;
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder getDailyValueBuilder(
                     int index) {
                 return getDailyValueFieldBuilder().getBuilder(index);
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder getDailyValueOrBuilder(
                     int index) {
@@ -1526,7 +1590,7 @@ public final class DailyValueProtos {
                 }
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public java.util.List<? extends com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueOrBuilder>
             getDailyValueOrBuilderList() {
@@ -1537,14 +1601,14 @@ public final class DailyValueProtos {
                 }
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder addDailyValueBuilder() {
                 return getDailyValueFieldBuilder().addBuilder(
                         com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.getDefaultInstance());
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder addDailyValueBuilder(
                     int index) {
@@ -1552,7 +1616,7 @@ public final class DailyValueProtos {
                         index, com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.getDefaultInstance());
             }
             /**
-             * <code>repeated .threadingtest.DailyValue dailyValue = 1;</code>
+             * <code>repeated .beans.DailyValue dailyValue = 1;</code>
              */
             public java.util.List<com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValue.Builder>
             getDailyValueBuilderList() {
@@ -1661,10 +1725,10 @@ public final class DailyValueProtos {
             }
 
 
-            // @@protoc_insertion_point(builder_scope:threadingtest.DailyValueContainer)
+            // @@protoc_insertion_point(builder_scope:beans.DailyValueContainer)
         }
 
-        // @@protoc_insertion_point(class_scope:threadingtest.DailyValueContainer)
+        // @@protoc_insertion_point(class_scope:beans.DailyValueContainer)
         private static final com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer DEFAULT_INSTANCE;
         static {
             DEFAULT_INSTANCE = new com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer();
@@ -1700,15 +1764,15 @@ public final class DailyValueProtos {
     }
 
     private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_threadingtest_DailyValue_descriptor;
+            internal_static_beans_DailyValue_descriptor;
     private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_threadingtest_DailyValue_fieldAccessorTable;
+            internal_static_beans_DailyValue_fieldAccessorTable;
     private static final com.google.protobuf.Descriptors.Descriptor
-            internal_static_threadingtest_DailyValueContainer_descriptor;
+            internal_static_beans_DailyValueContainer_descriptor;
     private static final
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-            internal_static_threadingtest_DailyValueContainer_fieldAccessorTable;
+            internal_static_beans_DailyValueContainer_fieldAccessorTable;
 
     public static com.google.protobuf.Descriptors.FileDescriptor
     getDescriptor() {
@@ -1718,14 +1782,14 @@ public final class DailyValueProtos {
             descriptor;
     static {
         java.lang.String[] descriptorData = {
-                "\n\021daily_value.proto\022\rthreadingtest\"c\n\nDa" +
-                        "ilyValue\022\014\n\004date\030\001 \001(\003\022\014\n\004open\030\002 \001(\002\022\r\n\005" +
-                        "hight\030\003 \001(\002\022\013\n\003low\030\004 \001(\002\022\r\n\005close\030\005 \001(\002\022" +
-                        "\016\n\006volume\030\006 \001(\003\"r\n\023DailyValueContainer\022-" +
-                        "\n\ndailyValue\030\001 \003(\0132\031.threadingtest.Daily" +
-                        "Value\022\r\n\005limit\030\002 \001(\005\022\016\n\006offset\030\003 \001(\005\022\r\n\005" +
-                        "count\030\004 \001(\005B/\n\033com.grishberg.threadingte" +
-                        "stB\020DailyValueProtosb\006proto3"
+                "\n\021daily_value.proto\022\005beans\"o\n\nDailyValue" +
+                        "\022\n\n\002id\030\001 \001(\003\022\014\n\004date\030\002 \001(\003\022\014\n\004open\030\003 \001(\002" +
+                        "\022\r\n\005hight\030\004 \001(\002\022\013\n\003low\030\005 \001(\002\022\r\n\005close\030\006 " +
+                        "\001(\002\022\016\n\006volume\030\007 \001(\003\"j\n\023DailyValueContain" +
+                        "er\022%\n\ndailyValue\030\001 \003(\0132\021.beans.DailyValu" +
+                        "e\022\r\n\005limit\030\002 \001(\005\022\016\n\006offset\030\003 \001(\005\022\r\n\005coun" +
+                        "t\030\004 \001(\005B:\n&com.grishberg.graphreporter.d" +
+                        "ata.beansB\020DailyValueProtosb\006proto3"
         };
         com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
                 new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1739,17 +1803,17 @@ public final class DailyValueProtos {
                 .internalBuildGeneratedFileFrom(descriptorData,
                         new com.google.protobuf.Descriptors.FileDescriptor[] {
                         }, assigner);
-        internal_static_threadingtest_DailyValue_descriptor =
+        internal_static_beans_DailyValue_descriptor =
                 getDescriptor().getMessageTypes().get(0);
-        internal_static_threadingtest_DailyValue_fieldAccessorTable = new
+        internal_static_beans_DailyValue_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_threadingtest_DailyValue_descriptor,
-                new java.lang.String[] { "Date", "Open", "Hight", "Low", "Close", "Volume", });
-        internal_static_threadingtest_DailyValueContainer_descriptor =
+                internal_static_beans_DailyValue_descriptor,
+                new java.lang.String[] { "Id", "Date", "Open", "Hight", "Low", "Close", "Volume", });
+        internal_static_beans_DailyValueContainer_descriptor =
                 getDescriptor().getMessageTypes().get(1);
-        internal_static_threadingtest_DailyValueContainer_fieldAccessorTable = new
+        internal_static_beans_DailyValueContainer_fieldAccessorTable = new
                 com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-                internal_static_threadingtest_DailyValueContainer_descriptor,
+                internal_static_beans_DailyValueContainer_descriptor,
                 new java.lang.String[] { "DailyValue", "Limit", "Offset", "Count", });
     }
 

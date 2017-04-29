@@ -108,15 +108,14 @@ public class DailyDataRepositoryImpl extends BaseRestRepository implements Daily
                         refreshTokenAndRetry(remoteDataObservable))
                 .subscribeOn(Schedulers.io())
                 .doOnNext(response -> {
-                    //dataStorage.appendData(productId, response.getData().getDailyValueList());
+                    dataStorage.appendData(productId, response.getDailyValueList());
                 })
                 .takeLast(1)
                 .flatMap(response -> dataStorage.getValues(productId, INITIAL_OFFSET));
     }
 
     private boolean isDailyValuesExists(DailyValueContainer response) {
-        return false;
-        //return response.getData() != null && response.getData().getDailyValueCount() > 0;
+        return response.getDailyValueCount() > 0;
     }
 
     private boolean checkCacheValid(final ListResultCloseable<DailyValue> response) {

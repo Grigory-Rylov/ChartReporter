@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.grishberg.graphreporter.common.data.rest.RxErrorHandlingCallAdapterFactory;
+import com.grishberg.graphreporter.common.data.rest.RxProtobufCallAdapterFactory;
 import com.grishberg.graphreporter.common.data.rest.SoftErrorDelegate;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer;
 import com.grishberg.graphreporter.data.beans.common.RestResponse;
 import com.grishberg.graphreporter.data.repository.auth.AuthTokenRepository;
 import com.grishberg.graphreporter.data.repository.values.CacheActualityChecker;
@@ -12,6 +15,7 @@ import com.grishberg.graphreporter.data.repository.values.DailyDataRepository;
 import com.grishberg.graphreporter.data.repository.values.DailyDataRepositoryImpl;
 import com.grishberg.graphreporter.data.repository.ProductsRepository;
 import com.grishberg.graphreporter.data.repository.ProductsRepositoryImpl;
+import com.grishberg.graphreporter.data.rest.ProtobufErrorChecker;
 import com.grishberg.graphreporter.data.rest.ProtocApi;
 import com.grishberg.graphreporter.data.storage.DailyDataStorage;
 import com.grishberg.graphreporter.data.rest.ErrorCheckerImpl;
@@ -101,13 +105,14 @@ public class RestModule {
     @Provides
     @Singleton
     ProtocApi provideRetrofitProtocService(final OkHttpClient okHttpClient,
-                                           final SoftErrorDelegate<RestResponse> softErrorDelegate) {
+                                           final SoftErrorDelegate<DailyValueContainer> softErrorDelegate) {
         final Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(ProtoConverterFactory.create())
                 .baseUrl(baseUrl)
                 .client(okHttpClient)
                 //TODO: добавить CallAdapter для протобафа
-                .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(softErrorDelegate))
+                .addCallAdapterFactory(new RxProtobufCallAdapterFactory(softErrorDelegate))
+                //.addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(softErrorDelegate))
                 .build();
         return retrofit.create(ProtocApi.class);
     }
@@ -139,4 +144,11 @@ public class RestModule {
     SoftErrorDelegate<RestResponse> provideSoftErrorDelegate() {
         return new ErrorCheckerImpl();
     }
+
+    @Provides
+    @Singleton
+    SoftErrorDelegate<DailyValueContainer> provideProtoSoftErrorDelegate() {
+        return new ProtobufErrorChecker();
+    }
+
 }

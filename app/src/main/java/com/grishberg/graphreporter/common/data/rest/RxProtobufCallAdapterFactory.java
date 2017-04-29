@@ -1,10 +1,7 @@
 package com.grishberg.graphreporter.common.data.rest;
 
-import android.app.IntentService;
-import android.app.Service;
-
 import com.grishberg.graphreporter.common.data.rest.exceptions.RetrofitException;
-import com.grishberg.graphreporter.data.beans.common.RestResponse;
+import com.grishberg.graphreporter.data.beans.DailyValueProtos.DailyValueContainer;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -34,7 +31,7 @@ public class RxProtobufCallAdapterFactory<T> extends CallAdapter.Factory {
 
     @Override
     public CallAdapter<?, ?> get(Type returnType, Annotation[] annotations, Retrofit retrofit) {
-        return new RxCallAdapterWrapper<?, T>(retrofit,
+        return new RxCallAdapterWrapper<>(retrofit,
                 original.get(returnType, annotations, retrofit),
                 softErrorDelegate);
     }
@@ -61,11 +58,10 @@ public class RxProtobufCallAdapterFactory<T> extends CallAdapter.Factory {
         @SuppressWarnings("unchecked")
         @Override
         public Observable<?> adapt(final Call<R> call) {
-            IntentService service
-            return ((Observable<RestResponse<?>>) wrapped.adapt(call))
-                    .flatMap(new Func1<RestResponse<?>, Observable<RestResponse<?>>>() {
+            return ((Observable<T>) wrapped.adapt(call))
+                    .flatMap(new Func1<T, Observable<T>>() {
                         @Override
-                        public Observable<RestResponse<?>> call(final RestResponse<?> restResponse) {
+                        public Observable<T> call(final T restResponse) {
                             final Throwable throwable = softErrorDelegate.checkSoftError(restResponse);
                             if (throwable != null) {
                                 return Observable.error(throwable);

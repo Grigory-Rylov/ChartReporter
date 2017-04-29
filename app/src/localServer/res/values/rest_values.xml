@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="end_point">http://10.0.3.2:5000/analytics/api/v1.0/</string>
-    <string name="end_point1">https://Grishberg.pythonanywhere.com/analytics/api/v1.0/</string>
 </resources>

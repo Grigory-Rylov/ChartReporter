@@ -31,6 +31,7 @@ public class GreenDaoDataStorage implements DailyDataStorage {
         for (final DailyValueProtos.DailyValue value : values) {
             final DailyValue newValue = new DailyValue();
             newValue.setProductId(productId);
+            newValue.setId(value.getId());
             newValue.setDt(value.getDate());
             newValue.setPriceOpen(value.getOpen());
             newValue.setPriceHigh(value.getHight());
