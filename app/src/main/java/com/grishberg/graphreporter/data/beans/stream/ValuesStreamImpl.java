@@ -92,4 +92,50 @@ public class ValuesStreamImpl implements ValuesStream<DualDateValue> {
         }
         return true;
     }
+
+    @Override
+    public DualDateValue getPrevElement() throws NoMoreItemException {
+        if (!hasPrevValuesInCollection()) {
+            return null;
+        }
+        final double open = elements.get(previouseElementIndex).getPriceOpen();
+        double hi = 0;
+        double lo = Float.MAX_VALUE;
+        double close = 0;
+        final long startDt = elements.get(previouseElementIndex).getDt();
+        long endDt = startDt;
+        long currentDt;
+        double volume = 0;
+
+        timePeriodUpperBound -= periodSizeInSeconds;
+        int iterationsCount = 0;
+        DailyValue currentValue;
+        while (hasPrevValuesInCollection()) {
+            currentValue = elements.get(previouseElementIndex);
+            currentDt = currentValue.getDt();
+            if (currentDt <= timePeriodUpperBound) {
+                break;
+            }
+            iterationsCount++;
+            previouseElementIndex--;
+            endDt = currentDt;
+            volume += currentValue.getVolume();
+
+            hi = Math.max(currentValue.getPriceHigh(), hi);
+            lo = Math.min(currentValue.getPriceLow(), lo);
+            close = currentValue.getPriceClose();
+        }
+        if (iterationsCount > 0) {
+            return new DualDateValue(startDt - periodSizeInSeconds / 2, endDt + periodSizeInSeconds / 2,
+                    open, close, hi, lo, volume);
+        }
+        return null;
+    }
+
+    private boolean hasPrevValuesInCollection() throws NoMoreItemException {
+        if (previouseElementIndex > 0) {
+            throw new NoMoreItemException();
+        }
+        return true;
+    }
 }

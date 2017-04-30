@@ -9,6 +9,8 @@ public interface ValuesStream<T> {
 
     T getNextElement() throws NoMoreItemException;
 
+    T getPrevElement() throws NoMoreItemException;
+
     class NoMoreItemException extends Throwable {
     }
 }

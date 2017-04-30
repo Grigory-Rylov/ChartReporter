@@ -248,7 +248,7 @@ public class CandlesChartPresenter extends BasePresenter<CandlesChartView> imple
         onInitChartScreen(currentProductId);
     }
 
-    public void onCancelRequest() {
+    void onCancelRequest() {
         if (subscription != null && !subscription.isUnsubscribed()) {
             log.d(TAG, "unsubscribe");
             subscription.unsubscribe();

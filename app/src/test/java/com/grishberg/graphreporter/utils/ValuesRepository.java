@@ -16,6 +16,7 @@ import static com.grishberg.graphreporter.utils.DateTimeUtils.getDate;
 public class ValuesRepository {
 
     public static final int MINUTE = 60;
+    public static final int DT_OFFSET = 0;
 
     @NonNull
     public static List<DailyValue> getDailyValues() {
@@ -48,18 +49,18 @@ public class ValuesRepository {
     public static List<DailyValue> getMinutesValues() {
         final List<DailyValue> dailyValues = new ArrayList<>();
         int i = 0;
-        dailyValues.add(new DailyValue(i++, MINUTE * 1, 10, 12, 9, 11));
-        dailyValues.add(new DailyValue(i++, MINUTE * 2, 11, 16, 8, 12));
-        dailyValues.add(new DailyValue(i++, MINUTE * 3, 12, 14, 11, 13));
+        dailyValues.add(new DailyValue(i++, MINUTE * 0 + DT_OFFSET, 10, 12, 9, 11));
+        dailyValues.add(new DailyValue(i++, MINUTE * 1 + DT_OFFSET, 11, 16, 8, 12));
+        dailyValues.add(new DailyValue(i++, MINUTE * 2 + DT_OFFSET, 12, 14, 11, 13));
 
-        dailyValues.add(new DailyValue(i++, MINUTE * 4, 20, 22, 19, 21));
+        dailyValues.add(new DailyValue(i++, MINUTE * 3 + DT_OFFSET, 20, 22, 19, 21));
 
-        dailyValues.add(new DailyValue(i++, MINUTE * 8, 21, 26, 18, 22));
-        dailyValues.add(new DailyValue(i++, MINUTE * 9, 22, 24, 21, 23));
+        dailyValues.add(new DailyValue(i++, MINUTE * 7 + DT_OFFSET, 21, 26, 18, 22));
+        dailyValues.add(new DailyValue(i++, MINUTE * 8 + DT_OFFSET, 22, 24, 21, 23));
 
-        dailyValues.add(new DailyValue(i++, MINUTE * 12, 17.95f, 17.72f, 18.0f, 17.72f));
-        dailyValues.add(new DailyValue(i++, MINUTE * 13, 17.99f, 17.88f, 18.1f, 17.88f));
-        dailyValues.add(new DailyValue(i++, MINUTE * 15, 17.7f, 17.84f, 17.84f, 17.7f));
+        dailyValues.add(new DailyValue(i++, MINUTE * 11 + DT_OFFSET, 17.95f, 17.72f, 18.0f, 17.72f));
+        dailyValues.add(new DailyValue(i++, MINUTE * 12 + DT_OFFSET, 17.99f, 17.88f, 18.1f, 17.88f));
+        dailyValues.add(new DailyValue(i++, MINUTE * 14 + DT_OFFSET, 17.7f, 17.84f, 17.84f, 17.7f));
         return dailyValues;
     }
 }
